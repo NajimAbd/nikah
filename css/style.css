@@ -434,3 +434,4 @@ body.cmp-ouvert { overflow: hidden; }
 .hero h1, .hero .soustitre, .deja-inscrit { text-shadow: 0 1px 10px rgba(250,247,242,0.95), 0 0 3px rgba(250,247,242,0.9); }
 .hero .soustitre, .deja-inscrit { color: #3A3A3A; }
 .hero .btn-outline, .hero .btn-ghost { background: #FAF7F2; }
+.btn-corriger { margin-top: 12px; }

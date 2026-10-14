@@ -415,6 +415,11 @@
         }
 
         if (etape.type === "consent") {
+          var aCorriger = premiereEtapeIncomplete();
+          if (aCorriger > -1) {
+            allerCorriger(aCorriger, "");
+            return;
+          }
           envoyerInscription(btnSuivant);
           return;
         }
@@ -514,11 +519,61 @@
     });
   }
 
-  function afficherErreur(message) {
+  function afficherErreur(message, indexCorrection) {
     var zone = document.getElementById("messageErreur");
     if (!zone) return;
     zone.textContent = message;
     zone.style.display = message ? "block" : "none";
+    if (message && typeof indexCorrection === "number") {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn btn-primary btn-corriger";
+      b.textContent = "Corriger maintenant";
+      b.addEventListener("click", function () { allerCorriger(indexCorrection, message); });
+      zone.appendChild(document.createElement("br"));
+      zone.appendChild(b);
+    }
+  }
+
+  function indexEtape(id) {
+    for (var k = 0; k < etapes.length; k++) if (etapes[k].id === id) return k;
+    return -1;
+  }
+
+  // Emmène directement la personne sur l'étape à corriger, champs fautifs en rouge
+  function allerCorriger(i, message) {
+    indexCourant = i;
+    afficherEtape(i);
+    var probleme = validerEtape(etapes[i]);
+    var texte = probleme || message || "";
+    if (!probleme && etapes[i].id === "acces") marquer("#champEmail");
+    afficherErreur(texte);
+    window.scrollTo(0, 0);
+  }
+
+  // Première étape dont les réponses manquent ou sont invalides (-1 si tout est bon)
+  function premiereEtapeIncomplete() {
+    var limite = indexEtape("consentement");
+    var trouve = -1;
+    for (var k = 0; k < limite && trouve < 0; k++) {
+      if (validerEtape(etapes[k])) trouve = k;
+    }
+    effacerErreurs();
+    return trouve;
+  }
+
+  function etapePourErreur(code) {
+    if (["email_invalide", "mot_de_passe_faible", "email_existe"].indexOf(code) > -1) return indexEtape("acces");
+    if (["genre_manquant", "age_invalide"].indexOf(code) > -1) return indexEtape("a_propos");
+    if (code === "tranche_age_invalide") return indexEtape("age_recherche");
+    if (code === "questionnaire_incomplet") {
+      var ids = ["type_relation", "croyance", "situation_familiale"];
+      for (var k = 0; k < ids.length; k++) {
+        var v = reponses[ids[k]];
+        if (!v || (Array.isArray(v) && !v.length)) return indexEtape(ids[k]);
+      }
+    }
+    return -1;
   }
 
   function marquer(selecteur) {
@@ -637,7 +692,9 @@
         } else {
           bouton.disabled = false;
           bouton.textContent = "J'accepte et je crée mon profil";
-          afficherErreur(MESSAGES_ERREUR[resultat && resultat.error] || "Une erreur est survenue. Merci de réessayer dans un instant.");
+          var code = resultat && resultat.error;
+          var cible = etapePourErreur(code);
+          afficherErreur(MESSAGES_ERREUR[code] || "Une erreur est survenue. Merci de réessayer dans un instant.", cible > -1 ? cible : undefined);
         }
       })
       .catch(function () {
