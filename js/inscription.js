@@ -8,8 +8,23 @@
   "use strict";
 
   var STORAGE_KEY = "nikah_inscription";
+  var URL_INSCRIPTION = "https://n8n.srv936251.hstgr.cloud/webhook/nikah-register";
 
   var reponses = chargerReponses();
+  // Le mot de passe reste uniquement en mémoire : il n'est jamais écrit dans sessionStorage.
+  var motDePasse = "";
+  var motDePasseConfirmation = "";
+
+  var MESSAGES_ERREUR = {
+    email_invalide: "Cette adresse e-mail ne semble pas valide.",
+    mot_de_passe_faible: "Votre mot de passe doit contenir au moins 10 caractères, dont un caractère spécial (par exemple ! ? # @ -).",
+    genre_manquant: "Merci d'indiquer si vous êtes un homme ou une femme.",
+    age_invalide: "Merci d'indiquer une année de naissance valide (majeur(e) uniquement).",
+    consentement_manquant: "Votre consentement est nécessaire pour créer votre profil.",
+    questionnaire_incomplet: "Certaines réponses essentielles manquent (ce que vous recherchez, vos croyances, votre situation familiale). Revenez en arrière pour les compléter.",
+    tranche_age_invalide: "La tranche d'âge recherchée n'est pas valide. Revenez à l'étape 2.",
+    email_existe: "Un profil existe déjà avec cette adresse e-mail."
+  };
 
   var etapes = [
     {
@@ -136,6 +151,20 @@
       options: ["Menue", "Mince", "Sportive", "Moyenne", "Quelques kilos en trop", "Forte", "Grande et élégante"]
     },
     {
+      id: "a_propos",
+      numero: null,
+      titre: "Quelques informations sur vous",
+      aide: "Ces informations permettent de vous proposer des profils compatibles. Votre date de naissance exacte n'est jamais affichée.",
+      type: "about"
+    },
+    {
+      id: "acces",
+      numero: null,
+      titre: "Créez votre accès personnel",
+      aide: "Votre adresse e-mail sert à vous connecter et à recevoir les messages importants de votre compte.",
+      type: "compte"
+    },
+    {
       id: "consentement",
       numero: 0,
       type: "consent"
@@ -182,8 +211,10 @@
     var pourcentage = Math.round((i / (etapes.length - 1)) * 100);
     progressFill.style.width = pourcentage + "%";
 
-    if (etape.numero === null) {
+    if (etape.type === "thanks") {
       compteur.textContent = "";
+    } else if (etape.type === "about" || etape.type === "compte") {
+      compteur.textContent = "Presque terminé";
     } else if (etape.numero === 0) {
       compteur.textContent = "Dernière étape";
     } else {
@@ -234,6 +265,39 @@
       html += "</div>";
     }
 
+    else if (etape.type === "about") {
+      var anneeMax = new Date().getFullYear() - 18;
+      var optionsAnnee = "<option value=''>Année de naissance</option>";
+      for (var an = anneeMax; an >= 1930; an--) {
+        optionsAnnee += "<option value='" + an + "'>" + an + "</option>";
+      }
+      html += "<h2>" + etape.titre + "</h2>";
+      html += "<p class='aide'>" + etape.aide + "</p>";
+      html += "<div class='options'>";
+      html += "<label class='option' for='genre_homme'><input type='radio' name='genre' id='genre_homme' value='homme'> Je suis un homme</label>";
+      html += "<label class='option' for='genre_femme'><input type='radio' name='genre' id='genre_femme' value='femme'> Je suis une femme</label>";
+      html += "</div>";
+      html += "<p class='aide' style='margin-top:1.2em;'>Votre année de naissance</p>";
+      html += "<select id='champAnnee' class='champ-select'>" + optionsAnnee + "</select>";
+      html += "<p class='aide'>Où habitez-vous ?</p>";
+      html += "<select id='champMonPays' class='champ-select'>" +
+        "<option value=''>Pays</option>" +
+        "<option>Suisse</option><option>France</option><option>Belgique</option>" +
+        "<option>Maroc</option><option>Algérie</option><option>Tunisie</option>" +
+        "<option>Autre</option></select>";
+      html += "<input type='text' id='champMaRegion' class='champ-texte' placeholder='Canton / région'>";
+      html += "<input type='text' id='champMaVille' class='champ-texte' placeholder='Ville'>";
+    }
+
+    else if (etape.type === "compte") {
+      html += "<h2>" + etape.titre + "</h2>";
+      html += "<p class='aide'>" + etape.aide + "</p>";
+      html += "<input type='email' id='champEmail' class='champ-texte' placeholder='Adresse e-mail' autocomplete='email'>";
+      html += "<input type='password' id='champMotDePasse' class='champ-texte' placeholder='Mot de passe' autocomplete='new-password'>";
+      html += "<input type='password' id='champMotDePasse2' class='champ-texte' placeholder='Confirmez le mot de passe' autocomplete='new-password'>";
+      html += "<p class='aide'>Au moins 10 caractères, dont un caractère spécial (par exemple ! ? # @ -).</p>";
+    }
+
     else if (etape.type === "consent") {
       html += "<h2>Votre consentement avant la création de votre profil</h2>";
       html += "<div class='consentement-texte'>";
@@ -251,9 +315,13 @@
     else if (etape.type === "thanks") {
       html += "<div class='ecran-merci'>";
       html += "<div class='icone'>🕊️</div>";
-      html += "<h2>Votre profil est en cours de création</h2>";
-      html += "<p class='aide'>Merci pour votre confiance. Vos réponses ont été enregistrées. Dès que la vérification d'identité sera disponible, vous pourrez confirmer votre profil et commencer à recevoir des propositions compatibles.</p>";
+      html += "<h2>Votre profil a bien été créé</h2>";
+      html += "<p class='aide'>Merci pour votre confiance. Vos réponses sont enregistrées. Votre profil restera masqué aux autres membres jusqu'à la vérification de votre identité, au cours de laquelle votre photo vous sera demandée. Nous vous écrirons par e-mail pour la suite.</p>";
       html += "</div>";
+    }
+
+    if (etape.type === "about" || etape.type === "compte" || etape.type === "consent") {
+      html += "<p id='messageErreur' style='color:#a33; font-family:Helvetica,Arial,sans-serif; font-size:0.9rem; margin-top:14px; display:none;'></p>";
     }
 
     html += "<div class='nav-questionnaire'>";
@@ -289,6 +357,17 @@
       if (reponse.pays) document.getElementById("champPays").value = reponse.pays;
       if (reponse.region) document.getElementById("champRegion").value = reponse.region;
       if (reponse.ville) document.getElementById("champVille").value = reponse.ville;
+    } else if (etape.type === "about") {
+      if (reponse.genre) {
+        var radioGenre = document.getElementById("genre_" + reponse.genre);
+        if (radioGenre) radioGenre.checked = true;
+      }
+      if (reponse.annee) document.getElementById("champAnnee").value = reponse.annee;
+      if (reponse.pays) document.getElementById("champMonPays").value = reponse.pays;
+      if (reponse.region) document.getElementById("champMaRegion").value = reponse.region;
+      if (reponse.ville) document.getElementById("champMaVille").value = reponse.ville;
+    } else if (etape.type === "compte") {
+      if (reponse.email) document.getElementById("champEmail").value = reponse.email;
     } else if (etape.type === "radio") {
       var inputRadio = document.querySelector("input[name='" + etape.id + "'][value='" + (reponse || "").replace(/'/g, "&#39;") + "']");
       if (inputRadio) inputRadio.checked = true;
@@ -340,13 +419,124 @@
       btnSuivant.addEventListener("click", function () {
         enregistrerReponseEtape(etape);
         sauvegarderReponses();
+
+        var probleme = validerEtape(etape);
+        if (probleme) {
+          afficherErreur(probleme);
+          return;
+        }
+
+        if (etape.type === "consent") {
+          envoyerInscription(btnSuivant);
+          return;
+        }
+
         indexCourant++;
         afficherEtape(indexCourant);
       });
     }
   }
 
+  function afficherErreur(message) {
+    var zone = document.getElementById("messageErreur");
+    if (!zone) return;
+    zone.textContent = message;
+    zone.style.display = message ? "block" : "none";
+  }
+
+  function validerEtape(etape) {
+    if (etape.type === "age-range") {
+      var r = reponses[etape.id] || {};
+      var min = parseInt(r.min, 10);
+      var max = parseInt(r.max, 10);
+      if (!min || !max) return "Merci de choisir un âge minimum et un âge maximum.";
+      if (min > max) return "L'âge minimum ne peut pas être supérieur à l'âge maximum.";
+    }
+    if (etape.type === "about") {
+      var a = reponses[etape.id] || {};
+      if (!a.genre) return MESSAGES_ERREUR.genre_manquant;
+      if (!a.annee) return MESSAGES_ERREUR.age_invalide;
+    }
+    if (etape.type === "compte") {
+      var c = reponses[etape.id] || {};
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c.email || "")) return MESSAGES_ERREUR.email_invalide;
+      if (motDePasse.length < 10 || !/[^A-Za-z0-9]/.test(motDePasse)) return MESSAGES_ERREUR.mot_de_passe_faible;
+      if (motDePasse !== motDePasseConfirmation) return "Les deux mots de passe ne sont pas identiques.";
+    }
+    return "";
+  }
+
+  function envoyerInscription(bouton) {
+    var apropos = reponses.a_propos || {};
+    var acces = reponses.acces || {};
+    var answers = {};
+    Object.keys(reponses).forEach(function (cle) {
+      if (["photo", "a_propos", "acces", "consentement_donne_le"].indexOf(cle) === -1) {
+        answers[cle] = reponses[cle];
+      }
+    });
+
+    var charge = {
+      gender: apropos.genre,
+      birth_year: apropos.annee,
+      email: acces.email,
+      password: motDePasse,
+      consent: true,
+      location: { pays: apropos.pays, region: apropos.region, ville: apropos.ville },
+      answers: answers
+    };
+
+    bouton.disabled = true;
+    bouton.textContent = "Création en cours…";
+    afficherErreur("");
+
+    fetch(URL_INSCRIPTION, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(charge)
+    })
+      .then(function (reponseHttp) { return reponseHttp.json(); })
+      .then(function (resultat) {
+        if (resultat && resultat.success) {
+          motDePasse = "";
+          motDePasseConfirmation = "";
+          try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignoré */ }
+          reponses = {};
+          indexCourant++;
+          afficherEtape(indexCourant);
+        } else {
+          bouton.disabled = false;
+          bouton.textContent = "J'accepte et je crée mon profil";
+          afficherErreur(MESSAGES_ERREUR[resultat && resultat.error] || "Une erreur est survenue. Merci de réessayer dans un instant.");
+        }
+      })
+      .catch(function () {
+        bouton.disabled = false;
+        bouton.textContent = "J'accepte et je crée mon profil";
+        afficherErreur("Connexion impossible pour le moment. Vérifiez votre connexion Internet et réessayez.");
+      });
+  }
+
   function enregistrerReponseEtape(etape) {
+    if (etape.type === "about") {
+      var genreCoche = carte.querySelector("input[name='genre']:checked");
+      reponses[etape.id] = {
+        genre: genreCoche ? genreCoche.value : "",
+        annee: document.getElementById("champAnnee").value,
+        pays: document.getElementById("champMonPays").value,
+        region: document.getElementById("champMaRegion").value,
+        ville: document.getElementById("champMaVille").value
+      };
+      return;
+    }
+    if (etape.type === "compte") {
+      motDePasse = document.getElementById("champMotDePasse").value;
+      motDePasseConfirmation = document.getElementById("champMotDePasse2").value;
+      reponses[etape.id] = {
+        email: document.getElementById("champEmail").value.trim()
+      };
+      return;
+    }
     if (etape.type === "photo") {
       var champPhoto = document.getElementById("champPhoto");
       reponses[etape.id] = champPhoto.files && champPhoto.files[0] ? champPhoto.files[0].name : null;
