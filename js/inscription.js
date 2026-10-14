@@ -179,6 +179,64 @@
     return html;
   }
 
+  var SVG_OEIL = "<svg viewBox='0 0 24 24' width='22' height='22' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z'/><circle cx='12' cy='12' r='3'/></svg>";
+  var SVG_OEIL_BARRE = "<svg viewBox='0 0 24 24' width='22' height='22' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M17.94 17.94A10.9 10.9 0 0 1 12 19C5 19 1 12 1 12a18.5 18.5 0 0 1 5.06-5.94'/><path d='M9.9 4.24A10.9 10.9 0 0 1 12 5c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19'/><path d='M14.12 14.12A3 3 0 1 1 9.88 9.88'/><line x1='1' y1='1' x2='23' y2='23'/></svg>";
+
+  function champMotDePasse(id, placeholder) {
+    return "<div class='mdp-wrap'><input type='password' id='" + id + "' class='champ-texte' placeholder='" + placeholder + "' autocomplete='new-password'>" +
+      "<button type='button' class='mdp-oeil' data-cible='" + id + "' aria-label='Afficher le mot de passe'>" + SVG_OEIL + "</button></div>";
+  }
+
+  function brancherOeils() {
+    var boutons = carte.querySelectorAll(".mdp-oeil");
+    Array.prototype.forEach.call(boutons, function (bouton) {
+      bouton.addEventListener("click", function () {
+        var champ = document.getElementById(bouton.getAttribute("data-cible"));
+        var visible = champ.type === "text";
+        champ.type = visible ? "password" : "text";
+        bouton.innerHTML = visible ? SVG_OEIL : SVG_OEIL_BARRE;
+        bouton.setAttribute("aria-label", visible ? "Afficher le mot de passe" : "Masquer le mot de passe");
+      });
+    });
+  }
+
+  // Lieu d'habitation : listes automatiques (canton, commune) pour la Suisse, texte libre ailleurs
+  function majLieu(region, ville) {
+    var bloc = document.getElementById("blocLieu");
+    var pays = document.getElementById("champMonPays").value;
+    var cantons = window.COMMUNES_CH || {};
+    var html = "";
+    if (pays === "Suisse" && Object.keys(cantons).length) {
+      html += "<select id='champMaRegion' class='champ-select'><option value=''>Canton</option>";
+      Object.keys(cantons).forEach(function (c) { html += "<option>" + c + "</option>"; });
+      html += "</select>";
+      html += "<input type='text' id='champMaVille' class='champ-texte' list='listeVilles' placeholder='Commune (choisissez dans la liste)' autocomplete='off'>";
+      html += "<datalist id='listeVilles'></datalist>";
+    } else {
+      html += "<input type='text' id='champMaRegion' class='champ-texte' placeholder='Région'>";
+      html += "<input type='text' id='champMaVille' class='champ-texte' placeholder='Ville'>";
+    }
+    bloc.innerHTML = html;
+    var champRegion = document.getElementById("champMaRegion");
+    var champVille = document.getElementById("champMaVille");
+    function remplirVilles() {
+      var liste = document.getElementById("listeVilles");
+      if (!liste) return;
+      var villes = cantons[champRegion.value] || [];
+      liste.innerHTML = villes.map(function (v) { return "<option value=\"" + v.replace(/"/g, "&quot;") + "\">"; }).join("");
+    }
+    if (region) champRegion.value = region;
+    if (ville) champVille.value = ville;
+    remplirVilles();
+    [champRegion, champVille].forEach(function (c) {
+      c.addEventListener("input", function () { c.classList.remove("invalide"); effacerErreurs(); });
+      c.addEventListener("change", function () {
+        c.classList.remove("invalide"); effacerErreurs();
+        if (c === champRegion && document.getElementById("listeVilles")) { champVille.value = ""; remplirVilles(); }
+      });
+    });
+  }
+
   function afficherEtape(i) {
     arreterCamera();
     var etape = etapes[i];
@@ -273,16 +331,15 @@
         "<option>Suisse</option><option>France</option><option>Belgique</option>" +
         "<option>Maroc</option><option>Algérie</option><option>Tunisie</option>" +
         "<option>Autre</option></select>";
-      html += "<input type='text' id='champMaRegion' class='champ-texte' placeholder='Canton / région'>";
-      html += "<input type='text' id='champMaVille' class='champ-texte' placeholder='Ville'>";
+      html += "<div id='blocLieu'></div>";
     }
 
     else if (etape.type === "compte") {
       html += "<h2>" + etape.titre + "</h2>";
       html += "<p class='aide'>" + etape.aide + "</p>";
       html += "<input type='email' id='champEmail' class='champ-texte' placeholder='Adresse e-mail' autocomplete='email'>";
-      html += "<input type='password' id='champMotDePasse' class='champ-texte' placeholder='Mot de passe' autocomplete='new-password'>";
-      html += "<input type='password' id='champMotDePasse2' class='champ-texte' placeholder='Confirmez le mot de passe' autocomplete='new-password'>";
+      html += champMotDePasse("champMotDePasse", "Mot de passe");
+      html += champMotDePasse("champMotDePasse2", "Confirmez le mot de passe");
       html += "<p class='aide'>Au moins 10 caractères, dont un caractère spécial (par exemple ! ? # @ -).</p>";
     }
 
@@ -336,7 +393,10 @@
 
   function preRemplirChamps(etape) {
     var reponse = reponses[etape.id];
-    if (!reponse) return;
+    if (!reponse) {
+      if (etape.type === "about") majLieu();
+      return;
+    }
 
     if (etape.type === "age-range") {
       if (reponse.min) document.getElementById("champAgeMin").value = reponse.min;
@@ -352,8 +412,7 @@
       }
       if (reponse.annee) document.getElementById("champAnnee").value = reponse.annee;
       if (reponse.pays) document.getElementById("champMonPays").value = reponse.pays;
-      if (reponse.region) document.getElementById("champMaRegion").value = reponse.region;
-      if (reponse.ville) document.getElementById("champMaVille").value = reponse.ville;
+      majLieu(reponse.region, reponse.ville);
     } else if (etape.type === "compte") {
       if (reponse.email) document.getElementById("champEmail").value = reponse.email;
     } else if (etape.type === "radio") {
@@ -381,6 +440,10 @@
 
   function attacherEvenements(etape, i) {
     marquerOptionSelectionnee();
+    if (etape.type === "compte") brancherOeils();
+    if (etape.type === "about") {
+      document.getElementById("champMonPays").addEventListener("change", function () { majLieu(); });
+    }
 
     carte.querySelectorAll(".option input").forEach(function (input) {
       input.addEventListener("change", marquerOptionSelectionnee);
@@ -629,6 +692,7 @@
       if (!a.genre) { marquer(".options"); manque = true; }
       if (!a.annee) { marquer("#champAnnee"); manque = true; }
       if (!a.pays) { marquer("#champMonPays"); manque = true; }
+      if (a.pays === "Suisse" && !a.region) { marquer("#champMaRegion"); manque = true; }
       if (!a.ville) { marquer("#champMaVille"); manque = true; }
       if (manque) return "Merci de compléter tous les champs marqués en rouge pour continuer.";
     }
