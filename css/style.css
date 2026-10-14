@@ -435,3 +435,5 @@ body.cmp-ouvert { overflow: hidden; }
 .hero .soustitre, .deja-inscrit { color: #3A3A3A; }
 .hero .btn-outline, .hero .btn-ghost { background: #FAF7F2; }
 .btn-corriger { margin-top: 12px; }
+.cmp-info ul { margin: 8px 0 0; padding-left: 18px; }
+.cmp-info li { margin-bottom: 5px; font-size: 0.88rem; line-height: 1.45; }
