@@ -378,3 +378,31 @@ footer.site-footer a { color: #8a8a8a; margin: 0 10px; }
   nav.site-nav { display: none; }
   .deux-colonnes { grid-template-columns: 1fr; }
 }
+
+/* Étape photo */
+.photo-zone { text-align: center; }
+.photo-apercu {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  border: 2px dashed var(--bordure);
+  background: var(--creme);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.85rem;
+  color: #8a8a8a;
+}
+.photo-apercu img { width: 100%; height: 100%; object-fit: cover; }
+.photo-video {
+  width: 100%;
+  max-width: 320px;
+  border-radius: var(--rayon);
+  margin: 0 auto 18px;
+  background: #000;
+  transform: scaleX(-1);
+}
+.photo-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }

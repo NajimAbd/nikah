@@ -14,6 +14,9 @@
   // Le mot de passe reste uniquement en mémoire : il n'est jamais écrit dans sessionStorage.
   var motDePasse = "";
   var motDePasseConfirmation = "";
+  // La photo reste en mémoire dans le navigateur (jamais dans sessionStorage).
+  var photoData = "";
+  var fluxCamera = null;
 
   var MESSAGES_ERREUR = {
     email_invalide: "Cette adresse e-mail ne semble pas valide.",
@@ -207,6 +210,7 @@
   }
 
   function afficherEtape(i) {
+    arreterCamera();
     var etape = etapes[i];
     var pourcentage = Math.round((i / (etapes.length - 1)) * 100);
     progressFill.style.width = pourcentage + "%";
@@ -226,8 +230,18 @@
     if (etape.type === "photo") {
       html += "<h2>" + etape.titre + "</h2>";
       html += "<p class='aide'>" + etape.aide + "</p>";
-      html += "<input type='file' accept='image/*' id='champPhoto' class='champ-texte'>";
-      html += "<p class='aide' id='apercuNomPhoto'></p>";
+      html += "<div class='photo-zone'>";
+      html += "<div class='photo-apercu' id='photoApercu'><span id='photoVide'>Aucune photo</span></div>";
+      html += "<video id='photoVideo' class='photo-video' autoplay playsinline muted style='display:none;'></video>";
+      html += "<div class='photo-actions'>";
+      html += "<button type='button' class='btn btn-primary' id='btnPrendrePhoto'>Prendre une photo</button>";
+      html += "<button type='button' class='btn btn-outline' id='btnChoisirPhoto'>Choisir dans mes fichiers</button>";
+      html += "<button type='button' class='btn btn-primary' id='btnCapturer' style='display:none;'>Capturer</button>";
+      html += "</div>";
+      html += "<p class='aide' id='photoMessage'></p>";
+      html += "<input type='file' accept='image/*' id='champPhotoFichier' style='display:none;'>";
+      html += "<input type='file' accept='image/*' capture='user' id='champPhotoCamera' style='display:none;'>";
+      html += "</div>";
     }
 
     else if (etape.type === "age-range") {
@@ -399,11 +413,7 @@
     });
 
     if (etape.type === "photo") {
-      var champPhoto = document.getElementById("champPhoto");
-      champPhoto.addEventListener("change", function () {
-        var nomFichier = champPhoto.files && champPhoto.files[0] ? champPhoto.files[0].name : "";
-        document.getElementById("apercuNomPhoto").textContent = nomFichier ? "Fichier sélectionné : " + nomFichier : "";
-      });
+      initialiserPhoto();
     }
 
     var btnPrecedent = document.getElementById("btnPrecedent");
@@ -435,6 +445,94 @@
         afficherEtape(indexCourant);
       });
     }
+  }
+
+  function arreterCamera() {
+    if (fluxCamera) {
+      fluxCamera.getTracks().forEach(function (t) { t.stop(); });
+      fluxCamera = null;
+    }
+  }
+
+  function afficherApercuPhoto() {
+    var zone = document.getElementById("photoApercu");
+    if (!zone) return;
+    if (photoData) {
+      zone.innerHTML = "<img alt='Votre photo' src='" + photoData + "'>";
+    } else {
+      zone.innerHTML = "<span id='photoVide'>Aucune photo</span>";
+    }
+  }
+
+  // Réduit la photo (800 px max) et la convertit en JPEG léger.
+  function traiterImage(source, largeur, hauteur) {
+    var max = 800;
+    var ratio = Math.min(1, max / Math.max(largeur, hauteur));
+    var canvas = document.createElement("canvas");
+    canvas.width = Math.round(largeur * ratio);
+    canvas.height = Math.round(hauteur * ratio);
+    canvas.getContext("2d").drawImage(source, 0, 0, canvas.width, canvas.height);
+    photoData = canvas.toDataURL("image/jpeg", 0.85);
+    afficherApercuPhoto();
+  }
+
+  function lireFichierPhoto(fichier) {
+    if (!fichier) return;
+    var lecteur = new FileReader();
+    lecteur.onload = function () {
+      var img = new Image();
+      img.onload = function () { traiterImage(img, img.width, img.height); };
+      img.src = lecteur.result;
+    };
+    lecteur.readAsDataURL(fichier);
+  }
+
+  function initialiserPhoto() {
+    var message = document.getElementById("photoMessage");
+    var video = document.getElementById("photoVideo");
+    var btnPrendre = document.getElementById("btnPrendrePhoto");
+    var btnChoisir = document.getElementById("btnChoisirPhoto");
+    var btnCapturer = document.getElementById("btnCapturer");
+    var champFichier = document.getElementById("champPhotoFichier");
+    var champCamera = document.getElementById("champPhotoCamera");
+
+    afficherApercuPhoto();
+
+    btnChoisir.addEventListener("click", function () { champFichier.click(); });
+    champFichier.addEventListener("change", function () { lireFichierPhoto(champFichier.files[0]); });
+    champCamera.addEventListener("change", function () { lireFichierPhoto(champCamera.files[0]); });
+
+    btnPrendre.addEventListener("click", function () {
+      message.textContent = "";
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        champCamera.click();
+        return;
+      }
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false })
+        .then(function (flux) {
+          fluxCamera = flux;
+          video.srcObject = flux;
+          video.style.display = "block";
+          document.getElementById("photoApercu").style.display = "none";
+          btnCapturer.style.display = "inline-block";
+          btnPrendre.style.display = "none";
+        })
+        .catch(function () {
+          message.textContent = "La caméra n'a pas pu s'ouvrir (accès refusé ?). Vous pouvez choisir une photo dans vos fichiers.";
+          champCamera.click();
+        });
+    });
+
+    btnCapturer.addEventListener("click", function () {
+      if (!video.videoWidth) return;
+      traiterImage(video, video.videoWidth, video.videoHeight);
+      arreterCamera();
+      video.style.display = "none";
+      document.getElementById("photoApercu").style.display = "flex";
+      btnCapturer.style.display = "none";
+      btnPrendre.style.display = "inline-block";
+      btnPrendre.textContent = "Reprendre la photo";
+    });
   }
 
   function afficherErreur(message) {
@@ -500,6 +598,7 @@
         if (resultat && resultat.success) {
           motDePasse = "";
           motDePasseConfirmation = "";
+          photoData = "";
           try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignoré */ }
           reponses = {};
           indexCourant++;
@@ -538,8 +637,8 @@
       return;
     }
     if (etape.type === "photo") {
-      var champPhoto = document.getElementById("champPhoto");
-      reponses[etape.id] = champPhoto.files && champPhoto.files[0] ? champPhoto.files[0].name : null;
+      arreterCamera();
+      reponses[etape.id] = photoData ? "ajoutee" : null;
     } else if (etape.type === "age-range") {
       reponses[etape.id] = {
         min: document.getElementById("champAgeMin").value,
