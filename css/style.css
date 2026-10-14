@@ -427,7 +427,7 @@ body.cmp-ouvert { overflow: hidden; }
 @media (min-width: 600px) { .cmp-fond { align-items: center; } }
 
 /* Photo en arrière-plan de l'accueil */
-.hero { background: linear-gradient(rgba(250,247,242,0.38), rgba(250,247,242,0.55)), url("../img/couple-fond-2026-10-14.webp") center / cover no-repeat; }
+.hero { background: linear-gradient(rgba(250,247,242,0.38), rgba(250,247,242,0.55)), url("../img/couple-fond-2026-10-14.webp?v=2") center / cover no-repeat; }
 .deja-inscrit { margin-top: 22px; font-family: "Helvetica Neue", Arial, sans-serif; color: #5c5c5c; }
 .deja-inscrit .btn { margin-left: 6px; }
 @media (max-width: 600px) { .hero { background-position: 46% center; } }
