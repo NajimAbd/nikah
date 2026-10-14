@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Administration — Nikah</title>
+<link rel="stylesheet" href="css/style.css?v=20261014k">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <span class="logo">Nikah — administration</span>
+    <nav class="site-nav"><a href="#" id="btnSortir" style="display:none;">Se déconnecter</a></nav>
+  </div>
+</header>
+
+<main class="espace">
+  <div class="container">
+    <div id="blocConnexion" class="carte-question" style="max-width:420px; margin:30px auto;">
+      <h2>Accès administrateur</h2>
+      <form id="formAdmin" novalidate>
+        <input type="password" id="champMdpAdmin" class="champ-texte" placeholder="Mot de passe administrateur" autocomplete="current-password">
+        <p id="erreurAdmin" style="color:#a33; font-family:Helvetica,Arial,sans-serif; font-size:0.9rem; margin-top:14px; display:none;"></p>
+        <div class="nav-questionnaire"><span></span><button type="submit" class="btn btn-primary" id="btnAdmin">Entrer</button></div>
+      </form>
+    </div>
+
+    <div id="blocListe" style="display:none;">
+      <h1>Profils inscrits</h1>
+      <p class="aide" id="resumeAdmin"></p>
+      <div id="listeAdmin" class="admin-liste"></div>
+    </div>
+  </div>
+</main>
+
+<script src="js/administration.js?v=20261014k"></script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+[
+ {
+  "id": "NikahAdminSet001",
+  "name": "Nikah Admin Set",
+  "nodes": [
+   {
+    "parameters": {
+     "httpMethod": "POST",
+     "path": "nikah-admin-set",
+     "responseMode": "responseNode",
+     "options": {
+      "allowedOrigins": "*"
+     }
+    },
+    "name": "Webhook",
+    "type": "n8n-nodes-base.webhook",
+    "typeVersion": 2,
+    "position": [
+     0,
+     300
+    ],
+    "webhookId": "nikah-admin-set-0001"
+   },
+   {
+    "parameters": {
+     "jsCode": "const b = $input.first().json.body || {};\nconst token = String(b.token || '');\nconst id = parseInt(b.member_id, 10);\nconst v = b.verified === true || b.verified === 1 ? 1 : 0;\nif (!/^[a-f0-9]{64}$/.test(token) || !Number.isInteger(id) || id < 1) return [{ json: { ok: false, error: 'requete_invalide' } }];\nconst q0 = \"UPDATE members m JOIN admin_access a ON a.id=1 AND a.session_hash=SHA2('\" + token + \"',256) AND a.session_expires > NOW() SET m.identity_verified=\" + v + \" WHERE m.id=\" + id;\nreturn [{ json: { ok: true, q0 } }];\n"
+    },
+    "name": "Prepare",
+    "type": "n8n-nodes-base.code",
+    "typeVersion": 2,
+    "position": [
+     220,
+     300
+    ]
+   },
+   {
+    "parameters": {
+     "conditions": {
+      "options": {
+       "caseSensitive": true,
+       "leftValue": "",
+       "typeValidation": "strict"
+      },
+      "conditions": [
+       {
+        "id": "c1",
+        "leftValue": "={{ $json.ok === true }}",
+        "rightValue": true,
+        "operator": {
+         "type": "boolean",
+         "operation": "true",
+         "singleValue": true
+        }
+       }
+      ],
+      "combinator": "and"
+     },
+     "options": {}
+    },
+    "name": "Donnees valides",
+    "type": "n8n-nodes-base.if",
+    "typeVersion": 2,
+    "position": [
+     440,
+     300
+    ]
+   },
+   {
+    "parameters": {
+     "respondWith": "text",
+     "responseBody": "={{ JSON.stringify({success:false,error:$json.error}) }}",
+     "options": {
+      "responseHeaders": {
+       "entries": [
+        {
+         "name": "Content-Type",
+         "value": "application/json"
+        },
+        {
+         "name": "Access-Control-Allow-Origin",
+         "value": "*"
+        }
+       ]
+      }
+     }
+    },
+    "name": "Reponse invalide",
+    "type": "n8n-nodes-base.respondToWebhook",
+    "typeVersion": 1.1,
+    "position": [
+     660,
+     460
+    ]
+   },
+   {
+    "parameters": {
+     "operation": "executeQuery",
+     "query": "={{ $json.q0 }}",
+     "options": {}
+    },
+    "name": "Mettre a jour",
+    "type": "n8n-nodes-base.mySql",
+    "typeVersion": 2.4,
+    "position": [
+     660,
+     200
+    ],
+    "credentials": {
+     "mySql": {
+      "id": "gcGQgiKQ83lHOaak",
+      "name": "MySQL account 2"
+     }
+    }
+   },
+   {
+    "parameters": {
+     "respondWith": "text",
+     "responseBody": "={{ JSON.stringify({success:true}) }}",
+     "options": {
+      "responseHeaders": {
+       "entries": [
+        {
+         "name": "Content-Type",
+         "value": "application/json"
+        },
+        {
+         "name": "Access-Control-Allow-Origin",
+         "value": "*"
+        }
+       ]
+      }
+     }
+    },
+    "name": "Reponse ok",
+    "type": "n8n-nodes-base.respondToWebhook",
+    "typeVersion": 1.1,
+    "position": [
+     880,
+     200
+    ]
+   }
+  ],
+  "connections": {
+   "Webhook": {
+    "main": [
+     [
+      {
+       "node": "Prepare",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Prepare": {
+    "main": [
+     [
+      {
+       "node": "Donnees valides",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Donnees valides": {
+    "main": [
+     [
+      {
+       "node": "Mettre a jour",
+       "type": "main",
+       "index": 0
+      }
+     ],
+     [
+      {
+       "node": "Reponse invalide",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Mettre a jour": {
+    "main": [
+     [
+      {
+       "node": "Reponse ok",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   }
+  },
+  "active": false,
+  "settings": {
+   "executionOrder": "v1"
+  }
+ }
+]
