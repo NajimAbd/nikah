@@ -23,7 +23,7 @@
    },
    {
     "parameters": {
-     "jsCode": "const b = $input.first().json.body || {};\nconst token = String(b.token || '');\nif (!/^[a-f0-9]{64}$/.test(token)) return [{ json: { ok: false, error: 'session_invalide' } }];\nconst q0 = \"SELECT m.id, m.gender, m.identity_verified, p.birth_year, p.country, p.region, p.city, s.age_min, s.age_max FROM (SELECT 1 AS x) d LEFT JOIN members m ON m.session_hash=SHA2('\" + token + \"',256) AND m.session_expires > NOW() AND m.status='actif' LEFT JOIN profiles p ON p.member_id=m.id LEFT JOIN search_preferences s ON s.member_id=m.id\";\nreturn [{ json: { ok: true, q0 } }];\n"
+     "jsCode": "const b = $input.first().json.body || {};\nconst token = String(b.token || '');\nif (!/^[a-f0-9]{64}$/.test(token)) return [{ json: { ok: false, error: 'session_invalide' } }];\nconst q0 = \"SELECT m.id, m.gender, m.identity_verified, p.birth_year, p.country, p.region, p.city, s.age_min, s.age_max, TO_BASE64(ph.data) AS photo FROM (SELECT 1 AS x) d LEFT JOIN members m ON m.session_hash=SHA2('\" + token + \"',256) AND m.session_expires > NOW() AND m.status='actif' LEFT JOIN profiles p ON p.member_id=m.id LEFT JOIN search_preferences s ON s.member_id=m.id LEFT JOIN member_photos ph ON ph.member_id=m.id\";\nreturn [{ json: { ok: true, q0 } }];\n"
     },
     "name": "Prepare",
     "type": "n8n-nodes-base.code",
@@ -114,7 +114,7 @@
    },
    {
     "parameters": {
-     "jsCode": "const r = $input.first().json;\nif (r.id === null || r.id === undefined) return [{ json: { success: false, error: 'session_invalide' } }];\nreturn [{ json: { success: true, member: {\n  gender: r.gender, identity_verified: Number(r.identity_verified) === 1,\n  birth_year: r.birth_year, country: r.country, region: r.region, city: r.city\n}, search: { age_min: r.age_min, age_max: r.age_max } } }];\n"
+     "jsCode": "const r = $input.first().json;\nif (r.id === null || r.id === undefined) return [{ json: { success: false, error: 'session_invalide' } }];\nreturn [{ json: { success: true, member: {\n  gender: r.gender, identity_verified: Number(r.identity_verified) === 1,\n  birth_year: r.birth_year, country: r.country, region: r.region, city: r.city,\n  photo: r.photo ? 'data:image/jpeg;base64,' + String(r.photo).replace(/\\s/g, '') : null\n}, search: { age_min: r.age_min, age_max: r.age_max } } }];\n"
     },
     "name": "Formater",
     "type": "n8n-nodes-base.code",

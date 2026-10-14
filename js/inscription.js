@@ -26,7 +26,8 @@
     consentement_manquant: "Votre consentement est nécessaire pour créer votre profil.",
     questionnaire_incomplet: "Certaines réponses essentielles manquent (ce que vous recherchez, vos croyances, votre situation familiale). Revenez en arrière pour les compléter.",
     tranche_age_invalide: "La tranche d'âge recherchée n'est pas valide. Revenez à l'étape 2.",
-    email_existe: "Un profil existe déjà avec cette adresse e-mail."
+    email_existe: "Un profil existe déjà avec cette adresse e-mail.",
+    photo_invalide: "Votre photo n'a pas pu être enregistrée. Merci d'en choisir une autre."
   };
 
   var etapes = [
@@ -629,6 +630,7 @@
     if (["email_invalide", "mot_de_passe_faible", "email_existe"].indexOf(code) > -1) return indexEtape("acces");
     if (["genre_manquant", "age_invalide"].indexOf(code) > -1) return indexEtape("a_propos");
     if (code === "tranche_age_invalide") return indexEtape("age_recherche");
+    if (code === "photo_invalide") return indexEtape("photo");
     if (code === "questionnaire_incomplet") {
       var ids = ["type_relation", "croyance", "situation_familiale"];
       for (var k = 0; k < ids.length; k++) {
@@ -730,6 +732,7 @@
       email: acces.email,
       password: motDePasse,
       consent: true,
+      photo: photoData,
       location: { pays: apropos.pays, region: apropos.region, ville: apropos.ville },
       answers: answers
     };

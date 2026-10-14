@@ -85,6 +85,11 @@
       var min = parseInt(res.search.age_min, 10), max = parseInt(res.search.age_max, 10);
       // Filtrage strict : sexe opposé et âge dans la tranche choisie, sans aucune approximation
       var liste = DEMO.filter(function (p) { return p.genre === cherche && p.age >= min && p.age <= max; });
+      var maPhoto = document.getElementById("maPhoto");
+      if (res.member.photo) { var img = document.createElement("img"); img.alt = "Ma photo"; img.src = res.member.photo; maPhoto.appendChild(img); }
+      document.getElementById("monStatut").textContent = res.member.identity_verified
+        ? "Identité vérifiée : votre photo est visible par les autres membres."
+        : "Identité non vérifiée : votre photo n'est visible que par vous. Elle sera montrée aux autres membres après la vérification de votre identité.";
       document.getElementById("resumeRecherche").innerHTML = "Vous recherchez " + (cherche === "femme" ? "une épouse" : "un époux") + " âgé(e) de <b>" + min + " à " + max + " ans</b>. " + liste.length + " profil" + (liste.length > 1 ? "s correspondent" : " correspond") + " exactement à votre recherche.";
       document.getElementById("grille").innerHTML = liste.map(carte).join("");
       document.getElementById("aucun").style.display = liste.length ? "none" : "block";
