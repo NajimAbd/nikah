@@ -425,3 +425,6 @@ body.cmp-ouvert { overflow: hidden; }
 .cmp-actions .btn { width: 100%; text-align: center; cursor: pointer; }
 .cmp-lien { text-align: center; margin: 12px 0 0 !important; font-size: 0.82rem !important; }
 @media (min-width: 600px) { .cmp-fond { align-items: center; } }
+
+.hero-photo { display: block; width: 100%; max-width: 440px; height: auto; margin: 0 auto 28px; }
+@media (max-width: 600px) { .hero-photo { max-width: 320px; margin-bottom: 20px; } }
