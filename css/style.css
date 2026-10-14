@@ -426,5 +426,8 @@ body.cmp-ouvert { overflow: hidden; }
 .cmp-lien { text-align: center; margin: 12px 0 0 !important; font-size: 0.82rem !important; }
 @media (min-width: 600px) { .cmp-fond { align-items: center; } }
 
-.hero-photo { display: block; width: 100%; max-width: 440px; height: auto; margin: 0 auto 28px; }
-@media (max-width: 600px) { .hero-photo { max-width: 320px; margin-bottom: 20px; } }
+/* Photo en arrière-plan de l'accueil */
+.hero { background: linear-gradient(rgba(250,247,242,0.80), rgba(250,247,242,0.88)), url("../img/couple-fond-2026-10-14.webp") center / cover no-repeat; }
+.deja-inscrit { margin-top: 22px; font-family: "Helvetica Neue", Arial, sans-serif; color: #5c5c5c; }
+.deja-inscrit .btn { margin-left: 6px; }
+@media (max-width: 600px) { .hero { background-position: 46% center; } }
