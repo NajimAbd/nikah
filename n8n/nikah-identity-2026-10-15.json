@@ -1,0 +1,255 @@
+[
+ {
+  "id": "NikahIdentity001",
+  "name": "Nikah Identity",
+  "nodes": [
+   {
+    "parameters": {
+     "httpMethod": "POST",
+     "path": "nikah-identity",
+     "responseMode": "responseNode",
+     "options": {
+      "allowedOrigins": "*"
+     }
+    },
+    "name": "Webhook",
+    "type": "n8n-nodes-base.webhook",
+    "typeVersion": 2,
+    "position": [
+     0,
+     300
+    ],
+    "webhookId": "nikah-identity-0001"
+   },
+   {
+    "parameters": {
+     "jsCode": "const b = $input.first().json.body || {};\nconst token = String(b.token || '');\nif (!/^[a-f0-9]{64}$/.test(token)) return [{ json: { ok: false, error: 'session_invalide' } }];\nconst lire = (v) => {\n  const m = String(v || '').match(/^data:image\\/jpeg;base64,([A-Za-z0-9+\\/=]+)$/);\n  if (!m || m[1].length > 600000) return null;\n  const hex = Buffer.from(m[1], 'base64').toString('hex');\n  return hex.startsWith('ffd8ff') ? hex : null;\n};\nconst piece = lire(b.piece), selfie = lire(b.selfie);\nif (!piece || !selfie) return [{ json: { ok: false, error: 'images_invalides' } }];\nconst q0 = \"INSERT INTO member_documents (member_id,id_data,selfie_data,created_at) SELECT m.id, UNHEX('\" + piece + \"'), UNHEX('\" + selfie + \"'), NOW() FROM members m WHERE m.session_hash=SHA2('\" + token + \"',256) AND m.session_expires > NOW() AND m.status='actif' AND m.identity_verified=0 ON DUPLICATE KEY UPDATE id_data=VALUES(id_data), selfie_data=VALUES(selfie_data), created_at=NOW()\";\nconst q1 = \"SELECT COUNT(*) AS n FROM members m JOIN member_documents d ON d.member_id=m.id WHERE m.session_hash=SHA2('\" + token + \"',256) AND d.created_at > DATE_SUB(NOW(), INTERVAL 1 MINUTE)\";\nreturn [{ json: { ok: true, q0, q1 } }];\n"
+    },
+    "name": "Prepare",
+    "type": "n8n-nodes-base.code",
+    "typeVersion": 2,
+    "position": [
+     220,
+     300
+    ]
+   },
+   {
+    "parameters": {
+     "conditions": {
+      "options": {
+       "caseSensitive": true,
+       "leftValue": "",
+       "typeValidation": "strict"
+      },
+      "conditions": [
+       {
+        "id": "c1",
+        "leftValue": "={{ $json.ok === true }}",
+        "rightValue": true,
+        "operator": {
+         "type": "boolean",
+         "operation": "true",
+         "singleValue": true
+        }
+       }
+      ],
+      "combinator": "and"
+     },
+     "options": {}
+    },
+    "name": "Donnees valides",
+    "type": "n8n-nodes-base.if",
+    "typeVersion": 2,
+    "position": [
+     440,
+     300
+    ]
+   },
+   {
+    "parameters": {
+     "respondWith": "text",
+     "responseBody": "={{ JSON.stringify({success:false,error:$json.error}) }}",
+     "options": {
+      "responseHeaders": {
+       "entries": [
+        {
+         "name": "Content-Type",
+         "value": "application/json"
+        },
+        {
+         "name": "Access-Control-Allow-Origin",
+         "value": "*"
+        }
+       ]
+      }
+     }
+    },
+    "name": "Reponse invalide",
+    "type": "n8n-nodes-base.respondToWebhook",
+    "typeVersion": 1.1,
+    "position": [
+     660,
+     460
+    ]
+   },
+   {
+    "parameters": {
+     "operation": "executeQuery",
+     "query": "={{ $json.q0 }}",
+     "options": {}
+    },
+    "name": "Enregistrer pieces",
+    "type": "n8n-nodes-base.mySql",
+    "typeVersion": 2.4,
+    "position": [
+     660,
+     200
+    ],
+    "credentials": {
+     "mySql": {
+      "id": "gcGQgiKQ83lHOaak",
+      "name": "MySQL account 2"
+     }
+    }
+   },
+   {
+    "parameters": {
+     "operation": "executeQuery",
+     "query": "={{ $('Prepare').first().json.q1 }}",
+     "options": {}
+    },
+    "name": "Verifier",
+    "type": "n8n-nodes-base.mySql",
+    "typeVersion": 2.4,
+    "position": [
+     880,
+     200
+    ],
+    "credentials": {
+     "mySql": {
+      "id": "gcGQgiKQ83lHOaak",
+      "name": "MySQL account 2"
+     }
+    }
+   },
+   {
+    "parameters": {
+     "jsCode": "const n = Number($input.first().json.n || 0);\nreturn [{ json: n > 0 ? { success: true } : { success: false, error: 'session_invalide' } }];\n"
+    },
+    "name": "Formater",
+    "type": "n8n-nodes-base.code",
+    "typeVersion": 2,
+    "position": [
+     1100,
+     200
+    ]
+   },
+   {
+    "parameters": {
+     "respondWith": "text",
+     "responseBody": "={{ JSON.stringify($json) }}",
+     "options": {
+      "responseHeaders": {
+       "entries": [
+        {
+         "name": "Content-Type",
+         "value": "application/json"
+        },
+        {
+         "name": "Access-Control-Allow-Origin",
+         "value": "*"
+        }
+       ]
+      }
+     }
+    },
+    "name": "Reponse",
+    "type": "n8n-nodes-base.respondToWebhook",
+    "typeVersion": 1.1,
+    "position": [
+     1320,
+     200
+    ]
+   }
+  ],
+  "connections": {
+   "Webhook": {
+    "main": [
+     [
+      {
+       "node": "Prepare",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Prepare": {
+    "main": [
+     [
+      {
+       "node": "Donnees valides",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Donnees valides": {
+    "main": [
+     [
+      {
+       "node": "Enregistrer pieces",
+       "type": "main",
+       "index": 0
+      }
+     ],
+     [
+      {
+       "node": "Reponse invalide",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Enregistrer pieces": {
+    "main": [
+     [
+      {
+       "node": "Verifier",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Verifier": {
+    "main": [
+     [
+      {
+       "node": "Formater",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Formater": {
+    "main": [
+     [
+      {
+       "node": "Reponse",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   }
+  },
+  "active": false,
+  "settings": {
+   "executionOrder": "v1"
+  }
+ }
+]

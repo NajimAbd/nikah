@@ -3,6 +3,7 @@
   "use strict";
   var URL_MOI = "https://n8n.srv936251.hstgr.cloud/webhook/nikah-me";
   var CLE_JETON = "nikah_jeton";
+  var URL_IDENTITE = "https://n8n.srv936251.hstgr.cloud/webhook/nikah-identity";
 
   // Profils fictifs, uniquement pour tester l'affichage. "verifie" = identité vérifiée (photo visible).
   var DEMO = [
@@ -74,6 +75,58 @@
     versConnexion();
   });
 
+  // --- Vérification d'identité ---
+  var pieceData = "", selfieData = "";
+  function reduire(fichier, cible, apercu, appliquer) {
+    if (!fichier) return;
+    var lecteur = new FileReader();
+    lecteur.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var ratio = Math.min(1, 1200 / Math.max(img.width, img.height));
+        var cv = document.createElement("canvas");
+        cv.width = Math.round(img.width * ratio); cv.height = Math.round(img.height * ratio);
+        cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+        var url = cv.toDataURL("image/jpeg", 0.8);
+        appliquer(url);
+        apercu.innerHTML = "";
+        var i = document.createElement("img"); i.src = url; i.alt = "Aperçu"; apercu.appendChild(i);
+      };
+      img.src = lecteur.result;
+    };
+    lecteur.readAsDataURL(fichier);
+  }
+  function brancherVerification(membre) {
+    var carte = document.getElementById("verifCarte");
+    if (membre.identity_verified) { carte.style.display = "none"; return; }
+    carte.style.display = "block";
+    var texte = document.getElementById("verifTexte");
+    var form = document.getElementById("verifFormulaire");
+    if (membre.docs_envoyes) {
+      texte.textContent = "Vos documents ont bien été reçus. L'administrateur va les examiner. Vous pouvez en renvoyer de nouveaux si nécessaire.";
+    }
+    document.getElementById("fichierPiece").addEventListener("change", function (e) { reduire(e.target.files[0], "piece", document.getElementById("apercuPiece"), function (u) { pieceData = u; }); });
+    document.getElementById("fichierSelfie").addEventListener("change", function (e) { reduire(e.target.files[0], "selfie", document.getElementById("apercuSelfie"), function (u) { selfieData = u; }); });
+    var erreur = document.getElementById("verifErreur");
+    document.getElementById("btnEnvoyerPieces").addEventListener("click", function () {
+      var bouton = this;
+      erreur.style.display = "none";
+      if (!pieceData || !selfieData) { erreur.textContent = "Merci d'ajouter les deux images (pièce d'identité et selfie)."; erreur.style.display = "block"; return; }
+      bouton.disabled = true; bouton.textContent = "Envoi en cours…";
+      fetch(URL_IDENTITE, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: jeton(), piece: pieceData, selfie: selfieData }) })
+        .then(function (r) { return r.json(); })
+        .then(function (r) {
+          bouton.disabled = false; bouton.textContent = "Envoyer pour vérification";
+          if (r && r.success) {
+            pieceData = ""; selfieData = "";
+            document.getElementById("apercuPiece").innerHTML = ""; document.getElementById("apercuSelfie").innerHTML = "";
+            texte.textContent = "Merci ! Vos documents ont bien été reçus. L'administrateur va les examiner.";
+          } else { erreur.textContent = "L'envoi n'a pas abouti. Merci de réessayer avec d'autres images."; erreur.style.display = "block"; }
+        })
+        .catch(function () { bouton.disabled = false; bouton.textContent = "Envoyer pour vérification"; erreur.textContent = "Connexion impossible pour le moment."; erreur.style.display = "block"; });
+    });
+  }
+
   var t = jeton();
   if (!t) { versConnexion(); return; }
 
@@ -90,6 +143,7 @@
       document.getElementById("monStatut").textContent = res.member.identity_verified
         ? "Identité vérifiée : votre photo est visible par les autres membres."
         : "Identité non vérifiée : votre photo n'est visible que par vous. Elle sera montrée aux autres membres après la vérification de votre identité.";
+      brancherVerification(res.member);
       document.getElementById("resumeRecherche").innerHTML = "Vous recherchez " + (cherche === "femme" ? "une épouse" : "un époux") + " âgé(e) de <b>" + min + " à " + max + " ans</b>. " + liste.length + " profil" + (liste.length > 1 ? "s correspondent" : " correspond") + " exactement à votre recherche.";
       document.getElementById("grille").innerHTML = liste.map(carte).join("");
       document.getElementById("aucun").style.display = liste.length ? "none" : "block";

@@ -39,15 +39,34 @@
     infos.appendChild(el("span", "", [age(m.annee), m.ville, m.region, m.pays].filter(Boolean).join(" · ")));
     infos.appendChild(el("span", "", "Inscrit le " + (m.inscrit || "")));
     infos.appendChild(el("span", m.verifie ? "badge-ok" : "badge-attente", m.verifie ? "Identité vérifiée" : "En attente de vérification"));
-    var btn = el("button", "btn " + (m.verifie ? "btn-outline" : "btn-primary"), m.verifie ? "Retirer la vérification" : "Marquer comme vérifié");
-    btn.type = "button";
-    btn.addEventListener("click", function () {
-      btn.disabled = true;
-      post("nikah-admin-set", { token: lire(), member_id: m.id, verified: !m.verifie })
-        .then(function () { charger(); })
-        .catch(function () { btn.disabled = false; alert("Action impossible pour le moment."); });
-    });
-    infos.appendChild(btn);
+    if (m.piece && m.selfie) {
+      var docs = el("div", "admin-docs");
+      [["Pièce d'identité", m.piece], ["Selfie", m.selfie]].forEach(function (d) {
+        var f = el("figure", "admin-doc"); var i = document.createElement("img"); i.src = d[1]; i.alt = d[0];
+        f.appendChild(i); f.appendChild(el("figcaption", "", d[0])); docs.appendChild(f);
+      });
+      infos.appendChild(docs);
+    } else if (!m.verifie) {
+      infos.appendChild(el("span", "", "Aucun document reçu pour le moment."));
+    }
+    var rangee = el("div", "admin-actions");
+    function bouton(libelle, classe, action, confirmation) {
+      var b = el("button", "btn " + classe, libelle); b.type = "button";
+      b.addEventListener("click", function () {
+        if (confirmation && !window.confirm(confirmation)) return;
+        b.disabled = true;
+        post("nikah-admin-set", { token: lire(), member_id: m.id, action: action })
+          .then(function () { charger(); })
+          .catch(function () { b.disabled = false; alert("Action impossible pour le moment."); });
+      });
+      rangee.appendChild(b);
+    }
+    if (m.verifie) bouton("Retirer la vérification", "btn-outline", "unverify");
+    else {
+      bouton("Marquer comme vérifié", "btn-primary", "verify", m.piece ? "Valider ce membre ? Ses documents seront supprimés." : "Ce membre n'a envoyé aucun document. Valider quand même ?");
+      if (m.piece) bouton("Refuser les documents", "btn-outline", "reject", "Supprimer ces documents ? Le membre pourra en renvoyer.");
+    }
+    infos.appendChild(rangee);
     c.appendChild(infos);
     return c;
   }

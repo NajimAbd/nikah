@@ -23,7 +23,7 @@
    },
    {
     "parameters": {
-     "jsCode": "const b = $input.first().json.body || {};\nconst token = String(b.token || '');\nconst id = parseInt(b.member_id, 10);\nconst v = b.verified === true || b.verified === 1 ? 1 : 0;\nif (!/^[a-f0-9]{64}$/.test(token) || !Number.isInteger(id) || id < 1) return [{ json: { ok: false, error: 'requete_invalide' } }];\nconst q0 = \"UPDATE members m JOIN admin_access a ON a.id=1 AND a.session_hash=SHA2('\" + token + \"',256) AND a.session_expires > NOW() SET m.identity_verified=\" + v + \" WHERE m.id=\" + id;\nreturn [{ json: { ok: true, q0 } }];\n"
+     "jsCode": "const b = $input.first().json.body || {};\nconst token = String(b.token || '');\nconst id = parseInt(b.member_id, 10);\nconst action = String(b.action || '');\nif (!/^[a-f0-9]{64}$/.test(token) || !Number.isInteger(id) || id < 1 || ['verify', 'unverify', 'reject'].indexOf(action) === -1) return [{ json: { ok: false, error: 'requete_invalide' } }];\nconst v = action === 'verify' ? 1 : 0;\nconst auth = \"JOIN admin_access a ON a.id=1 AND a.session_hash=SHA2('\" + token + \"',256) AND a.session_expires > NOW()\";\nconst q0 = \"UPDATE members m \" + auth + \" SET m.identity_verified=\" + v + \" WHERE m.id=\" + id;\nconst q1 = action === 'unverify' ? \"SELECT 1\" : \"DELETE d FROM member_documents d \" + auth + \" WHERE d.member_id=\" + id;\nreturn [{ json: { ok: true, q0, q1 } }];\n"
     },
     "name": "Prepare",
     "type": "n8n-nodes-base.code",
@@ -114,6 +114,26 @@
    },
    {
     "parameters": {
+     "operation": "executeQuery",
+     "query": "={{ $('Prepare').first().json.q1 }}",
+     "options": {}
+    },
+    "name": "Supprimer pieces",
+    "type": "n8n-nodes-base.mySql",
+    "typeVersion": 2.4,
+    "position": [
+     880,
+     200
+    ],
+    "credentials": {
+     "mySql": {
+      "id": "gcGQgiKQ83lHOaak",
+      "name": "MySQL account 2"
+     }
+    }
+   },
+   {
+    "parameters": {
      "respondWith": "text",
      "responseBody": "={{ JSON.stringify({success:true}) }}",
      "options": {
@@ -135,7 +155,7 @@
     "type": "n8n-nodes-base.respondToWebhook",
     "typeVersion": 1.1,
     "position": [
-     880,
+     1100,
      200
     ]
    }
@@ -182,6 +202,17 @@
     ]
    },
    "Mettre a jour": {
+    "main": [
+     [
+      {
+       "node": "Supprimer pieces",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Supprimer pieces": {
     "main": [
      [
       {

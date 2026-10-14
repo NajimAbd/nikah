@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
 <title>Mon espace — Nikah</title>
-<link rel="stylesheet" href="css/style.css?v=20261014k">
+<link rel="stylesheet" href="css/style.css?v=20261015a">
 </head>
 <body>
 
@@ -27,6 +27,18 @@
         <div class="ma-photo" id="maPhoto"></div>
         <div class="ma-infos"><strong>Mon profil</strong><span id="monStatut"></span></div>
       </div>
+      <div class="verif-carte" id="verifCarte" style="display:none;">
+        <h2>Vérifier mon identité</h2>
+        <p class="aide" id="verifTexte">Pour que votre photo soit visible des autres membres, nous devons vérifier votre identité. Envoyez une photo de votre pièce d'identité (recto) et un selfie récent. Ces deux images sont lues uniquement par l'administrateur, puis <b>supprimées</b> dès sa décision.</p>
+        <div id="verifFormulaire">
+          <label class="verif-champ">1. Photo de votre pièce d'identité<input type="file" accept="image/*" id="fichierPiece"></label>
+          <div class="verif-apercu" id="apercuPiece"></div>
+          <label class="verif-champ">2. Un selfie, visage bien visible<input type="file" accept="image/*" capture="user" id="fichierSelfie"></label>
+          <div class="verif-apercu" id="apercuSelfie"></div>
+          <p id="verifErreur" style="color:#a33; font-family:Helvetica,Arial,sans-serif; font-size:0.9rem; display:none;"></p>
+          <button type="button" class="btn btn-primary" id="btnEnvoyerPieces">Envoyer pour vérification</button>
+        </div>
+      </div>
       <p class="resume-recherche" id="resumeRecherche"></p>
       <div class="demo-bandeau">Profils de démonstration : ces personnes sont fictives et servent uniquement à tester l'affichage.</div>
       <div id="grille" class="grille-profils"></div>
@@ -45,7 +57,7 @@
   </div>
 </footer>
 
-<script src="js/membre.js?v=20261014k"></script>
-<script src="js/cookies.js?v=20261014k"></script>
+<script src="js/membre.js?v=20261015a"></script>
+<script src="js/cookies.js?v=20261015a"></script>
 </body>
 </html>

@@ -23,7 +23,7 @@
    },
    {
     "parameters": {
-     "jsCode": "const b = $input.first().json.body || {};\nconst token = String(b.token || '');\nif (!/^[a-f0-9]{64}$/.test(token)) return [{ json: { ok: false, error: 'session_invalide' } }];\nconst q0 = \"SELECT a.id AS admin_id, m.id, m.email, m.gender, m.status, m.identity_verified, m.created_at, p.birth_year, p.country, p.region, p.city, REPLACE(REPLACE(TO_BASE64(ph.data), CHAR(10), ''), CHAR(13), '') AS photo FROM (SELECT 1 AS x) d LEFT JOIN admin_access a ON a.id=1 AND a.session_hash=SHA2('\" + token + \"',256) AND a.session_expires > NOW() LEFT JOIN members m ON a.id IS NOT NULL LEFT JOIN profiles p ON p.member_id=m.id LEFT JOIN member_photos ph ON ph.member_id=m.id ORDER BY m.created_at DESC\";\nreturn [{ json: { ok: true, q0 } }];\n"
+     "jsCode": "const b = $input.first().json.body || {};\nconst token = String(b.token || '');\nif (!/^[a-f0-9]{64}$/.test(token)) return [{ json: { ok: false, error: 'session_invalide' } }];\nconst q0 = \"SELECT a.id AS admin_id, m.id, m.email, m.gender, m.status, m.identity_verified, m.created_at, p.birth_year, p.country, p.region, p.city, REPLACE(REPLACE(TO_BASE64(ph.data), CHAR(10), ''), CHAR(13), '') AS photo, REPLACE(REPLACE(TO_BASE64(dd.id_data), CHAR(10), ''), CHAR(13), '') AS piece, REPLACE(REPLACE(TO_BASE64(dd.selfie_data), CHAR(10), ''), CHAR(13), '') AS selfie FROM (SELECT 1 AS x) d LEFT JOIN admin_access a ON a.id=1 AND a.session_hash=SHA2('\" + token + \"',256) AND a.session_expires > NOW() LEFT JOIN members m ON a.id IS NOT NULL LEFT JOIN profiles p ON p.member_id=m.id LEFT JOIN member_photos ph ON ph.member_id=m.id LEFT JOIN member_documents dd ON dd.member_id=m.id ORDER BY m.created_at DESC\";\nreturn [{ json: { ok: true, q0 } }];\n"
     },
     "name": "Prepare",
     "type": "n8n-nodes-base.code",
@@ -114,7 +114,7 @@
    },
    {
     "parameters": {
-     "jsCode": "const rows = $input.all().map(i => i.json);\nif (!rows.length || rows[0].admin_id === null || rows[0].admin_id === undefined) return [{ json: { success: false, error: 'session_invalide' } }];\nconst membres = rows.filter(r => r.id !== null && r.id !== undefined).map(r => ({\n  id: r.id, email: r.email, genre: r.gender, statut: r.status,\n  verifie: Number(r.identity_verified) === 1, inscrit: r.created_at,\n  annee: r.birth_year, pays: r.country, region: r.region, ville: r.city,\n  photo: r.photo ? 'data:image/jpeg;base64,' + r.photo : null\n}));\nreturn [{ json: { success: true, membres } }];\n"
+     "jsCode": "const rows = $input.all().map(i => i.json);\nif (!rows.length || rows[0].admin_id === null || rows[0].admin_id === undefined) return [{ json: { success: false, error: 'session_invalide' } }];\nconst membres = rows.filter(r => r.id !== null && r.id !== undefined).map(r => ({\n  id: r.id, email: r.email, genre: r.gender, statut: r.status,\n  verifie: Number(r.identity_verified) === 1, inscrit: r.created_at,\n  annee: r.birth_year, pays: r.country, region: r.region, ville: r.city,\n  photo: r.photo ? 'data:image/jpeg;base64,' + r.photo : null,\n  piece: r.piece ? 'data:image/jpeg;base64,' + r.piece : null,\n  selfie: r.selfie ? 'data:image/jpeg;base64,' + r.selfie : null\n}));\nreturn [{ json: { success: true, membres } }];\n"
     },
     "name": "Formater",
     "type": "n8n-nodes-base.code",
