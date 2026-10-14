@@ -441,3 +441,5 @@ body.cmp-ouvert { overflow: hidden; }
 .mdp-wrap .champ-texte { padding-right: 48px; }
 .mdp-oeil { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: 0; padding: 8px; cursor: pointer; color: #7C9885; line-height: 0; }
 .mdp-oeil:hover { color: #3A3A3A; }
+.ecran-merci h2 { text-align: center; }
+.carte-question:has(.ecran-merci) .nav-questionnaire { justify-content: center; }
