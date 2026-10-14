@@ -1,4 +1,4 @@
-// Nikah — logique du parcours d'inscription (17 étapes + étape 0)
+// Nikah — logique du parcours d'inscription (questions, compte, consentement)
 // Version simple côté client : les réponses sont conservées dans sessionStorage.
 // Aucun backend n'est encore connecté ; cet écran sert à valider le parcours
 // et la structure des questions avant la mise en place de la base de données
@@ -45,13 +45,6 @@
       type: "age-range"
     },
     {
-      id: "lieu_recherche",
-      numero: 3,
-      titre: "Où souhaitez-vous trouver votre futur(e) époux(se) ?",
-      aide: "Recherchez-vous quelqu'un à proximité, ou êtes-vous ouvert(e) à une rencontre au-delà des frontières ?",
-      type: "location"
-    },
-    {
       id: "type_relation",
       numero: 4,
       titre: "Que recherchez-vous ?",
@@ -61,25 +54,11 @@
       options: ["Mariage", "Échange sérieux en vue du mariage"]
     },
     {
-      id: "duree_connaissance",
-      numero: 5,
-      titre: "Combien de temps souhaitez-vous apprendre à connaître quelqu'un avant de vous engager sérieusement ?",
-      type: "radio",
-      options: ["1-2 mois", "3-4 mois", "4-12 mois", "1-2 ans"]
-    },
-    {
       id: "delai_mariage",
       numero: 6,
       titre: "Dans quel délai envisagez-vous de vous marier ?",
       type: "radio",
-      options: ["2-4 mois", "4-12 mois", "1-2 ans", "À convenir ensemble"]
-    },
-    {
-      id: "badge_nikah",
-      numero: 7,
-      titre: "Souhaitez-vous afficher un badge « Prêt(e) pour le Nikah » sur votre profil, pour que les profils compatibles vous repèrent plus facilement ?",
-      type: "radio",
-      options: ["Oui", "Non", "Je déciderai plus tard"]
+      options: ["1-2 mois", "2-4 mois", "4-6 mois", "À convenir ensemble"]
     },
     {
       id: "origine",
@@ -101,15 +80,6 @@
       titre: "Comment décririez-vous votre pratique religieuse ?",
       type: "radio",
       options: ["Très pratiquant(e)", "Pratiquant(e)", "Peu pratiquant(e)"]
-    },
-    {
-      id: "priorites",
-      numero: 11,
-      titre: "Qu'est-ce qui compte le plus pour vous dans votre pratique de l'Islam ?",
-      aide: "Plusieurs réponses possibles.",
-      type: "checkbox",
-      multiple: true,
-      options: ["Prière assidue (plusieurs fois par jour)", "Étude du Coran", "Jeûne (Sunnah)", "Sadaqah (aumône)", "Umrah ou Hajj accompli(e)", "Apprentissage de l'arabe"]
     },
     {
       id: "alcool",
@@ -147,11 +117,11 @@
       options: ["En dessous de la moyenne", "Dans la moyenne", "Attirant(e)", "Très attirant(e)"]
     },
     {
-      id: "corpulence",
-      numero: 17,
-      titre: "Comment décririez-vous votre silhouette ?",
+      id: "sante",
+      titre: "Avez-vous un problème de santé qui pourrait empêcher ou compliquer votre mariage ?",
+      aide: "Dans un esprit de transparence et de sincérité, avant tout engagement. Vous pourrez en parler plus en détail plus tard.",
       type: "radio",
-      options: ["Menue", "Mince", "Sportive", "Moyenne", "Quelques kilos en trop", "Forte", "Grande et élégante"]
+      options: ["Non", "Oui", "Je préfère en parler plus tard"]
     },
     {
       id: "a_propos",
@@ -215,14 +185,18 @@
     var pourcentage = Math.round((i / (etapes.length - 1)) * 100);
     progressFill.style.width = pourcentage + "%";
 
+    var TYPES_QUESTION = ["photo", "age-range", "radio", "checkbox"];
+    var totalQuestions = etapes.filter(function (e) { return TYPES_QUESTION.indexOf(e.type) > -1; }).length;
+    var positionQuestion = etapes.slice(0, i + 1).filter(function (e) { return TYPES_QUESTION.indexOf(e.type) > -1; }).length;
+
     if (etape.type === "thanks") {
       compteur.textContent = "";
     } else if (etape.type === "about" || etape.type === "compte") {
       compteur.textContent = "Presque terminé";
-    } else if (etape.numero === 0) {
+    } else if (etape.type === "consent") {
       compteur.textContent = "Dernière étape";
     } else {
-      compteur.textContent = "Étape " + etape.numero + " sur 17";
+      compteur.textContent = "Étape " + positionQuestion + " sur " + totalQuestions;
     }
 
     var html = "";
@@ -330,11 +304,11 @@
       html += "<div class='ecran-merci'>";
       html += "<div class='icone'>🕊️</div>";
       html += "<h2>Votre profil a bien été créé</h2>";
-      html += "<p class='aide'>Merci pour votre confiance. Vos réponses sont enregistrées. Votre profil restera masqué aux autres membres jusqu'à la vérification de votre identité, au cours de laquelle votre photo vous sera demandée. Nous vous écrirons par e-mail pour la suite.</p>";
+      html += "<p class='aide'>Merci pour votre confiance. Vos réponses sont enregistrées. Votre profil restera masqué aux autres membres jusqu'à la vérification de votre identité. Nous vous écrirons par e-mail pour la suite.</p>";
       html += "</div>";
     }
 
-    if (etape.type === "about" || etape.type === "compte" || etape.type === "consent") {
+    if (etape.type !== "thanks") {
       html += "<p id='messageErreur' style='color:#a33; font-family:Helvetica,Arial,sans-serif; font-size:0.9rem; margin-top:14px; display:none;'></p>";
     }
 
@@ -411,6 +385,10 @@
     carte.querySelectorAll(".option input").forEach(function (input) {
       input.addEventListener("change", marquerOptionSelectionnee);
     });
+    carte.querySelectorAll("input, select").forEach(function (champ) {
+      champ.addEventListener("change", effacerErreurs);
+      champ.addEventListener("input", effacerErreurs);
+    });
 
     if (etape.type === "photo") {
       initialiserPhoto();
@@ -474,6 +452,7 @@
     canvas.getContext("2d").drawImage(source, 0, 0, canvas.width, canvas.height);
     photoData = canvas.toDataURL("image/jpeg", 0.85);
     afficherApercuPhoto();
+    effacerErreurs();
   }
 
   function lireFichierPhoto(fichier) {
@@ -542,24 +521,76 @@
     zone.style.display = message ? "block" : "none";
   }
 
+  function marquer(selecteur) {
+    var elements = carte.querySelectorAll(selecteur);
+    for (var k = 0; k < elements.length; k++) elements[k].classList.add("invalide");
+  }
+
+  function effacerErreurs() {
+    var marques = carte.querySelectorAll(".invalide");
+    for (var k = 0; k < marques.length; k++) marques[k].classList.remove("invalide");
+    afficherErreur("");
+  }
+
   function validerEtape(etape) {
+    var MSG_CHOIX = "Merci de répondre à cette question pour continuer.";
+
+    if (etape.type === "photo") {
+      if (!photoData) {
+        marquer("#photoApercu");
+        return "Merci d'ajouter une photo pour continuer (prise avec la caméra ou choisie dans vos fichiers).";
+      }
+    }
     if (etape.type === "age-range") {
       var r = reponses[etape.id] || {};
       var min = parseInt(r.min, 10);
       var max = parseInt(r.max, 10);
-      if (!min || !max) return "Merci de choisir un âge minimum et un âge maximum.";
-      if (min > max) return "L'âge minimum ne peut pas être supérieur à l'âge maximum.";
+      if (!min || !max) {
+        if (!min) marquer("#champAgeMin");
+        if (!max) marquer("#champAgeMax");
+        return "Merci de choisir un âge minimum et un âge maximum.";
+      }
+      if (min > max) {
+        marquer("#champAgeMin");
+        marquer("#champAgeMax");
+        return "L'âge minimum ne peut pas être supérieur à l'âge maximum.";
+      }
+    }
+    if (etape.type === "radio") {
+      if (!reponses[etape.id]) {
+        marquer(".options");
+        return MSG_CHOIX;
+      }
+    }
+    if (etape.type === "checkbox") {
+      if (!reponses[etape.id] || !reponses[etape.id].length) {
+        marquer(".options");
+        return MSG_CHOIX;
+      }
     }
     if (etape.type === "about") {
       var a = reponses[etape.id] || {};
-      if (!a.genre) return MESSAGES_ERREUR.genre_manquant;
-      if (!a.annee) return MESSAGES_ERREUR.age_invalide;
+      var manque = false;
+      if (!a.genre) { marquer(".options"); manque = true; }
+      if (!a.annee) { marquer("#champAnnee"); manque = true; }
+      if (!a.pays) { marquer("#champMonPays"); manque = true; }
+      if (!a.ville) { marquer("#champMaVille"); manque = true; }
+      if (manque) return "Merci de compléter tous les champs marqués en rouge pour continuer.";
     }
     if (etape.type === "compte") {
       var c = reponses[etape.id] || {};
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c.email || "")) return MESSAGES_ERREUR.email_invalide;
-      if (motDePasse.length < 10 || !/[^A-Za-z0-9]/.test(motDePasse)) return MESSAGES_ERREUR.mot_de_passe_faible;
-      if (motDePasse !== motDePasseConfirmation) return "Les deux mots de passe ne sont pas identiques.";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c.email || "")) {
+        marquer("#champEmail");
+        return MESSAGES_ERREUR.email_invalide;
+      }
+      if (motDePasse.length < 10 || !/[^A-Za-z0-9]/.test(motDePasse)) {
+        marquer("#champMotDePasse");
+        return MESSAGES_ERREUR.mot_de_passe_faible;
+      }
+      if (motDePasse !== motDePasseConfirmation) {
+        marquer("#champMotDePasse2");
+        return "Les deux mots de passe ne sont pas identiques.";
+      }
     }
     return "";
   }

@@ -406,3 +406,8 @@ footer.site-footer a { color: #8a8a8a; margin: 0 10px; }
   transform: scaleX(-1);
 }
 .photo-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+/* Champs obligatoires non remplis */
+.invalide { border-color: #c0392b !important; background: #fdf0ee !important; }
+.options.invalide { border: 1.5px solid #c0392b; background: #fdf0ee !important; border-radius: 8px; padding: 6px; }
+.photo-apercu.invalide { border-style: solid; }
