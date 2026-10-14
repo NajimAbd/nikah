@@ -1,0 +1,224 @@
+[
+ {
+  "id": "NikahReset001",
+  "name": "Nikah Reset",
+  "nodes": [
+   {
+    "parameters": {
+     "httpMethod": "POST",
+     "path": "nikah-reset",
+     "responseMode": "responseNode",
+     "options": {
+      "allowedOrigins": "*"
+     }
+    },
+    "name": "Webhook",
+    "type": "n8n-nodes-base.webhook",
+    "typeVersion": 2,
+    "position": [
+     0,
+     300
+    ],
+    "webhookId": "nikah-reset-0001"
+   },
+   {
+    "parameters": {
+     "jsCode": "const crypto = require('crypto');\nconst b = $input.first().json.body || {};\nconst token = String(b.token || '');\nif (!/^[a-f0-9]{64}$/.test(token)) return [{ json: { ok: false, error: 'lien_invalide' } }];\nconst password = String(b.password || '');\nif (password.length < 10 || password.length > 200 || !/[^A-Za-z0-9]/.test(password)) return [{ json: { ok: false, error: 'mot_de_passe_faible' } }];\nconst salt = crypto.randomBytes(16).toString('hex');\nconst hash = crypto.pbkdf2Sync(password, salt, 100000, 32, 'sha256').toString('hex');\nconst passwordHash = 'pbkdf2:100000:' + salt + ':' + hash;\nconst q0 = \"UPDATE members SET password_hash='\" + passwordHash + \"', reset_hash=NULL, reset_expires=NULL, session_hash=NULL, session_expires=NULL, login_failures=0, locked_until=NULL WHERE reset_hash=SHA2('\" + token + \"',256) AND reset_expires > NOW() AND status='actif'\";\nreturn [{ json: { ok: true, q0 } }];\n"
+    },
+    "name": "Prepare",
+    "type": "n8n-nodes-base.code",
+    "typeVersion": 2,
+    "position": [
+     220,
+     300
+    ]
+   },
+   {
+    "parameters": {
+     "conditions": {
+      "options": {
+       "caseSensitive": true,
+       "leftValue": "",
+       "typeValidation": "strict"
+      },
+      "conditions": [
+       {
+        "id": "c1",
+        "leftValue": "={{ $json.ok === true }}",
+        "rightValue": true,
+        "operator": {
+         "type": "boolean",
+         "operation": "true",
+         "singleValue": true
+        }
+       }
+      ],
+      "combinator": "and"
+     },
+     "options": {}
+    },
+    "name": "Donnees valides",
+    "type": "n8n-nodes-base.if",
+    "typeVersion": 2,
+    "position": [
+     440,
+     300
+    ]
+   },
+   {
+    "parameters": {
+     "respondWith": "text",
+     "responseBody": "={{ JSON.stringify({success:false,error:$json.error}) }}",
+     "options": {
+      "responseHeaders": {
+       "entries": [
+        {
+         "name": "Content-Type",
+         "value": "application/json"
+        },
+        {
+         "name": "Access-Control-Allow-Origin",
+         "value": "*"
+        }
+       ]
+      }
+     }
+    },
+    "name": "Reponse invalide",
+    "type": "n8n-nodes-base.respondToWebhook",
+    "typeVersion": 1.1,
+    "position": [
+     660,
+     460
+    ]
+   },
+   {
+    "parameters": {
+     "operation": "executeQuery",
+     "query": "={{ $json.q0 }}",
+     "options": {}
+    },
+    "name": "Changer mot de passe",
+    "type": "n8n-nodes-base.mySql",
+    "typeVersion": 2.4,
+    "position": [
+     660,
+     200
+    ],
+    "credentials": {
+     "mySql": {
+      "id": "gcGQgiKQ83lHOaak",
+      "name": "MySQL account 2"
+     }
+    }
+   },
+   {
+    "parameters": {
+     "jsCode": "const r = $input.first().json;\nreturn [{ json: Number(r.affectedRows) === 1 ? { success: true } : { success: false, error: 'lien_invalide' } }];\n"
+    },
+    "name": "Resultat",
+    "type": "n8n-nodes-base.code",
+    "typeVersion": 2,
+    "position": [
+     880,
+     200
+    ]
+   },
+   {
+    "parameters": {
+     "respondWith": "text",
+     "responseBody": "={{ JSON.stringify($json) }}",
+     "options": {
+      "responseHeaders": {
+       "entries": [
+        {
+         "name": "Content-Type",
+         "value": "application/json"
+        },
+        {
+         "name": "Access-Control-Allow-Origin",
+         "value": "*"
+        }
+       ]
+      }
+     }
+    },
+    "name": "Reponse",
+    "type": "n8n-nodes-base.respondToWebhook",
+    "typeVersion": 1.1,
+    "position": [
+     1100,
+     200
+    ]
+   }
+  ],
+  "connections": {
+   "Webhook": {
+    "main": [
+     [
+      {
+       "node": "Prepare",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Prepare": {
+    "main": [
+     [
+      {
+       "node": "Donnees valides",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Donnees valides": {
+    "main": [
+     [
+      {
+       "node": "Changer mot de passe",
+       "type": "main",
+       "index": 0
+      }
+     ],
+     [
+      {
+       "node": "Reponse invalide",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Changer mot de passe": {
+    "main": [
+     [
+      {
+       "node": "Resultat",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Resultat": {
+    "main": [
+     [
+      {
+       "node": "Reponse",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   }
+  },
+  "active": false,
+  "settings": {
+   "executionOrder": "v1"
+  }
+ }
+]

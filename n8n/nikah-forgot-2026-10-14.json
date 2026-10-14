@@ -1,0 +1,362 @@
+[
+ {
+  "id": "NikahForgot001",
+  "name": "Nikah Forgot",
+  "nodes": [
+   {
+    "parameters": {
+     "httpMethod": "POST",
+     "path": "nikah-forgot",
+     "responseMode": "responseNode",
+     "options": {
+      "allowedOrigins": "*"
+     }
+    },
+    "name": "Webhook",
+    "type": "n8n-nodes-base.webhook",
+    "typeVersion": 2,
+    "position": [
+     0,
+     300
+    ],
+    "webhookId": "nikah-forgot-0001"
+   },
+   {
+    "parameters": {
+     "jsCode": "const b = $input.first().json.body || {};\nconst esc = (s) => \"'\" + String(s).replace(/\\\\/g, '\\\\\\\\').replace(/'/g, \"\\\\'\").replace(/[\\r\\n\\0]/g, ' ') + \"'\";\nconst email = String(b.email || '').trim().toLowerCase();\nif (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email) || email.length > 255) return [{ json: { ok: false, error: 'email_invalide' } }];\nconst q0 = \"SELECT m.id, (m.reset_expires IS NOT NULL AND m.reset_expires > DATE_ADD(NOW(), INTERVAL 28 MINUTE)) AS recent FROM (SELECT 1 AS x) d LEFT JOIN members m ON m.email=\" + esc(email) + \" AND m.status='actif'\";\nreturn [{ json: { ok: true, email, q0 } }];\n"
+    },
+    "name": "Prepare",
+    "type": "n8n-nodes-base.code",
+    "typeVersion": 2,
+    "position": [
+     220,
+     300
+    ]
+   },
+   {
+    "parameters": {
+     "conditions": {
+      "options": {
+       "caseSensitive": true,
+       "leftValue": "",
+       "typeValidation": "strict"
+      },
+      "conditions": [
+       {
+        "id": "c1",
+        "leftValue": "={{ $json.ok === true }}",
+        "rightValue": true,
+        "operator": {
+         "type": "boolean",
+         "operation": "true",
+         "singleValue": true
+        }
+       }
+      ],
+      "combinator": "and"
+     },
+     "options": {}
+    },
+    "name": "Donnees valides",
+    "type": "n8n-nodes-base.if",
+    "typeVersion": 2,
+    "position": [
+     440,
+     300
+    ]
+   },
+   {
+    "parameters": {
+     "respondWith": "text",
+     "responseBody": "={{ JSON.stringify({success:false,error:$json.error}) }}",
+     "options": {
+      "responseHeaders": {
+       "entries": [
+        {
+         "name": "Content-Type",
+         "value": "application/json"
+        },
+        {
+         "name": "Access-Control-Allow-Origin",
+         "value": "*"
+        }
+       ]
+      }
+     }
+    },
+    "name": "Reponse invalide",
+    "type": "n8n-nodes-base.respondToWebhook",
+    "typeVersion": 1.1,
+    "position": [
+     660,
+     460
+    ]
+   },
+   {
+    "parameters": {
+     "operation": "executeQuery",
+     "query": "={{ $json.q0 }}",
+     "options": {}
+    },
+    "name": "Lire membre",
+    "type": "n8n-nodes-base.mySql",
+    "typeVersion": 2.4,
+    "position": [
+     660,
+     200
+    ],
+    "credentials": {
+     "mySql": {
+      "id": "gcGQgiKQ83lHOaak",
+      "name": "MySQL account 2"
+     }
+    }
+   },
+   {
+    "parameters": {
+     "jsCode": "const crypto = require('crypto');\nconst r = $input.first().json;\nconst email = $('Prepare').first().json.email;\nif (r.id === null || r.id === undefined || Number(r.recent) === 1) return [{ json: { envoyer: false, q: 'SELECT 1' } }];\nconst token = crypto.randomBytes(32).toString('hex');\nconst q = \"UPDATE members SET reset_hash=SHA2('\" + token + \"',256), reset_expires=DATE_ADD(NOW(), INTERVAL 30 MINUTE) WHERE id=\" + parseInt(r.id, 10);\nconst lien = 'https://mariageislamique.ch/reinitialiser.html?t=' + token;\nconst texte = 'Bonjour,\\n\\nVous avez demandé à réinitialiser votre mot de passe Nikah.\\n\\nCliquez sur ce lien pour choisir un nouveau mot de passe (valable 30 minutes) :\\n' + lien + '\\n\\nSi vous n\\'êtes pas à l\\'origine de cette demande, ignorez simplement ce message : votre mot de passe actuel reste inchangé.\\n\\nNikah — projet non lucratif';\nreturn [{ json: { envoyer: true, email, q, texte } }];\n"
+    },
+    "name": "Jeton",
+    "type": "n8n-nodes-base.code",
+    "typeVersion": 2,
+    "position": [
+     880,
+     200
+    ]
+   },
+   {
+    "parameters": {
+     "operation": "executeQuery",
+     "query": "={{ $json.q }}",
+     "options": {}
+    },
+    "name": "Enregistrer jeton",
+    "type": "n8n-nodes-base.mySql",
+    "typeVersion": 2.4,
+    "position": [
+     1100,
+     200
+    ],
+    "credentials": {
+     "mySql": {
+      "id": "gcGQgiKQ83lHOaak",
+      "name": "MySQL account 2"
+     }
+    }
+   },
+   {
+    "parameters": {
+     "conditions": {
+      "options": {
+       "caseSensitive": true,
+       "leftValue": "",
+       "typeValidation": "strict"
+      },
+      "conditions": [
+       {
+        "id": "c1",
+        "leftValue": "={{ $('Jeton').first().json.envoyer === true }}",
+        "rightValue": true,
+        "operator": {
+         "type": "boolean",
+         "operation": "true",
+         "singleValue": true
+        }
+       }
+      ],
+      "combinator": "and"
+     },
+     "options": {}
+    },
+    "name": "A envoyer",
+    "type": "n8n-nodes-base.if",
+    "typeVersion": 2,
+    "position": [
+     1320,
+     200
+    ]
+   },
+   {
+    "parameters": {
+     "jsCode": "return [{ json: $('Jeton').first().json }];"
+    },
+    "name": "Preparer mail",
+    "type": "n8n-nodes-base.code",
+    "typeVersion": 2,
+    "position": [
+     1540,
+     100
+    ]
+   },
+   {
+    "parameters": {
+     "fromEmail": "Nikah <contact@roqyasuisse.com>",
+     "toEmail": "={{ $json.email }}",
+     "subject": "Nikah — réinitialisation de votre mot de passe",
+     "emailFormat": "text",
+     "text": "={{ $json.texte }}",
+     "options": {}
+    },
+    "name": "Envoyer mail",
+    "type": "n8n-nodes-base.emailSend",
+    "typeVersion": 2.1,
+    "position": [
+     1760,
+     100
+    ],
+    "credentials": {
+     "smtp": {
+      "id": "aZdlgWWAq11USGu7",
+      "name": "SMTP account"
+     }
+    }
+   },
+   {
+    "parameters": {
+     "respondWith": "text",
+     "responseBody": "={{ JSON.stringify({success:true}) }}",
+     "options": {
+      "responseHeaders": {
+       "entries": [
+        {
+         "name": "Content-Type",
+         "value": "application/json"
+        },
+        {
+         "name": "Access-Control-Allow-Origin",
+         "value": "*"
+        }
+       ]
+      }
+     }
+    },
+    "name": "Reponse ok",
+    "type": "n8n-nodes-base.respondToWebhook",
+    "typeVersion": 1.1,
+    "position": [
+     1980,
+     200
+    ]
+   }
+  ],
+  "connections": {
+   "Webhook": {
+    "main": [
+     [
+      {
+       "node": "Prepare",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Prepare": {
+    "main": [
+     [
+      {
+       "node": "Donnees valides",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Donnees valides": {
+    "main": [
+     [
+      {
+       "node": "Lire membre",
+       "type": "main",
+       "index": 0
+      }
+     ],
+     [
+      {
+       "node": "Reponse invalide",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Lire membre": {
+    "main": [
+     [
+      {
+       "node": "Jeton",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Jeton": {
+    "main": [
+     [
+      {
+       "node": "Enregistrer jeton",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Enregistrer jeton": {
+    "main": [
+     [
+      {
+       "node": "A envoyer",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "A envoyer": {
+    "main": [
+     [
+      {
+       "node": "Preparer mail",
+       "type": "main",
+       "index": 0
+      }
+     ],
+     [
+      {
+       "node": "Reponse ok",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Preparer mail": {
+    "main": [
+     [
+      {
+       "node": "Envoyer mail",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Envoyer mail": {
+    "main": [
+     [
+      {
+       "node": "Reponse ok",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   }
+  },
+  "active": false,
+  "settings": {
+   "executionOrder": "v1"
+  }
+ }
+]
