@@ -361,7 +361,7 @@
       html += "<div class='ecran-merci'>";
       html += "<div class='icone'>🕊️</div>";
       html += "<h2>Votre profil a bien été créé</h2>";
-      html += "<p class='aide'>Merci pour votre confiance. Vos réponses sont enregistrées. Votre profil restera masqué aux autres membres jusqu'à la vérification de votre identité. Nous vous écrirons par e-mail pour la suite.</p>";
+      html += "<p class='aide'>Merci pour votre confiance. Vos réponses sont enregistrées. Votre profil restera masqué aux autres membres jusqu'à la vérification de votre identité. Vous pouvez dès maintenant vous connecter avec votre adresse e-mail et votre mot de passe.</p>";
       html += "</div>";
     }
 
@@ -382,7 +382,7 @@
         html += "<button class='btn btn-primary' id='btnSuivant'>Suivant</button>";
       }
     } else {
-      html += "<a href='index.html' class='btn btn-outline'>Retour à l'accueil</a>";
+      html += "<a href='connexion.html' class='btn btn-primary'>Se connecter</a>";
     }
     html += "</div>";
 
