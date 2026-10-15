@@ -487,3 +487,13 @@ body.cmp-ouvert { overflow: hidden; }
 .verif-apercu img { max-width: 220px; border-radius: 8px; border: 1px solid #e3ddd2; margin: 6px 0; display: block; }
 .verif-carte .btn { margin-top: 12px; }
 .profil-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* Cercles à lettre et avatar d'en-tête */
+.avatar-lettre { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; color: #fff; font-family: "Helvetica Neue", Arial, sans-serif; font-weight: 700; font-size: 1.05rem; background: #9a9a9a; }
+.avatar-entete { display: inline-flex; width: 38px; height: 38px; border-radius: 50%; overflow: hidden; margin-right: 14px; vertical-align: middle; flex-shrink: 0; }
+.avatar-entete img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.avatar-grand { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #efeae0; }
+.avatar-grand .avatar-lettre { width: 45%; height: 0; padding-bottom: 45%; position: relative; font-size: 0; }
+.avatar-grand .avatar-lettre { height: 96px; width: 96px; padding: 0; font-size: 2.6rem; }
+.admin-photo .avatar-lettre { width: 80px; height: 80px; font-size: 2rem; }
+@media (max-width: 640px) { nav.site-nav:has(#btnDeconnexion), nav.site-nav:has(#btnSortir) { display: flex; gap: 12px; } }

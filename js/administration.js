@@ -31,10 +31,14 @@
     var c = el("div", "admin-carte");
     var photo = el("div", "admin-photo");
     if (m.photo) { var img = document.createElement("img"); img.src = m.photo; img.alt = "Photo du membre " + m.id; photo.appendChild(img); }
+    else if (m.nom) {
+      var fond = m.verifie && /^#[0-9a-fA-F]{6}$/.test(m.couleur || "") ? m.couleur : "#9a9a9a";
+      var rond = el("span", "avatar-lettre", String(m.nom).charAt(0).toUpperCase()); rond.style.background = fond; photo.appendChild(rond);
+    }
     else photo.appendChild(el("span", "", "Pas de photo"));
     c.appendChild(photo);
     var infos = el("div", "admin-infos");
-    infos.appendChild(el("strong", "", "#" + m.id + " — " + (m.genre === "homme" ? "Homme" : m.genre === "femme" ? "Femme" : m.genre || "")));
+    infos.appendChild(el("strong", "", "#" + m.id + " — " + (m.nom ? m.nom + " — " : "") + (m.genre === "homme" ? "Homme" : m.genre === "femme" ? "Femme" : m.genre || "")));
     infos.appendChild(el("span", "", m.email));
     infos.appendChild(el("span", "", [age(m.annee), m.ville, m.region, m.pays].filter(Boolean).join(" · ")));
     infos.appendChild(el("span", "", "Inscrit le " + (m.inscrit || "")));

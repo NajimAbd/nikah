@@ -13,6 +13,11 @@
     enfants: { oui: "Oui", pas_sur: "Pas encore sûr(e)", non: "Non" },
     delai: { "1-2_mois": "1-2 mois", "2-4_mois": "2-4 mois", "4-6_mois": "4-6 mois", a_convenir: "À convenir ensemble" }
   };
+  function initiale(n) { return String(n || "?").trim().charAt(0).toUpperCase() || "?"; }
+  function cercleLettre(nom, couleur, verifie) {
+    var fond = verifie && /^#[0-9a-fA-F]{6}$/.test(couleur || "") ? couleur : "#9a9a9a";
+    return "<span class='avatar-lettre' style='background:" + fond + "'>" + echapper(initiale(nom)) + "</span>";
+  }
   function lib(cat, v) { return v && LIB[cat][v] ? LIB[cat][v] : "Non précisé"; }
 
   function echapper(t) {
@@ -24,12 +29,12 @@
   }
 
   function carte(p) {
-    var photo = p.photo ? "<img alt='Photo du profil' src='" + p.photo + "'>" : photoCachee();
+    var photo = p.photo ? "<img alt='Photo du profil' src='" + p.photo + "'>" : (p.nom ? "<div class='avatar-grand'>" + cercleLettre(p.nom, p.couleur, true) + "</div>" : photoCachee());
     var lieu = [p.ville, p.region].filter(Boolean).map(echapper).join(", ");
     return "<article class='profil-carte'>" +
       "<div class='profil-photo'>" + photo + "</div>" +
       "<div class='profil-corps'>" +
-      "<h3>" + (p.genre === "femme" ? "Femme" : "Homme") + ", " + p.age + " ans <span class='badge-verifie' title='Identité vérifiée'>✓</span></h3>" +
+      "<h3>" + echapper(p.nom || (p.genre === "femme" ? "Femme" : "Homme")) + ", " + p.age + " ans <span class='badge-verifie' title='Identité vérifiée'>✓</span></h3>" +
       "<p class='profil-lieu'>" + lieu + "</p>" +
       "<ul class='profil-infos'>" +
       "<li><b>Croyance :</b> " + echapper(lib("croyance", p.croyance)) + "</li>" +
@@ -118,8 +123,10 @@
       var cherche = res.member.gender === "homme" ? "femme" : "homme";
       var min = parseInt(res.search.age_min, 10), max = parseInt(res.search.age_max, 10);
       // Filtrage strict : sexe opposé et âge dans la tranche choisie, sans aucune approximation
-      var maPhoto = document.getElementById("maPhoto");
-      if (res.member.photo) { var img = document.createElement("img"); img.alt = "Ma photo"; img.src = res.member.photo; maPhoto.appendChild(img); }
+      var entete = document.getElementById("avatarEntete");
+      if (res.member.photo) { var img = document.createElement("img"); img.alt = "Ma photo"; img.src = res.member.photo; entete.appendChild(img); }
+      else entete.innerHTML = cercleLettre(res.member.display_name, res.member.avatar_color, res.member.identity_verified);
+      if (res.member.display_name) document.getElementById("monNom").textContent = res.member.display_name;
       document.getElementById("monStatut").textContent = res.member.identity_verified
         ? "Identité vérifiée : votre photo est visible par les autres membres."
         : "Identité non vérifiée : votre photo n'est visible que par vous. Elle sera montrée aux autres membres après la vérification de votre identité.";
