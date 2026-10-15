@@ -56,7 +56,7 @@
         ligne.appendChild(rond(c.autre));
         var txt = el("span", "msg-ligne-texte");
         txt.appendChild(el("strong", "", nomAffiche(c.autre)));
-        var sous = c.statut === "demande" ? (c.initiateur ? "Demande envoyée — en attente" : "Nouvelle demande de contact") : c.statut === "refusee" ? "Demande refusée" : (c.dernier || "");
+        var sous = c.statut === "moderation" ? "Message en cours de vérification" : c.statut === "rejetee" ? "Message non transmis" : c.statut === "demande" ? (c.initiateur ? "Demande envoyée — en attente" : "Nouvelle demande de contact") : c.statut === "refusee" ? "Demande refusée" : (c.dernier || "");
         txt.appendChild(el("span", "", sous.length > 50 ? sous.slice(0, 50) + "…" : sous));
         ligne.appendChild(txt);
         if (c.non_lus > 0) ligne.appendChild(el("span", "badge-non-lu", String(c.non_lus)));
@@ -99,6 +99,10 @@
       oui.addEventListener("click", function () { repondre(true); });
       non.addEventListener("click", function () { repondre(false); });
       var rangee = el("div", "admin-actions"); rangee.appendChild(oui); rangee.appendChild(non); action.appendChild(rangee);
+    } else if (r.statut === "moderation") {
+      action.appendChild(el("p", "aide", "Pour la sécurité de tous, votre premier message est vérifié avant d'être transmis. Vous serez informé(e) dès qu'il sera envoyé."));
+    } else if (r.statut === "rejetee") {
+      action.appendChild(el("p", "aide", "Votre message n'a pas pu être transmis car il ne respecte pas la charte de la plateforme."));
     } else if (r.statut === "demande") {
       action.appendChild(el("p", "aide", "Votre demande a été envoyée. Vous pourrez continuer la conversation dès qu'elle sera acceptée."));
     } else if (r.statut === "refusee") {

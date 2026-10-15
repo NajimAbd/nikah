@@ -75,13 +75,68 @@
     return c;
   }
 
-  function afficherConnexion() { blocListe.style.display = "none"; blocConnexion.style.display = ""; btnSortir.style.display = "none"; }
+  function afficherConnexion() { blocListe.style.display = "none"; document.getElementById("blocMessagesAdmin").style.display = "none"; document.getElementById("blocOnglets").style.display = "none"; blocConnexion.style.display = ""; btnSortir.style.display = "none"; }
+
+  var ongletCourant = "profils";
+  function montrerOnglet(nom) {
+    ongletCourant = nom;
+    blocListe.style.display = nom === "profils" ? "" : "none";
+    document.getElementById("blocMessagesAdmin").style.display = nom === "messages" ? "" : "none";
+    document.getElementById("ongletProfils").className = nom === "profils" ? "actif" : "";
+    document.getElementById("ongletMessages").className = nom === "messages" ? "actif" : "";
+  }
+  document.getElementById("ongletProfils").addEventListener("click", function () { montrerOnglet("profils"); });
+  document.getElementById("ongletMessages").addEventListener("click", function () { montrerOnglet("messages"); });
+
+  function nomMembre(m) { return (m.nom ? m.nom + " " : "") + "(" + (m.genre === "femme" ? "femme" : "homme") + ", " + m.email + ")"; }
+  var LIB_STATUT = { moderation: "À contrôler", demande: "Transmise, en attente de réponse", acceptee: "Conversation acceptée", refusee: "Refusée par le destinataire", rejetee: "Refusée par la modération" };
+
+  function carteConversation(c) {
+    var boite = el("div", "admin-conv" + (c.statut === "moderation" ? " a-controler" : ""));
+    boite.appendChild(el("strong", "", nomMembre(c.a) + " → " + nomMembre(c.b)));
+    boite.appendChild(el("span", c.statut === "moderation" ? "badge-attente" : "", LIB_STATUT[c.statut] || c.statut));
+    var fil = el("div", "admin-fil");
+    c.messages.forEach(function (m) {
+      var l = el("div", "admin-msg " + (m.de_a ? "de-a" : "de-b"));
+      l.appendChild(el("small", "", (m.de_a ? (c.a.nom || "A") : (c.b.nom || "B")) + " — " + String(m.date || "").replace("T", " ").slice(0, 16)));
+      l.appendChild(el("div", "", m.texte));
+      fil.appendChild(l);
+    });
+    boite.appendChild(fil);
+    if (c.statut === "moderation") {
+      var rangee = el("div", "admin-actions");
+      [["Approuver et transmettre", "btn-primary", "approve", null], ["Refuser", "btn-outline", "reject", "Refuser ce message ? Il ne sera pas transmis."]].forEach(function (d) {
+        var b = el("button", "btn " + d[1], d[0]); b.type = "button";
+        b.addEventListener("click", function () {
+          if (d[3] && !window.confirm(d[3])) return;
+          b.disabled = true;
+          post("nikah-admin-messages", { token: lire(), action: "moderate", cid: c.cid, decision: d[2] }).then(function (r) { rendreMessages(r); }).catch(function () { b.disabled = false; });
+        });
+        rangee.appendChild(b);
+      });
+      boite.appendChild(rangee);
+    }
+    return boite;
+  }
+  function rendreMessages(r) {
+    if (!r || !r.success) return;
+    var zone = document.getElementById("listeMessagesAdmin");
+    zone.innerHTML = "";
+    r.conversations.forEach(function (c) { zone.appendChild(carteConversation(c)); });
+    document.getElementById("resumeMessages").textContent = r.a_moderer + (r.a_moderer > 1 ? " messages à contrôler" : " message à contrôler") + " — " + r.conversations.length + " conversation(s) au total.";
+    document.getElementById("ongletMessages").textContent = r.a_moderer > 0 ? "Messages (" + r.a_moderer + ")" : "Messages";
+  }
+  function chargerMessages() {
+    post("nikah-admin-messages", { token: lire(), action: "list" }).then(rendreMessages).catch(function () { /* ignoré */ });
+  }
 
   function charger() {
     post("nikah-admin-list", { token: lire() }).then(function (res) {
       if (!res || !res.success) { ecrire(""); afficherConnexion(); return; }
       blocConnexion.style.display = "none";
-      blocListe.style.display = "";
+      document.getElementById("blocOnglets").style.display = "";
+      montrerOnglet(ongletCourant);
+      chargerMessages();
       btnSortir.style.display = "";
       liste.innerHTML = "";
       var n = res.membres.length;

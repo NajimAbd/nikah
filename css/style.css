@@ -524,3 +524,15 @@ body.cmp-ouvert { overflow: hidden; }
   .messagerie.fil-ouvert .msg-liste { display: none; }
   .msg-retour { display: inline-block; }
 }
+
+/* Administration : messages */
+.admin-onglets { display: flex; gap: 8px; margin: 10px 0 18px; }
+.admin-onglets button { font: inherit; font-family: "Helvetica Neue", Arial, sans-serif; padding: 8px 18px; border-radius: 22px; border: 1px solid #d9d2c5; background: #fff; cursor: pointer; }
+.admin-onglets button.actif { background: #7C9885; color: #fff; border-color: #7C9885; }
+.admin-conv { background: #fff; border: 1px solid #e3ddd2; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px; font-family: "Helvetica Neue", Arial, sans-serif; }
+.admin-conv.a-controler { border-color: #C9A368; box-shadow: 0 0 0 2px rgba(201,163,104,0.25); }
+.admin-fil { display: flex; flex-direction: column; gap: 6px; max-height: 320px; overflow-y: auto; }
+.admin-msg { padding: 8px 12px; border-radius: 10px; font-size: 0.92rem; white-space: pre-wrap; word-break: break-word; }
+.admin-msg small { display: block; color: #6a6a6a; font-size: 0.74rem; margin-bottom: 2px; }
+.admin-msg.de-a { background: #efeae0; }
+.admin-msg.de-b { background: #e5eee8; }

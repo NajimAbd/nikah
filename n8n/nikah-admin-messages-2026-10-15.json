@@ -1,0 +1,255 @@
+[
+ {
+  "id": "NikahAdminMessages001",
+  "name": "Nikah Admin Messages",
+  "nodes": [
+   {
+    "parameters": {
+     "httpMethod": "POST",
+     "path": "nikah-admin-messages",
+     "responseMode": "responseNode",
+     "options": {
+      "allowedOrigins": "*"
+     }
+    },
+    "name": "Webhook",
+    "type": "n8n-nodes-base.webhook",
+    "typeVersion": 2,
+    "position": [
+     0,
+     300
+    ],
+    "webhookId": "nikah-admin-messages-0001"
+   },
+   {
+    "parameters": {
+     "jsCode": "const b = $input.first().json.body || {};\nconst token = String(b.token || '');\nconst action = String(b.action || '');\nif (!/^[a-f0-9]{64}$/.test(token)) return [{ json: { ok: false, error: 'session_invalide' } }];\nif (['list', 'moderate'].indexOf(action) === -1) return [{ json: { ok: false, error: 'requete_invalide' } }];\nconst AUTH = \"a.id=1 AND a.session_hash=SHA2('\" + token + \"',256) AND a.session_expires > NOW()\";\nlet q0 = 'SELECT 1';\nif (action === 'moderate') {\n  const cid = parseInt(b.cid, 10);\n  const st = b.decision === 'approve' ? 'demande' : b.decision === 'reject' ? 'rejetee' : null;\n  if (!Number.isInteger(cid) || cid < 1 || !st) return [{ json: { ok: false, error: 'requete_invalide' } }];\n  q0 = \"UPDATE conversations c JOIN admin_access a ON \" + AUTH + \" SET c.status='\" + st + \"' WHERE c.id=\" + cid + \" AND c.status='moderation'\";\n}\nconst q1 = \"SELECT a.id AS admin_id, c.id AS cid, c.status, c.created_at AS cdate, ma.id AS a_id, ma.email AS a_email, ma.display_name AS a_nom, ma.gender AS a_genre, mb.id AS b_id, mb.email AS b_email, mb.display_name AS b_nom, mb.gender AS b_genre, m.id AS mid, m.sender_id, m.body, m.created_at AS mdate \" +\n  \"FROM (SELECT 1 AS x) d LEFT JOIN admin_access a ON \" + AUTH + \" LEFT JOIN conversations c ON a.id IS NOT NULL LEFT JOIN members ma ON ma.id=c.member_a LEFT JOIN members mb ON mb.id=c.member_b LEFT JOIN messages m ON m.conversation_id=c.id \" +\n  \"ORDER BY (c.status='moderation') DESC, c.id DESC, m.id ASC LIMIT 1000\";\nreturn [{ json: { ok: true, q0, q1 } }];\n"
+    },
+    "name": "Prepare",
+    "type": "n8n-nodes-base.code",
+    "typeVersion": 2,
+    "position": [
+     220,
+     300
+    ]
+   },
+   {
+    "parameters": {
+     "conditions": {
+      "options": {
+       "caseSensitive": true,
+       "leftValue": "",
+       "typeValidation": "strict"
+      },
+      "conditions": [
+       {
+        "id": "c1",
+        "leftValue": "={{ $json.ok === true }}",
+        "rightValue": true,
+        "operator": {
+         "type": "boolean",
+         "operation": "true",
+         "singleValue": true
+        }
+       }
+      ],
+      "combinator": "and"
+     },
+     "options": {}
+    },
+    "name": "Donnees valides",
+    "type": "n8n-nodes-base.if",
+    "typeVersion": 2,
+    "position": [
+     440,
+     300
+    ]
+   },
+   {
+    "parameters": {
+     "respondWith": "text",
+     "responseBody": "={{ JSON.stringify({success:false,error:$json.error}) }}",
+     "options": {
+      "responseHeaders": {
+       "entries": [
+        {
+         "name": "Content-Type",
+         "value": "application/json"
+        },
+        {
+         "name": "Access-Control-Allow-Origin",
+         "value": "*"
+        }
+       ]
+      }
+     }
+    },
+    "name": "Reponse invalide",
+    "type": "n8n-nodes-base.respondToWebhook",
+    "typeVersion": 1.1,
+    "position": [
+     660,
+     460
+    ]
+   },
+   {
+    "parameters": {
+     "operation": "executeQuery",
+     "query": "={{ $json.q0 }}",
+     "options": {}
+    },
+    "name": "Decider",
+    "type": "n8n-nodes-base.mySql",
+    "typeVersion": 2.4,
+    "position": [
+     660,
+     200
+    ],
+    "credentials": {
+     "mySql": {
+      "id": "gcGQgiKQ83lHOaak",
+      "name": "MySQL account 2"
+     }
+    }
+   },
+   {
+    "parameters": {
+     "operation": "executeQuery",
+     "query": "={{ $('Prepare').first().json.q1 }}",
+     "options": {}
+    },
+    "name": "Lire conversations",
+    "type": "n8n-nodes-base.mySql",
+    "typeVersion": 2.4,
+    "position": [
+     880,
+     200
+    ],
+    "credentials": {
+     "mySql": {
+      "id": "gcGQgiKQ83lHOaak",
+      "name": "MySQL account 2"
+     }
+    }
+   },
+   {
+    "parameters": {
+     "jsCode": "const rows = $input.all().map(i => i.json);\nif (!rows.length || rows[0].admin_id === null || rows[0].admin_id === undefined) return [{ json: { success: false, error: 'session_invalide' } }];\nconst map = new Map();\nfor (const r of rows) {\n  if (r.cid === null || r.cid === undefined) continue;\n  if (!map.has(r.cid)) map.set(r.cid, {\n    cid: r.cid, statut: r.status, date: r.cdate,\n    a: { id: r.a_id, email: r.a_email, nom: r.a_nom, genre: r.a_genre },\n    b: { id: r.b_id, email: r.b_email, nom: r.b_nom, genre: r.b_genre }, messages: []\n  });\n  if (r.mid !== null && r.mid !== undefined) map.get(r.cid).messages.push({ id: r.mid, de_a: Number(r.sender_id) === Number(r.a_id), texte: r.body, date: r.mdate });\n}\nconst conversations = Array.from(map.values());\nreturn [{ json: { success: true, a_moderer: conversations.filter(c => c.statut === 'moderation').length, conversations } }];\n"
+    },
+    "name": "Formater",
+    "type": "n8n-nodes-base.code",
+    "typeVersion": 2,
+    "position": [
+     1100,
+     200
+    ]
+   },
+   {
+    "parameters": {
+     "respondWith": "text",
+     "responseBody": "={{ JSON.stringify($json) }}",
+     "options": {
+      "responseHeaders": {
+       "entries": [
+        {
+         "name": "Content-Type",
+         "value": "application/json"
+        },
+        {
+         "name": "Access-Control-Allow-Origin",
+         "value": "*"
+        }
+       ]
+      }
+     }
+    },
+    "name": "Reponse",
+    "type": "n8n-nodes-base.respondToWebhook",
+    "typeVersion": 1.1,
+    "position": [
+     1320,
+     200
+    ]
+   }
+  ],
+  "connections": {
+   "Webhook": {
+    "main": [
+     [
+      {
+       "node": "Prepare",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Prepare": {
+    "main": [
+     [
+      {
+       "node": "Donnees valides",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Donnees valides": {
+    "main": [
+     [
+      {
+       "node": "Decider",
+       "type": "main",
+       "index": 0
+      }
+     ],
+     [
+      {
+       "node": "Reponse invalide",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Decider": {
+    "main": [
+     [
+      {
+       "node": "Lire conversations",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Lire conversations": {
+    "main": [
+     [
+      {
+       "node": "Formater",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   },
+   "Formater": {
+    "main": [
+     [
+      {
+       "node": "Reponse",
+       "type": "main",
+       "index": 0
+      }
+     ]
+    ]
+   }
+  },
+  "active": false,
+  "settings": {
+   "executionOrder": "v1"
+  }
+ }
+]

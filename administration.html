@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>Administration — Nikah</title>
-<link rel="stylesheet" href="css/style.css?v=20261015e">
+<link rel="stylesheet" href="css/style.css?v=20261015f">
 </head>
 <body>
 
@@ -27,6 +27,17 @@
       </form>
     </div>
 
+    <div id="blocOnglets" class="admin-onglets" style="display:none;">
+      <button type="button" id="ongletProfils" class="actif">Profils</button>
+      <button type="button" id="ongletMessages">Messages</button>
+    </div>
+
+    <div id="blocMessagesAdmin" style="display:none;">
+      <h1>Messages</h1>
+      <p class="aide" id="resumeMessages"></p>
+      <div id="listeMessagesAdmin" class="admin-liste"></div>
+    </div>
+
     <div id="blocListe" style="display:none;">
       <h1>Profils inscrits</h1>
       <p class="aide" id="resumeAdmin"></p>
@@ -35,6 +46,6 @@
   </div>
 </main>
 
-<script src="js/administration.js?v=20261015e"></script>
+<script src="js/administration.js?v=20261015f"></script>
 </body>
 </html>
