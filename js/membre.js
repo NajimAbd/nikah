@@ -71,6 +71,15 @@
       .catch(function () { envoyer.disabled = false; err.textContent = "Connexion impossible pour le moment."; err.style.display = "block"; });
   });
 
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" || e.shiftKey || e.isComposing) return;
+    var t = e.target;
+    if (t && t.tagName === "TEXTAREA" && t.closest && t.closest(".contact-form")) {
+      e.preventDefault();
+      t.closest(".contact-form").querySelector(".btn-envoyer-contact").click();
+    }
+  });
+
   function majBadgeMessages() {
     fetch(URL_MSG, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: jeton(), action: "list" }) })
       .then(function (r) { return r.json(); })

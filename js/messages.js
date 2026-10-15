@@ -107,6 +107,9 @@
       var form = el("form", "msg-saisie");
       var champ = el("textarea"); champ.maxLength = 1000; champ.rows = 2; champ.placeholder = "Votre message…";
       var envoyer = el("button", "btn btn-primary", "Envoyer"); envoyer.type = "submit";
+      champ.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); if (form.requestSubmit) form.requestSubmit(); else envoyer.click(); }
+      });
       form.appendChild(champ); form.appendChild(envoyer);
       form.addEventListener("submit", function (e) {
         e.preventDefault();
