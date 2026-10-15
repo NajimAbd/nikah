@@ -80,12 +80,18 @@
     }
   });
 
+  var TITRE_BASE = document.title;
   function majBadgeMessages() {
+    if (document.hidden) return;
     fetch(URL_MSG, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: jeton(), action: "list" }) })
       .then(function (r) { return r.json(); })
       .then(function (r) {
         var lien = document.getElementById("lienMessages");
-        if (lien && r && r.success && r.non_lus > 0) lien.textContent = "Messages (" + r.non_lus + ")";
+        if (lien && r && r.success) {
+          lien.textContent = r.non_lus > 0 ? "Messages (" + r.non_lus + ")" : "Messages";
+          lien.classList.toggle("a-lire", r.non_lus > 0);
+          document.title = (r.non_lus > 0 ? "(" + r.non_lus + ") " : "") + TITRE_BASE;
+        }
       }).catch(function () { /* ignoré */ });
   }
 
@@ -176,6 +182,8 @@
         : "Identité non vérifiée : votre photo n'est visible que par vous. Elle sera montrée aux autres membres après la vérification de votre identité.";
       brancherVerification(res.member);
       majBadgeMessages();
+      setInterval(majBadgeMessages, 3000);
+      document.addEventListener("visibilitychange", function () { if (!document.hidden) majBadgeMessages(); });
       return fetch(URL_RECHERCHE, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: t }) })
         .then(function (r) { return r.json(); })
         .then(function (rech) {

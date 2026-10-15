@@ -5,6 +5,10 @@
   var CLE_JETON = "nikah_jeton";
   var courante = 0;
   var enCours = false;
+  var signatureListe = "";
+  var signatureFil = "";
+  var TITRE_BASE = document.title;
+  function majTitre(n) { document.title = (n > 0 ? "(" + n + ") " : "") + TITRE_BASE; }
 
   function jeton() {
     try { var t = localStorage.getItem(CLE_JETON); if (t) return t; } catch (e) { /* ignoré */ }
@@ -48,6 +52,14 @@
   function chargerListe() {
     return appel({ action: "list" }).then(function (r) {
       if (!r || !r.success) return;
+      majTitre(r.non_lus);
+      var sigL = JSON.stringify(r.conversations) + "|" + courante;
+      if (sigL === signatureListe) {
+        document.getElementById("chargement").style.display = "none";
+        document.getElementById("messagerie").style.display = "";
+        return;
+      }
+      signatureListe = sigL;
       var col = document.getElementById("colListe");
       col.innerHTML = "";
       r.conversations.forEach(function (c) {
@@ -70,6 +82,9 @@
   }
 
   function afficherFil(r) {
+    var sigF = JSON.stringify([r.cid, r.statut, r.initiateur, r.messages.map(function (m) { return m.id; })]);
+    if (sigF === signatureFil) return;
+    signatureFil = sigF;
     var fil = document.getElementById("colFil");
     fil.style.display = "";
     document.getElementById("messagerie").classList.add("fil-ouvert");
@@ -131,6 +146,7 @@
 
   function ouvrir(cid) {
     courante = cid;
+    signatureFil = ""; signatureListe = "";
     document.getElementById("filAction").removeAttribute("data-etat");
     return appel({ action: "open", cid: cid }).then(function (r) {
       if (r && r.success) { afficherFil(r); document.getElementById("filMessages").scrollTop = 1e9; }
@@ -147,11 +163,13 @@
   var depart = parseInt((window.location.search.match(/[?&]c=(\d+)/) || [])[1], 10);
   chargerListe().then(function () { if (depart) ouvrir(depart); });
 
-  // Actualisation automatique toutes les 6 secondes
-  setInterval(function () {
+  // Actualisation automatique (toutes les 3 secondes, et dès le retour sur l'onglet)
+  function actualiser() {
     if (enCours || document.hidden) return;
     enCours = true;
     var suite = courante ? appel({ action: "open", cid: courante }).then(function (r) { if (r && r.success) afficherFil(r); }) : Promise.resolve();
     suite.then(chargerListe).then(function () { enCours = false; }, function () { enCours = false; });
-  }, 6000);
+  }
+  setInterval(actualiser, 3000);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) actualiser(); });
 })();

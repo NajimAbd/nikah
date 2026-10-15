@@ -536,3 +536,4 @@ body.cmp-ouvert { overflow: hidden; }
 .admin-msg small { display: block; color: #6a6a6a; font-size: 0.74rem; margin-bottom: 2px; }
 .admin-msg.de-a { background: #efeae0; }
 .admin-msg.de-b { background: #e5eee8; }
+#lienMessages.a-lire { color: #9a6b1e; font-weight: 700; }

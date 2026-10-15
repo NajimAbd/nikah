@@ -135,6 +135,9 @@
   }
   function rendreMessages(r) {
     if (!r || !r.success) return;
+    var sig = JSON.stringify(r.conversations.map(function (c) { return [c.cid, c.statut, c.messages.length]; }));
+    if (donneesMessages && sig === donneesMessages._sig) return;
+    r._sig = sig;
     donneesMessages = r;
     document.getElementById("ongletMessages").textContent = r.a_moderer > 0 ? "Messages à contrôler (" + r.a_moderer + ")" : "Messages à contrôler";
     afficherMessages();
@@ -175,4 +178,5 @@
   btnSortir.addEventListener("click", function (e) { e.preventDefault(); ecrire(""); afficherConnexion(); });
 
   if (lire()) charger();
+  setInterval(function () { if (lire() && !document.hidden && blocConnexion.style.display === "none") chargerMessages(); }, 4000);
 })();
