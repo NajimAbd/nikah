@@ -78,15 +78,22 @@
   function afficherConnexion() { blocListe.style.display = "none"; document.getElementById("blocMessagesAdmin").style.display = "none"; document.getElementById("blocOnglets").style.display = "none"; blocConnexion.style.display = ""; btnSortir.style.display = "none"; }
 
   var ongletCourant = "profils";
+  var donneesMessages = null;
+  var ONGLETS = { profils: "ongletProfils", controler: "ongletMessages", approuves: "ongletApprouves", refuses: "ongletRefuses" };
+  var TITRES = { controler: "Messages à contrôler", approuves: "Messages approuvés", refuses: "Messages refusés" };
+  var FILTRES = {
+    controler: function (c) { return c.statut === "moderation"; },
+    approuves: function (c) { return c.statut === "demande" || c.statut === "acceptee" || c.statut === "refusee"; },
+    refuses: function (c) { return c.statut === "rejetee"; }
+  };
   function montrerOnglet(nom) {
     ongletCourant = nom;
     blocListe.style.display = nom === "profils" ? "" : "none";
-    document.getElementById("blocMessagesAdmin").style.display = nom === "messages" ? "" : "none";
-    document.getElementById("ongletProfils").className = nom === "profils" ? "actif" : "";
-    document.getElementById("ongletMessages").className = nom === "messages" ? "actif" : "";
+    document.getElementById("blocMessagesAdmin").style.display = nom === "profils" ? "none" : "";
+    Object.keys(ONGLETS).forEach(function (k) { document.getElementById(ONGLETS[k]).className = k === nom ? "actif" : ""; });
+    if (nom !== "profils") { document.getElementById("titreMessages").textContent = TITRES[nom]; afficherMessages(); }
   }
-  document.getElementById("ongletProfils").addEventListener("click", function () { montrerOnglet("profils"); });
-  document.getElementById("ongletMessages").addEventListener("click", function () { montrerOnglet("messages"); });
+  Object.keys(ONGLETS).forEach(function (k) { document.getElementById(ONGLETS[k]).addEventListener("click", function () { montrerOnglet(k); }); });
 
   function nomMembre(m) { return (m.nom ? m.nom + " " : "") + "(" + (m.genre === "femme" ? "femme" : "homme") + ", " + m.email + ")"; }
   var LIB_STATUT = { moderation: "À contrôler", demande: "Transmise, en attente de réponse", acceptee: "Conversation acceptée", refusee: "Refusée par le destinataire", rejetee: "Refusée par la modération" };
@@ -118,13 +125,19 @@
     }
     return boite;
   }
-  function rendreMessages(r) {
-    if (!r || !r.success) return;
+  function afficherMessages() {
+    if (!donneesMessages || ongletCourant === "profils") return;
     var zone = document.getElementById("listeMessagesAdmin");
     zone.innerHTML = "";
-    r.conversations.forEach(function (c) { zone.appendChild(carteConversation(c)); });
-    document.getElementById("resumeMessages").textContent = r.a_moderer + (r.a_moderer > 1 ? " messages à contrôler" : " message à contrôler") + " — " + r.conversations.length + " conversation(s) au total.";
-    document.getElementById("ongletMessages").textContent = r.a_moderer > 0 ? "Messages (" + r.a_moderer + ")" : "Messages";
+    var liste = donneesMessages.conversations.filter(FILTRES[ongletCourant]);
+    liste.forEach(function (c) { zone.appendChild(carteConversation(c)); });
+    document.getElementById("resumeMessages").textContent = liste.length ? liste.length + (liste.length > 1 ? " conversations" : " conversation") : "Aucune conversation dans cette liste pour le moment.";
+  }
+  function rendreMessages(r) {
+    if (!r || !r.success) return;
+    donneesMessages = r;
+    document.getElementById("ongletMessages").textContent = r.a_moderer > 0 ? "Messages à contrôler (" + r.a_moderer + ")" : "Messages à contrôler";
+    afficherMessages();
   }
   function chargerMessages() {
     post("nikah-admin-messages", { token: lire(), action: "list" }).then(rendreMessages).catch(function () { /* ignoré */ });
