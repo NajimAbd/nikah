@@ -5,6 +5,7 @@
   var CLE_JETON = "nikah_jeton";
   var URL_IDENTITE = "https://n8n.srv936251.hstgr.cloud/webhook/nikah-identity";
 
+  var URL_MSG = "https://n8n.srv936251.hstgr.cloud/webhook/nikah-messages";
   var URL_RECHERCHE = "https://n8n.srv936251.hstgr.cloud/webhook/nikah-search";
   var LIB = {
     croyance: { sunnite: "Sunnite", chiite: "Chiite", soufi: "Soufi", ahmadiyya: "Ahmadiyya", autre_islam: "Islam — autre", en_reversion: "En cours de réversion", ne_pas_repondre: "Non précisé", autre: "Autre" },
@@ -42,7 +43,41 @@
       "<li><b>Situation :</b> " + echapper(lib("situation", p.situation)) + "</li>" +
       "<li><b>Enfants :</b> " + echapper(lib("enfants", p.enfants)) + "</li>" +
       "<li><b>Mariage envisagé :</b> " + echapper(lib("delai", p.delai)) + "</li>" +
-      "</ul></div></article>";
+      "</ul>" +
+      "<div class='contact-zone'><button type='button' class='btn btn-outline btn-contact' data-id='" + p.id + "'>Écrire</button>" +
+      "<div class='contact-form' hidden><textarea maxlength='1000' rows='3' placeholder='Votre message de présentation, avec respect et sincérité…'></textarea>" +
+      "<button type='button' class='btn btn-primary btn-envoyer-contact' data-id='" + p.id + "'>Envoyer la demande</button>" +
+      "<p class='contact-erreur' style='color:#a33; font-size:0.85rem; margin:6px 0 0; display:none;'></p></div></div>" +
+      "</div></article>";
+  }
+
+  document.addEventListener("click", function (e) {
+    var ouvrir = e.target.closest ? e.target.closest(".btn-contact") : null;
+    if (ouvrir) { var f = ouvrir.parentNode.querySelector(".contact-form"); f.hidden = !f.hidden; return; }
+    var envoyer = e.target.closest ? e.target.closest(".btn-envoyer-contact") : null;
+    if (!envoyer) return;
+    var zone = envoyer.parentNode, champ = zone.querySelector("textarea"), err = zone.querySelector(".contact-erreur");
+    var texte = champ.value.trim();
+    err.style.display = "none";
+    if (!texte) { err.textContent = "Merci d'écrire un court message."; err.style.display = "block"; return; }
+    envoyer.disabled = true;
+    fetch(URL_MSG, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: jeton(), action: "start", to: parseInt(envoyer.getAttribute("data-id"), 10), body: texte }) })
+      .then(function (r) { return r.json(); })
+      .then(function (r) {
+        envoyer.disabled = false;
+        if (r && r.success) { window.location.href = "messages.html?c=" + r.cid; }
+        else { err.textContent = "Le contact n'a pas pu être établi. Votre identité doit être vérifiée et le profil doit correspondre à votre recherche."; err.style.display = "block"; }
+      })
+      .catch(function () { envoyer.disabled = false; err.textContent = "Connexion impossible pour le moment."; err.style.display = "block"; });
+  });
+
+  function majBadgeMessages() {
+    fetch(URL_MSG, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: jeton(), action: "list" }) })
+      .then(function (r) { return r.json(); })
+      .then(function (r) {
+        var lien = document.getElementById("lienMessages");
+        if (lien && r && r.success && r.non_lus > 0) lien.textContent = "Messages (" + r.non_lus + ")";
+      }).catch(function () { /* ignoré */ });
   }
 
   function jeton() {
@@ -131,6 +166,7 @@
         ? "Identité vérifiée : votre photo est visible par les autres membres."
         : "Identité non vérifiée : votre photo n'est visible que par vous. Elle sera montrée aux autres membres après la vérification de votre identité.";
       brancherVerification(res.member);
+      majBadgeMessages();
       return fetch(URL_RECHERCHE, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: t }) })
         .then(function (r) { return r.json(); })
         .then(function (rech) {

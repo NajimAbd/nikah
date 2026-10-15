@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Messages — Nikah</title>
+<link rel="stylesheet" href="css/style.css?v=20261015d">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="membre.html" class="logo">Nikah</a>
+    <nav class="site-nav">
+      <a href="membre.html">Mon espace</a>
+      <a href="#" id="btnDeconnexion">Se déconnecter</a>
+    </nav>
+  </div>
+</header>
+
+<main class="espace">
+  <div class="container">
+    <h1>Messages</h1>
+    <p id="chargement" class="aide" style="text-align:center; padding:40px 0;">Chargement…</p>
+    <div id="messagerie" class="messagerie" style="display:none;">
+      <aside id="colListe" class="msg-liste"></aside>
+      <section id="colFil" class="msg-fil" style="display:none;">
+        <div class="msg-entete"><button type="button" id="btnRetour" class="btn btn-ghost msg-retour">← Retour</button><span id="filTitre"></span></div>
+        <div id="filMessages" class="msg-messages"></div>
+        <div id="filAction"></div>
+      </section>
+      <p id="aucune" class="aide" style="display:none;">Aucune conversation pour le moment. Depuis « Mon espace », choisissez un profil et cliquez sur « Écrire ».</p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <a href="confidentialite.html">Politique de confidentialité</a>
+    <a href="conditions.html">Conditions d'utilisation</a>
+    <a href="#" data-cookies>Gérer mes cookies</a>
+    <a href="mailto:info.najim1@gmail.com">Contact</a>
+    <p style="margin-top:14px;">&copy; 2026 Nikah — projet non lucratif</p>
+  </div>
+</footer>
+
+<script src="js/messages.js?v=20261015d"></script>
+<script src="js/cookies.js?v=20261015d"></script>
+</body>
+</html>

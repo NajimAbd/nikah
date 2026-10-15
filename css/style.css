@@ -497,3 +497,30 @@ body.cmp-ouvert { overflow: hidden; }
 .avatar-grand .avatar-lettre { height: 96px; width: 96px; padding: 0; font-size: 2.6rem; }
 .admin-photo .avatar-lettre { width: 80px; height: 80px; font-size: 2rem; }
 @media (max-width: 640px) { nav.site-nav:has(#btnDeconnexion), nav.site-nav:has(#btnSortir) { display: flex; gap: 12px; } }
+
+/* Messagerie */
+.contact-zone { margin-top: 12px; }
+.contact-form textarea { width: 100%; box-sizing: border-box; margin: 8px 0; padding: 10px; border: 1px solid #d9d2c5; border-radius: 10px; font: inherit; }
+.contact-form[hidden] { display: none; }
+.messagerie { display: grid; grid-template-columns: 300px 1fr; gap: 18px; font-family: "Helvetica Neue", Arial, sans-serif; align-items: start; }
+.msg-liste { display: flex; flex-direction: column; gap: 8px; }
+.msg-ligne { display: flex; align-items: center; gap: 12px; text-align: left; background: #fff; border: 1px solid #e3ddd2; border-radius: 12px; padding: 10px 12px; cursor: pointer; font: inherit; }
+.msg-ligne.actif { border-color: #7C9885; background: #f3f7f4; }
+.msg-ligne-texte { display: flex; flex-direction: column; min-width: 0; font-size: 0.85rem; color: #6a6a6a; }
+.msg-ligne-texte strong { color: #3A3A3A; font-size: 0.95rem; }
+.badge-non-lu { margin-left: auto; background: #C9A368; color: #fff; border-radius: 12px; padding: 2px 8px; font-size: 0.78rem; font-weight: 700; }
+.msg-fil { background: #fff; border: 1px solid #e3ddd2; border-radius: 14px; padding: 14px; }
+.msg-entete { display: flex; align-items: center; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee8dc; margin-bottom: 10px; }
+.msg-retour { display: none; }
+.msg-messages { max-height: 48vh; min-height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 4px; }
+.bulle { max-width: 78%; padding: 8px 12px; border-radius: 14px; font-size: 0.93rem; line-height: 1.4; white-space: pre-wrap; word-break: break-word; }
+.bulle small { display: block; font-size: 0.7rem; opacity: 0.7; margin-top: 3px; }
+.bulle.moi { align-self: flex-end; background: #7C9885; color: #fff; border-bottom-right-radius: 4px; }
+.bulle.autre { align-self: flex-start; background: #efeae0; color: #3A3A3A; border-bottom-left-radius: 4px; }
+.msg-saisie { display: flex; gap: 8px; margin-top: 12px; align-items: flex-end; }
+.msg-saisie textarea { flex: 1; padding: 10px; border: 1px solid #d9d2c5; border-radius: 10px; font: inherit; resize: vertical; }
+@media (max-width: 720px) {
+  .messagerie { grid-template-columns: 1fr; }
+  .messagerie.fil-ouvert .msg-liste { display: none; }
+  .msg-retour { display: inline-block; }
+}
