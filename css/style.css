@@ -640,3 +640,5 @@ body.chat-ouvert { overflow: hidden; }
   .hero .reassurance h3 { font-size: 0.95rem; margin-bottom: 2px; }
   .hero .reassurance p { font-size: 0.82rem; }
 }
+/* Boutons et carrés remontés d'environ 1,5 cm */
+@media (min-width: 601px) { .hero .reassurance { margin-bottom: 55px !important; } }
