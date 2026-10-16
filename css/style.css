@@ -599,3 +599,12 @@ body.chat-ouvert { overflow: hidden; }
 .admin-msg.refuse { opacity: 0.6; text-decoration: line-through; }
 
 .alerte-filtre { font-weight: 600; }
+
+/* Offre de lancement et échange de coordonnées */
+.offre-lancement { max-width: 720px; margin: 0 auto; text-align: center; background: #fff; border: 2px solid #C9A961; border-radius: 18px; padding: 30px 26px; box-shadow: 0 6px 20px rgba(0,0,0,0.05); }
+.offre-lancement h2 { margin: 6px 0 14px; }
+.offre-lancement p { color: #4a4a4a; line-height: 1.6; }
+.offre-etiquette { display: inline-block; background: #C9A961; color: #fff; font-family: "Helvetica Neue", Arial, sans-serif; font-size: 0.8rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; padding: 5px 12px; border-radius: 999px; margin: 0; }
+.offre-lancement .btn { margin-top: 10px; }
+.etapes-contact { max-width: 760px; margin: 18px auto 0; padding-left: 1.4em; line-height: 1.65; }
+.etapes-contact li { margin-bottom: 12px; }
