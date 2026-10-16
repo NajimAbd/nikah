@@ -202,6 +202,13 @@
       document.getElementById("monStatut").textContent = res.member.identity_verified
         ? "Identité vérifiée : votre photo est visible par les autres membres."
         : "Identité non vérifiée : votre photo n'est visible que par vous. Elle sera montrée aux autres membres après la vérification de votre identité.";
+      if (res.member.avertissements > 0) {
+        var n = res.member.avertissements;
+        var av = document.createElement("span");
+        av.className = "point-noir";
+        av.textContent = "● " + n + (n > 1 ? " avertissements officiels inscrits" : " avertissement officiel inscrit") + " à votre dossier. En cas de récidive, votre compte sera suspendu.";
+        document.getElementById("monStatut").parentNode.appendChild(av);
+      }
       brancherVerification(res.member);
       majBadgeMessages();
       setInterval(majBadgeMessages, 3000);

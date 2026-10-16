@@ -578,3 +578,11 @@ body.chat-ouvert { overflow: hidden; }
 .admin-sanction .admin-actions { flex-wrap: wrap; }
 .btn-danger { background: #a33; color: #fff; border: 1px solid #a33; }
 .btn-danger:hover { background: #8a2a2a; }
+
+/* Point noir (avertissements) et contestation */
+.point-noir { display: block; color: #1f1f1f; font-weight: 700; font-size: 0.88rem; margin-top: 4px; }
+.sanction-ligne { border-left: 3px solid #d9d2c5; padding: 4px 0 4px 10px; margin: 6px 0; }
+.sanction-ligne.contestee { border-left-color: #c9a961; background: #fbf6e8; }
+.sanction-ligne.annulee { color: #999; text-decoration: line-through; }
+.sanction-texte { font-style: italic; margin-top: 4px; }
+.commission-titre { font-family: Helvetica, Arial, sans-serif; font-size: 0.8rem; letter-spacing: .08em; text-transform: uppercase; color: #7a1f1f; font-weight: 700; margin: 0 0 4px; }

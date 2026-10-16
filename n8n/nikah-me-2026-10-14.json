@@ -1,224 +1,224 @@
 [
- {
-  "id": "NikahMe001",
-  "name": "Nikah Me",
-  "nodes": [
-   {
-    "parameters": {
-     "httpMethod": "POST",
-     "path": "nikah-me",
-     "responseMode": "responseNode",
-     "options": {
-      "allowedOrigins": "*"
-     }
-    },
-    "name": "Webhook",
-    "type": "n8n-nodes-base.webhook",
-    "typeVersion": 2,
-    "position": [
-     0,
-     300
-    ],
-    "webhookId": "nikah-me-0001"
-   },
-   {
-    "parameters": {
-     "jsCode": "const b = $input.first().json.body || {};\nconst token = String(b.token || '');\nif (!/^[a-f0-9]{64}$/.test(token)) return [{ json: { ok: false, error: 'session_invalide' } }];\nconst q0 = \"SELECT m.id, m.gender, m.identity_verified, m.display_name, m.avatar_color, p.birth_year, p.country, p.region, p.city, s.age_min, s.age_max, TO_BASE64(ph.data) AS photo, (SELECT COUNT(*) FROM member_documents dd WHERE dd.member_id=m.id) AS docs FROM (SELECT 1 AS x) d LEFT JOIN members m ON m.session_hash=SHA2('\" + token + \"',256) AND m.session_expires > NOW() AND m.status='actif' LEFT JOIN profiles p ON p.member_id=m.id LEFT JOIN search_preferences s ON s.member_id=m.id LEFT JOIN member_photos ph ON ph.member_id=m.id\";\nreturn [{ json: { ok: true, q0 } }];\n"
-    },
-    "name": "Prepare",
-    "type": "n8n-nodes-base.code",
-    "typeVersion": 2,
-    "position": [
-     220,
-     300
-    ]
-   },
-   {
-    "parameters": {
-     "conditions": {
-      "options": {
-       "caseSensitive": true,
-       "leftValue": "",
-       "typeValidation": "strict"
+  {
+    "id": "NikahMe001",
+    "name": "Nikah Me",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "nikah-me",
+          "responseMode": "responseNode",
+          "options": {
+            "allowedOrigins": "*"
+          }
+        },
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          0,
+          300
+        ],
+        "webhookId": "nikah-me-0001"
       },
-      "conditions": [
-       {
-        "id": "c1",
-        "leftValue": "={{ $json.ok === true }}",
-        "rightValue": true,
-        "operator": {
-         "type": "boolean",
-         "operation": "true",
-         "singleValue": true
-        }
-       }
-      ],
-      "combinator": "and"
-     },
-     "options": {}
-    },
-    "name": "Jeton valide",
-    "type": "n8n-nodes-base.if",
-    "typeVersion": 2,
-    "position": [
-     440,
-     300
-    ]
-   },
-   {
-    "parameters": {
-     "respondWith": "text",
-     "responseBody": "={{ JSON.stringify({success:false,error:$json.error}) }}",
-     "options": {
-      "responseHeaders": {
-       "entries": [
-        {
-         "name": "Content-Type",
-         "value": "application/json"
+      {
+        "parameters": {
+          "jsCode": "const b = $input.first().json.body || {};\nconst token = String(b.token || '');\nif (!/^[a-f0-9]{64}$/.test(token)) return [{ json: { ok: false, error: 'session_invalide' } }];\nconst q0 = \"SELECT m.id, m.gender, m.identity_verified, m.display_name, m.avatar_color, p.birth_year, p.country, p.region, p.city, s.age_min, s.age_max, TO_BASE64(ph.data) AS photo, (SELECT COUNT(*) FROM member_documents dd WHERE dd.member_id=m.id) AS docs, (SELECT COUNT(*) FROM member_sanctions sa WHERE sa.member_id=m.id AND sa.kind='warn' AND sa.status<>'annulee') AS avertissements FROM (SELECT 1 AS x) d LEFT JOIN members m ON m.session_hash=SHA2('\" + token + \"',256) AND m.session_expires > NOW() AND m.status='actif' LEFT JOIN profiles p ON p.member_id=m.id LEFT JOIN search_preferences s ON s.member_id=m.id LEFT JOIN member_photos ph ON ph.member_id=m.id\";\nreturn [{ json: { ok: true, q0 } }];\n"
         },
-        {
-         "name": "Access-Control-Allow-Origin",
-         "value": "*"
+        "name": "Prepare",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          220,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ $json.ok === true }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "name": "Jeton valide",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          440,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "respondWith": "text",
+          "responseBody": "={{ JSON.stringify({success:false,error:$json.error}) }}",
+          "options": {
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "name": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ]
+            }
+          }
+        },
+        "name": "Reponse invalide",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          660,
+          460
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "={{ $json.q0 }}",
+          "options": {}
+        },
+        "name": "Lire session",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          660,
+          200
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "gcGQgiKQ83lHOaak",
+            "name": "MySQL account 2"
+          }
         }
-       ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const r = $input.first().json;\nif (r.id === null || r.id === undefined) return [{ json: { success: false, error: 'session_invalide' } }];\nreturn [{ json: { success: true, member: {\n  gender: r.gender, identity_verified: Number(r.identity_verified) === 1, display_name: r.display_name, avatar_color: r.avatar_color, docs_envoyes: Number(r.docs || 0) > 0, avertissements: Number(r.avertissements || 0),\n  birth_year: r.birth_year, country: r.country, region: r.region, city: r.city,\n  photo: r.photo ? 'data:image/jpeg;base64,' + String(r.photo).replace(/\\s/g, '') : null\n}, search: { age_min: r.age_min, age_max: r.age_max } } }];\n"
+        },
+        "name": "Formater",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          880,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "respondWith": "text",
+          "responseBody": "={{ JSON.stringify($json) }}",
+          "options": {
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "name": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ]
+            }
+          }
+        },
+        "name": "Reponse",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          1100,
+          200
+        ]
       }
-     }
-    },
-    "name": "Reponse invalide",
-    "type": "n8n-nodes-base.respondToWebhook",
-    "typeVersion": 1.1,
-    "position": [
-     660,
-     460
-    ]
-   },
-   {
-    "parameters": {
-     "operation": "executeQuery",
-     "query": "={{ $json.q0 }}",
-     "options": {}
-    },
-    "name": "Lire session",
-    "type": "n8n-nodes-base.mySql",
-    "typeVersion": 2.4,
-    "position": [
-     660,
-     200
     ],
-    "credentials": {
-     "mySql": {
-      "id": "gcGQgiKQ83lHOaak",
-      "name": "MySQL account 2"
-     }
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Prepare",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare": {
+        "main": [
+          [
+            {
+              "node": "Jeton valide",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Jeton valide": {
+        "main": [
+          [
+            {
+              "node": "Lire session",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Reponse invalide",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lire session": {
+        "main": [
+          [
+            {
+              "node": "Formater",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Formater": {
+        "main": [
+          [
+            {
+              "node": "Reponse",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "active": false,
+    "settings": {
+      "executionOrder": "v1"
     }
-   },
-   {
-    "parameters": {
-     "jsCode": "const r = $input.first().json;\nif (r.id === null || r.id === undefined) return [{ json: { success: false, error: 'session_invalide' } }];\nreturn [{ json: { success: true, member: {\n  gender: r.gender, identity_verified: Number(r.identity_verified) === 1, display_name: r.display_name, avatar_color: r.avatar_color, docs_envoyes: Number(r.docs || 0) > 0,\n  birth_year: r.birth_year, country: r.country, region: r.region, city: r.city,\n  photo: r.photo ? 'data:image/jpeg;base64,' + String(r.photo).replace(/\\s/g, '') : null\n}, search: { age_min: r.age_min, age_max: r.age_max } } }];\n"
-    },
-    "name": "Formater",
-    "type": "n8n-nodes-base.code",
-    "typeVersion": 2,
-    "position": [
-     880,
-     200
-    ]
-   },
-   {
-    "parameters": {
-     "respondWith": "text",
-     "responseBody": "={{ JSON.stringify($json) }}",
-     "options": {
-      "responseHeaders": {
-       "entries": [
-        {
-         "name": "Content-Type",
-         "value": "application/json"
-        },
-        {
-         "name": "Access-Control-Allow-Origin",
-         "value": "*"
-        }
-       ]
-      }
-     }
-    },
-    "name": "Reponse",
-    "type": "n8n-nodes-base.respondToWebhook",
-    "typeVersion": 1.1,
-    "position": [
-     1100,
-     200
-    ]
-   }
-  ],
-  "connections": {
-   "Webhook": {
-    "main": [
-     [
-      {
-       "node": "Prepare",
-       "type": "main",
-       "index": 0
-      }
-     ]
-    ]
-   },
-   "Prepare": {
-    "main": [
-     [
-      {
-       "node": "Jeton valide",
-       "type": "main",
-       "index": 0
-      }
-     ]
-    ]
-   },
-   "Jeton valide": {
-    "main": [
-     [
-      {
-       "node": "Lire session",
-       "type": "main",
-       "index": 0
-      }
-     ],
-     [
-      {
-       "node": "Reponse invalide",
-       "type": "main",
-       "index": 0
-      }
-     ]
-    ]
-   },
-   "Lire session": {
-    "main": [
-     [
-      {
-       "node": "Formater",
-       "type": "main",
-       "index": 0
-      }
-     ]
-    ]
-   },
-   "Formater": {
-    "main": [
-     [
-      {
-       "node": "Reponse",
-       "type": "main",
-       "index": 0
-      }
-     ]
-    ]
-   }
-  },
-  "active": false,
-  "settings": {
-   "executionOrder": "v1"
   }
- }
 ]

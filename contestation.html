@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Contester une décision — Nikah</title>
+<link rel="stylesheet" href="css/style.css?v=20261016g">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="logo">Nikah</a>
+  </div>
+</header>
+
+<main class="questionnaire-wrap">
+  <div class="carte-question">
+    <p class="commission-titre">Commission disciplinaire</p>
+    <h2 id="titre">Contester une décision</h2>
+    <p class="aide" id="chargement">Chargement…</p>
+    <form id="formContest" novalidate style="display:none;">
+      <p class="aide" id="resume"></p>
+      <p class="aide">Expliquez pourquoi vous estimez que cette décision n'est pas fondée. La Commission disciplinaire relira la conversation concernée et vous répondra par e-mail. Une seule contestation est possible par décision.</p>
+      <textarea id="champTexte" class="champ-texte" maxlength="2000" rows="7" placeholder="Votre explication (au moins 10 caractères)…"></textarea>
+      <p id="messageErreur" style="color:#a33; font-family:Helvetica,Arial,sans-serif; font-size:0.9rem; margin-top:14px; display:none;"></p>
+      <div class="nav-questionnaire">
+        <span></span>
+        <button type="submit" class="btn btn-primary" id="btnEnvoyer">Envoyer ma contestation</button>
+      </div>
+    </form>
+    <p id="messageFin" class="aide" style="display:none; color:#3d6b4f; background:#eef3ef; padding:12px; border-radius:8px;"></p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <a href="confidentialite.html">Politique de confidentialité</a>
+    <a href="conditions.html">Conditions d'utilisation</a>
+    <p style="margin-top:14px;">&copy; 2026 Nikah — projet non lucratif</p>
+  </div>
+</footer>
+<script src="js/contestation.js?v=20261016g"></script>
+</body>
+</html>

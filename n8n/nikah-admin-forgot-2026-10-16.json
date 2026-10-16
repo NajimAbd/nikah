@@ -195,7 +195,9 @@
           "subject": "Nikah — nouveau mot de passe administrateur",
           "emailFormat": "text",
           "text": "={{ $json.texte }}",
-          "options": {}
+          "options": {
+            "appendAttribution": false
+          }
         },
         "name": "Envoyer mail",
         "type": "n8n-nodes-base.emailSend",

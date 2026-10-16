@@ -1,0 +1,352 @@
+[
+  {
+    "id": "NikahContest001",
+    "name": "Nikah Contest",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "nikah-contest",
+          "responseMode": "responseNode",
+          "options": {
+            "allowedOrigins": "*"
+          }
+        },
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          0,
+          300
+        ],
+        "webhookId": "nikah-contest-0001",
+        "id": "nikah-contest-n00"
+      },
+      {
+        "parameters": {
+          "jsCode": "const b = $input.first().json.body || {};\nconst esc = (s) => \"'\" + String(s).replace(/\\\\/g, '\\\\\\\\').replace(/'/g, \"\\\\'\").replace(/\\0/g, '') + \"'\";\nconst token = String(b.token || '');\nconst action = String(b.action || 'info');\nif (!/^[a-f0-9]{64}$/.test(token)) return [{ json: { ok: false, error: 'lien_invalide' } }];\nif (['info', 'submit'].indexOf(action) === -1) return [{ json: { ok: false, error: 'requete_invalide' } }];\nconst texte = String(b.texte || '').replace(/\\r/g, '').trim();\nlet q0 = 'SELECT 1';\nif (action === 'submit') {\n  if (texte.length < 10 || texte.length > 2000) return [{ json: { ok: false, error: 'texte_invalide' } }];\n  q0 = \"UPDATE member_sanctions SET status='contestee', contest_text=\" + esc(texte) + \", contested_at=NOW() WHERE contest_hash=SHA2('\" + token + \"',256) AND status='active' AND contested_at IS NULL\";\n}\nconst q1 = \"SELECT s.id, s.kind, s.days, DATE_FORMAT(s.created_at,'%d.%m.%Y') AS date, s.status, s.contest_text, (s.contested_at IS NOT NULL AND s.contested_at > DATE_SUB(NOW(), INTERVAL 1 MINUTE)) AS vient, m.display_name, m.email FROM (SELECT 1 AS x) d LEFT JOIN member_sanctions s ON s.contest_hash=SHA2('\" + token + \"',256) LEFT JOIN members m ON m.id=s.member_id\";\nreturn [{ json: { ok: true, action, q0, q1 } }];\n"
+        },
+        "name": "Prepare",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          200,
+          300
+        ],
+        "id": "nikah-contest-n01"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ $json.ok === true }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "name": "Donnees valides",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          400,
+          300
+        ],
+        "id": "nikah-contest-n02"
+      },
+      {
+        "parameters": {
+          "respondWith": "text",
+          "responseBody": "={{ JSON.stringify({success:false,error:$json.error}) }}",
+          "options": {
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "name": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ]
+            }
+          }
+        },
+        "name": "Reponse invalide",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          600,
+          300
+        ],
+        "id": "nikah-contest-n03"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "={{ $json.q0 }}",
+          "options": {}
+        },
+        "name": "Contester",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          800,
+          300
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "gcGQgiKQ83lHOaak",
+            "name": "MySQL account 2"
+          }
+        },
+        "id": "nikah-contest-n04"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "={{ $('Prepare').first().json.q1 }}",
+          "options": {}
+        },
+        "name": "Lire sanction",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1000,
+          300
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "gcGQgiKQ83lHOaak",
+            "name": "MySQL account 2"
+          }
+        },
+        "id": "nikah-contest-n05"
+      },
+      {
+        "parameters": {
+          "jsCode": "const r = $input.first().json;\nconst action = $('Prepare').first().json.action;\nif (r.id === null || r.id === undefined) return [{ json: { success: false, error: 'lien_invalide' } }];\nconst LIB = { warn: 'Avertissement', suspend: 'Suspension', exclude: 'Fermeture du compte' };\nconst out = { success: true, type: r.kind, libelle: LIB[r.kind] || r.kind, jours: r.days, date: r.date, statut: r.status };\nlet _mail = null;\nif (action === 'submit') {\n  if (!(r.status === 'contestee' && Number(r.vient) === 1)) return [{ json: { success: false, error: 'deja_traite', statut: r.status } }];\n  _mail = { to: 'info.najim1@gmail.com', subject: 'Nikah — contestation reçue (' + (r.display_name || r.email) + ')',\n    text: 'Bonjour,\\n\\n' + (r.display_name || '') + ' (' + r.email + ') conteste la sanction suivante : ' + (LIB[r.kind] || r.kind) + ' du ' + r.date + '.\\n\\nSon explication :\\n\\n' + r.contest_text + '\\n\\nVous pouvez annuler ou maintenir la sanction dans l\\'administration, onglet Signalements :\\nhttps://mariageislamique.ch/administration.html\\n\\nNikah — Commission disciplinaire' };\n}\nreturn [{ json: Object.assign(out, { _mail }) }];\n"
+        },
+        "name": "Formater",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1200,
+          300
+        ],
+        "id": "nikah-contest-n06"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose"
+            },
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ !!($json._mail && $json._mail.to) }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "name": "Mail a envoyer",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          1400,
+          300
+        ],
+        "id": "nikah-contest-n07"
+      },
+      {
+        "parameters": {
+          "fromEmail": "Nikah <contact@roqyasuisse.com>",
+          "toEmail": "={{ $json._mail.to }}",
+          "subject": "={{ $json._mail.subject }}",
+          "emailFormat": "text",
+          "text": "={{ $json._mail.text }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "name": "Prevenir admin",
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          1600,
+          300
+        ],
+        "credentials": {
+          "smtp": {
+            "id": "aZdlgWWAq11USGu7",
+            "name": "SMTP account"
+          }
+        },
+        "onError": "continueRegularOutput",
+        "id": "nikah-contest-n08"
+      },
+      {
+        "parameters": {
+          "respondWith": "text",
+          "responseBody": "={{ JSON.stringify(Object.assign({}, $('Formater').first().json, { _mail: undefined })) }}",
+          "options": {
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "name": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ]
+            }
+          }
+        },
+        "name": "Reponse ok",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          1800,
+          300
+        ],
+        "id": "nikah-contest-n09"
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Prepare",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare": {
+        "main": [
+          [
+            {
+              "node": "Donnees valides",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Donnees valides": {
+        "main": [
+          [
+            {
+              "node": "Contester",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Reponse invalide",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Contester": {
+        "main": [
+          [
+            {
+              "node": "Lire sanction",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lire sanction": {
+        "main": [
+          [
+            {
+              "node": "Formater",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Formater": {
+        "main": [
+          [
+            {
+              "node": "Mail a envoyer",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mail a envoyer": {
+        "main": [
+          [
+            {
+              "node": "Prevenir admin",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Reponse ok",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prevenir admin": {
+        "main": [
+          [
+            {
+              "node": "Reponse ok",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "active": false,
+    "settings": {
+      "executionOrder": "v1"
+    }
+  }
+]

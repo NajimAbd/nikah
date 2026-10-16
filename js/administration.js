@@ -161,8 +161,33 @@
     var bloc = el("div", "admin-sanction");
     var etat = m.statut === "suspendu" ? "Compte suspendu" + (m.fin ? " jusqu'au " + m.fin : "") : m.statut === "exclu" ? "Compte fermé définitivement" : "Compte actif";
     bloc.appendChild(el("strong", "", "Personne signalée : " + nom + " — " + etat));
-    var hist = (m.sanctions || []).map(function (x) { return LIB_SANCTION[x.type] + (x.jours ? " " + x.jours + " j" : "") + " (" + String(x.date || "").slice(0, 10) + ")"; });
-    bloc.appendChild(el("div", "", hist.length ? "Sanctions précédentes : " + hist.join(", ") : "Aucune sanction précédente."));
+    var sanctions = m.sanctions || [];
+    var actifs = sanctions.filter(function (x) { return x.type === "warn" && x.statut !== "annulee"; }).length;
+    if (actifs) bloc.appendChild(el("div", "point-noir", Array(actifs + 1).join("● ") + actifs + (actifs > 1 ? " avertissements actifs" : " avertissement actif")));
+    var LIB_ETAT = { active: "", contestee: " — CONTESTÉ", maintenue: " — maintenu après contestation", annulee: " — annulé" };
+    if (!sanctions.length) bloc.appendChild(el("div", "", "Aucune sanction précédente."));
+    sanctions.forEach(function (x) {
+      var ligne = el("div", "sanction-ligne" + (x.statut === "contestee" ? " contestee" : "") + (x.statut === "annulee" ? " annulee" : ""));
+      ligne.appendChild(el("div", "", LIB_SANCTION[x.type] + (x.jours ? " " + x.jours + " jours" : "") + " du " + String(x.date || "").slice(0, 10) + (LIB_ETAT[x.statut] || "")));
+      if (x.contestation) ligne.appendChild(el("div", "sanction-texte", "Contestation : « " + x.contestation + " »"));
+      if (x.statut === "contestee") {
+        var r2 = el("div", "admin-actions");
+        [["Annuler la sanction", "btn-primary", "sanction_cancel", "Annuler cette sanction ? Elle sera retirée du dossier" + (x.type !== "warn" ? " et le compte sera rétabli." : ".")],
+         ["Maintenir la sanction", "btn-outline", "sanction_keep", "Maintenir cette sanction ?"]].forEach(function (d) {
+          var b = el("button", "btn " + d[1], d[0]); b.type = "button";
+          b.addEventListener("click", function () {
+            if (!window.confirm(d[3])) return;
+            b.disabled = true;
+            post("nikah-admin-messages", { token: lire(), action: d[2], sanction_id: x.id })
+              .then(function (r) { if (r && r.success) { donneesMessages = null; rendreMessages(r); } else { b.disabled = false; } })
+              .catch(function () { b.disabled = false; });
+          });
+          r2.appendChild(b);
+        });
+        ligne.appendChild(r2);
+      }
+      bloc.appendChild(ligne);
+    });
     var rg = el("div", "admin-actions");
     function bouton(libelle, classe, corps, question) {
       var b = el("button", "btn " + classe, libelle); b.type = "button";
@@ -195,7 +220,7 @@
   }
   function rendreMessages(r) {
     if (!r || !r.success) return;
-    var sig = JSON.stringify(r.conversations.map(function (c) { return [c.cid, c.statut, c.messages.length, (c.signalements || []).map(function (x) { return x.id + x.statut; }), c.a.statut, c.b.statut, (c.a.sanctions || []).length, (c.b.sanctions || []).length]; }));
+    var sig = JSON.stringify(r.conversations.map(function (c) { return [c.cid, c.statut, c.messages.length, (c.signalements || []).map(function (x) { return x.id + x.statut; }), c.a.statut, c.b.statut, JSON.stringify(c.a.sanctions || []), JSON.stringify(c.b.sanctions || [])]; }));
     if (donneesMessages && sig === donneesMessages._sig) return;
     r._sig = sig;
     donneesMessages = r;
