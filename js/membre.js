@@ -39,11 +39,11 @@
       "<h3>" + echapper(p.nom || (p.genre === "femme" ? "Femme" : "Homme")) + ", " + p.age + " ans <span class='badge-verifie' title='Identité vérifiée'>✓</span></h3>" +
       "<p class='profil-lieu'>" + lieu + "</p>" +
       "<ul class='profil-infos'>" +
-      "<li><b>Croyance :</b> " + echapper(lib("croyance", p.croyance)) + "</li>" +
-      "<li><b>Pratique :</b> " + echapper(lib("pratique", p.pratique)) + "</li>" +
-      "<li><b>Situation :</b> " + echapper(lib("situation", p.situation)) + "</li>" +
-      "<li><b>Enfants :</b> " + echapper(lib("enfants", p.enfants)) + "</li>" +
-      "<li><b>Mariage envisagé :</b> " + echapper(lib("delai", p.delai)) + "</li>" +
+      "<li><b>Croyance :</b> " + "<span>" + echapper(lib("croyance", p.croyance)) + "</span>" + "</li>" +
+      "<li><b>Pratique :</b> " + "<span>" + echapper(lib("pratique", p.pratique)) + "</span>" + "</li>" +
+      "<li><b>Situation :</b> " + "<span>" + echapper(lib("situation", p.situation)) + "</span>" + "</li>" +
+      "<li><b>Enfants :</b> " + "<span>" + echapper(lib("enfants", p.enfants)) + "</span>" + "</li>" +
+      "<li><b>Mariage envisagé :</b> " + "<span>" + echapper(lib("delai", p.delai)) + "</span>" + "</li>" +
       "</ul>" +
       "<div class='contact-zone'><button type='button' class='btn btn-outline btn-contact' data-ecrire='" + p.id + "' data-nom='" + echapper(p.nom || "") + "'>Écrire</button></div>" +
       "</div></article>";

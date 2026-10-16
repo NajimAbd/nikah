@@ -223,7 +223,116 @@ window.NikahLangues.en = {
 "L'âge minimum ne peut pas être supérieur à l'âge maximum.": "The minimum age cannot be higher than the maximum age.",
 "Merci de compléter tous les champs marqués en rouge pour continuer.": "Please fill in all the fields marked in red to continue.",
 "Création en cours…": "Creating…",
-"Commencer l'inscription": "Start registration"
+"Commencer l'inscription": "Start registration",
+"Mon espace — Nikah": "My space — Nikah",
+"Chargement de votre espace…": "Loading your space…",
+"Chargement…": "Loading…",
+"Mon profil": "My profile",
+"Ma photo": "My photo",
+"Vérifier mon identité": "Verify my identity",
+"Pour que votre photo soit visible des autres membres, nous devons vérifier votre identité. Envoyez une photo de votre pièce d'identité (recto) et un selfie récent. Ces deux images sont lues uniquement par l'administrateur, puis <b>supprimées</b> dès sa décision.": "For your photo to be visible to other members, we need to verify your identity. Send a photo of your ID (front) and a recent selfie. Only the administrator sees these two images, and they are <b>deleted</b> as soon as a decision is made.",
+"1. Photo de votre pièce d'identité": "1. Photo of your ID",
+"2. Un selfie, visage bien visible": "2. A selfie, face clearly visible",
+"Aperçu": "Preview",
+"Envoyer pour vérification": "Send for verification",
+"Envoi en cours…": "Sending…",
+"Merci d'ajouter les deux images (pièce d'identité et selfie).": "Please add both images (ID and selfie).",
+"Vos documents ont bien été reçus. L'administrateur va les examiner. Vous pouvez en renvoyer de nouveaux si nécessaire.": "Your documents have been received. The administrator will review them. You can send new ones if needed.",
+"Merci ! Vos documents ont bien été reçus. L'administrateur va les examiner.": "Thank you! Your documents have been received. The administrator will review them.",
+"L'envoi n'a pas abouti. Merci de réessayer avec d'autres images.": "Sending failed. Please try again with other images.",
+"Identité vérifiée : votre photo est visible par les autres membres.": "Identity verified: your photo is visible to other members.",
+"Identité non vérifiée : votre photo n'est visible que par vous. Elle sera montrée aux autres membres après la vérification de votre identité.": "Identity not verified: only you can see your photo. It will be shown to other members once your identity has been verified.",
+"Aucun profil ne correspond exactement à votre recherche pour le moment.": "No profile exactly matches your search at the moment.",
+"Photo visible après vérification d'identité": "Photo visible after identity check",
+"Identité vérifiée": "Identity verified",
+"Écrire à cette personne": "Write to this person",
+"✉ Écrire": "✉ Write",
+"Écrire": "Write",
+"Croyance :": "Belief:",
+"Pratique :": "Practice:",
+"Situation :": "Situation:",
+"Enfants :": "Children:",
+"Mariage envisagé :": "Planned marriage:",
+"Sunnite": "Sunni",
+"Chiite": "Shia",
+"Soufi": "Sufi",
+"Ahmadiyya": "Ahmadiyya",
+"Islam — autre": "Islam — other",
+"En cours de réversion": "Reverting",
+"Non précisé": "Not specified",
+"Pas encore sûr(e)": "Not sure yet",
+"Femme": "Woman",
+"Homme": "Man",
+"Nouveau message": "New message",
+"Votre premier message est vérifié par la modération avant d'être transmis.": "Your first message is checked by the moderators before it is passed on.",
+"Votre message de présentation, avec respect et sincérité…": "Your introduction message, with respect and sincerity…",
+"Annuler": "Cancel",
+"Envoyer": "Send",
+"Fermer": "Close",
+"Merci d'écrire un court message.": "Please write a short message.",
+"Le contact n'a pas pu être établi. Votre identité doit être vérifiée et le profil doit correspondre à votre recherche.": "The contact could not be made. Your identity must be verified and the profile must match your search.",
+"Connexion impossible pour le moment.": "Unable to connect right now.",
+"Connexion impossible pour le moment. Vérifiez votre connexion Internet et rechargez la page.": "Unable to connect right now. Check your internet connection and reload the page.",
+"Message bloqué et signalé à l'administration.": "Message blocked and reported to the administration.",
+"Votre compte est suspendu.": "Your account is suspended.",
+"Message retenu pour vérification.": "Message held for checking.",
+"Message bloqué et signalé à l'administration. Les numéros de téléphone, adresses e-mail, réseaux sociaux, liens, demandes de contact hors du site et demandes d'argent sont interdits par la charte. À la prochaine tentative, votre compte sera suspendu.": "Message blocked and reported to the administration. Phone numbers, email addresses, social media, links, requests for contact outside the site and requests for money are forbidden by the charter. At the next attempt, your account will be suspended.",
+"Message retenu et transmis à l'administration pour vérification. Il ne sera envoyé qu'après son accord. S'il ne respecte pas la charte, votre compte pourra être suspendu.": "Message held and passed to the administration for checking. It will only be sent once approved. If it breaks the charter, your account may be suspended.",
+"Votre compte vient d'être suspendu : c'est la deuxième tentative d'envoyer des coordonnées ou une demande d'argent. L'administration va examiner votre dossier.": "Your account has just been suspended: this is the second attempt to send contact details or a request for money. The administration will review your file.",
+"Messages — Nikah": "Messages — Nikah",
+"← Retour": "← Back",
+"Bloquer ou signaler": "Block or report",
+"Bloquer cette personne": "Block this person",
+"Pendant 24 heures": "For 24 hours",
+"Pendant 7 jours": "For 7 days",
+"Pendant 30 jours": "For 30 days",
+"Définitivement": "Permanently",
+"Débloquer": "Unblock",
+"Signaler à l'administration": "Report to the administration",
+"Aucune conversation pour le moment. Depuis « Mon espace », choisissez un profil et cliquez sur « Écrire ».": "No conversations yet. From “My space”, choose a profile and click “Write”.",
+"L'administration lira cette conversation. La personne signalée n'est pas prévenue.": "The administration will read this conversation. The reported person is not told.",
+"Choisissez un motif…": "Choose a reason…",
+"Propos déplacés ou contraires à la charte": "Inappropriate remarks or breach of the charter",
+"Insistance ou harcèlement": "Pestering or harassment",
+"Faux profil ou fausses informations": "Fake profile or false information",
+"Demande d'argent ou de cadeau": "Request for money or gifts",
+"Demande de numéro ou de contact hors du site": "Request for a number or contact outside the site",
+"Autre raison": "Other reason",
+"Expliquez en quelques mots (facultatif)…": "Explain in a few words (optional)…",
+"Envoyer le signalement": "Send the report",
+"Merci de choisir un motif.": "Please choose a reason.",
+"Le signalement n'a pas pu être envoyé. Réessayez dans un instant.": "The report could not be sent. Try again in a moment.",
+"Vous avez signalé cette conversation. L'administration va l'examiner.": "You have reported this conversation. The administration will review it.",
+"Vous avez bloqué cette personne définitivement. Elle ne peut plus vous écrire et n'apparaît plus dans vos recherches.": "You have permanently blocked this person. They can no longer write to you and no longer appear in your searches.",
+"Vous ne pouvez plus écrire à cette personne pour le moment.": "You cannot write to this person at the moment.",
+"Cette personne souhaite entrer en contact avec vous. Souhaitez-vous répondre ?": "This person would like to get in touch with you. Would you like to reply?",
+"Accepter": "Accept",
+"Refuser": "Decline",
+"Pour la sécurité de tous, votre premier message est vérifié avant d'être transmis. Vous serez informé(e) dès qu'il sera envoyé.": "For everyone's safety, your first message is checked before it is passed on. You will be told as soon as it is sent.",
+"Votre message n'a pas pu être transmis car il ne respecte pas la charte de la plateforme.": "Your message could not be passed on because it does not respect the platform's charter.",
+"Votre demande a été envoyée. Vous pourrez continuer la conversation dès qu'elle sera acceptée.": "Your request has been sent. You can continue the conversation as soon as it is accepted.",
+"Cette demande a été refusée.": "This request was declined.",
+"Votre message…": "Your message…",
+"Message en cours de vérification": "Message being checked",
+"Message non transmis": "Message not passed on",
+"Demande envoyée — en attente": "Request sent — pending",
+"Nouvelle demande de contact": "New contact request",
+"Demande refusée": "Request declined",
+"Contester une décision — Nikah": "Contest a decision — Nikah",
+"Commission disciplinaire": "Disciplinary committee",
+"Contester une décision": "Contest a decision",
+"Expliquez pourquoi vous estimez que cette décision n'est pas fondée. La Commission disciplinaire relira la conversation concernée et vous répondra par e-mail. Une seule contestation est possible par décision.": "Explain why you believe this decision is unfounded. The disciplinary committee will re-read the conversation concerned and reply to you by email. Only one appeal is possible per decision.",
+"Votre explication (au moins 10 caractères)…": "Your explanation (at least 10 characters)…",
+"Envoyer ma contestation": "Send my appeal",
+"Votre contestation a déjà été transmise. La Commission disciplinaire l'examine et vous répondra par e-mail.": "Your appeal has already been sent. The disciplinary committee is reviewing it and will reply by email.",
+"Cette décision a été réexaminée et maintenue par la Commission disciplinaire.": "This decision has been reviewed and upheld by the disciplinary committee.",
+"Cette décision a été annulée par la Commission disciplinaire.": "This decision has been cancelled by the disciplinary committee.",
+"Ce lien n'est pas valide.": "This link is not valid.",
+"Cette décision ne peut plus être contestée.": "This decision can no longer be appealed.",
+"Connexion impossible pour le moment. Rechargez la page dans un instant.": "Unable to connect right now. Reload the page in a moment.",
+"Merci d'écrire une explication d'au moins 10 caractères.": "Please write an explanation of at least 10 characters.",
+"Votre contestation a bien été transmise à la Commission disciplinaire. Elle relira la conversation et vous répondra par e-mail.": "Your appeal has been sent to the disciplinary committee. It will re-read the conversation and reply by email.",
+"L'envoi n'a pas abouti. Merci de réessayer dans un instant.": "Sending failed. Please try again in a moment."
 },
 "modeles": [
 [
@@ -237,6 +346,86 @@ window.NikahLangues.en = {
 [
 "(\\d+) ans",
 "$1 years"
+],
+[
+"Vous recherchez une épouse âgé\\(e\\) de <b>(\\d+) à (\\d+) ans</b>\\. (\\d+) profils? (?:correspondent|correspond) exactement à votre recherche\\.",
+"You are looking for a wife aged <b>$1 to $2</b>. Matching profiles: $3."
+],
+[
+"Vous recherchez un époux âgé\\(e\\) de <b>(\\d+) à (\\d+) ans</b>\\. (\\d+) profils? (?:correspondent|correspond) exactement à votre recherche\\.",
+"You are looking for a husband aged <b>$1 to $2</b>. Matching profiles: $3."
+],
+[
+"● (\\d+) avertissements? officiels? inscrits? à votre dossier\\. En cas de récidive, votre compte sera suspendu\\.",
+"● Official warnings on your record: $1. If it happens again, your account will be suspended."
+],
+[
+"(.+), (\\d+) ans",
+"$1, $2"
+],
+[
+"(\\d+) ans · (.+)",
+"$1 · $2"
+],
+[
+"Écrire à (.+)",
+"Write to $1"
+],
+[
+"Messages \\((\\d+)\\)",
+"Messages ($1)"
+],
+[
+"\\((\\d+)\\) Messages — Nikah",
+"($1) Messages — Nikah"
+],
+[
+"\\((\\d+)\\) Mon espace — Nikah",
+"($1) My space — Nikah"
+],
+[
+"(\\d\\d\\.\\d\\d \\d\\d:\\d\\d) · en attente de vérification",
+"$1 · being checked"
+],
+[
+"(\\d\\d\\.\\d\\d \\d\\d:\\d\\d) · non transmis",
+"$1 · not passed on"
+],
+[
+"Vous avez bloqué cette personne jusqu'au (.+)\\. Elle ne peut pas vous écrire d'ici là\\.",
+"You have blocked this person until $1. Until then, they cannot write to you."
+],
+[
+"Bloquer (.+) pendant 24 heures \\? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches\\.",
+"Block $1 for 24 hours? They will no longer be able to write to you or appear in your searches."
+],
+[
+"Bloquer (.+) pendant 7 jours \\? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches\\.",
+"Block $1 for 7 days? They will no longer be able to write to you or appear in your searches."
+],
+[
+"Bloquer (.+) pendant 30 jours \\? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches\\.",
+"Block $1 for 30 days? They will no longer be able to write to you or appear in your searches."
+],
+[
+"Bloquer (.+) définitivement \\? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches\\.",
+"Permanently block $1? They will no longer be able to write to you or appear in your searches."
+],
+[
+"Contester : avertissement",
+"Appeal: warning"
+],
+[
+"Contester : suspension de (\\d+) jours",
+"Appeal: $1-day suspension"
+],
+[
+"Contester : fermeture du compte",
+"Appeal: account closure"
+],
+[
+"Décision du (.+)\\.",
+"Decision of $1."
 ]
 ]
 };

@@ -223,7 +223,116 @@ window.NikahLangues.de = {
 "L'âge minimum ne peut pas être supérieur à l'âge maximum.": "Das Mindestalter darf nicht höher als das Höchstalter sein.",
 "Merci de compléter tous les champs marqués en rouge pour continuer.": "Bitte füllen Sie alle rot markierten Felder aus, um fortzufahren.",
 "Création en cours…": "Wird erstellt…",
-"Commencer l'inscription": "Anmeldung beginnen"
+"Commencer l'inscription": "Anmeldung beginnen",
+"Mon espace — Nikah": "Mein Bereich — Nikah",
+"Chargement de votre espace…": "Ihr Bereich wird geladen…",
+"Chargement…": "Wird geladen…",
+"Mon profil": "Mein Profil",
+"Ma photo": "Mein Foto",
+"Vérifier mon identité": "Meine Identität überprüfen",
+"Pour que votre photo soit visible des autres membres, nous devons vérifier votre identité. Envoyez une photo de votre pièce d'identité (recto) et un selfie récent. Ces deux images sont lues uniquement par l'administrateur, puis <b>supprimées</b> dès sa décision.": "Damit Ihr Foto für andere Mitglieder sichtbar wird, müssen wir Ihre Identität überprüfen. Senden Sie ein Foto Ihres Ausweises (Vorderseite) und ein aktuelles Selfie. Diese beiden Bilder sieht nur der Administrator, und sie werden nach seinem Entscheid <b>gelöscht</b>.",
+"1. Photo de votre pièce d'identité": "1. Foto Ihres Ausweises",
+"2. Un selfie, visage bien visible": "2. Ein Selfie, Gesicht gut sichtbar",
+"Aperçu": "Vorschau",
+"Envoyer pour vérification": "Zur Überprüfung senden",
+"Envoi en cours…": "Wird gesendet…",
+"Merci d'ajouter les deux images (pièce d'identité et selfie).": "Bitte fügen Sie beide Bilder hinzu (Ausweis und Selfie).",
+"Vos documents ont bien été reçus. L'administrateur va les examiner. Vous pouvez en renvoyer de nouveaux si nécessaire.": "Ihre Dokumente sind eingegangen. Der Administrator wird sie prüfen. Sie können bei Bedarf neue senden.",
+"Merci ! Vos documents ont bien été reçus. L'administrateur va les examiner.": "Danke! Ihre Dokumente sind eingegangen. Der Administrator wird sie prüfen.",
+"L'envoi n'a pas abouti. Merci de réessayer avec d'autres images.": "Das Senden ist fehlgeschlagen. Bitte versuchen Sie es mit anderen Bildern.",
+"Identité vérifiée : votre photo est visible par les autres membres.": "Identität überprüft: Ihr Foto ist für andere Mitglieder sichtbar.",
+"Identité non vérifiée : votre photo n'est visible que par vous. Elle sera montrée aux autres membres après la vérification de votre identité.": "Identität nicht überprüft: Ihr Foto ist nur für Sie sichtbar. Es wird anderen Mitgliedern nach der Überprüfung Ihrer Identität gezeigt.",
+"Aucun profil ne correspond exactement à votre recherche pour le moment.": "Im Moment entspricht kein Profil genau Ihrer Suche.",
+"Photo visible après vérification d'identité": "Foto nach Identitätsprüfung sichtbar",
+"Identité vérifiée": "Identität überprüft",
+"Écrire à cette personne": "Dieser Person schreiben",
+"✉ Écrire": "✉ Schreiben",
+"Écrire": "Schreiben",
+"Croyance :": "Glaube:",
+"Pratique :": "Praxis:",
+"Situation :": "Situation:",
+"Enfants :": "Kinder:",
+"Mariage envisagé :": "Geplante Heirat:",
+"Sunnite": "Sunnitisch",
+"Chiite": "Schiitisch",
+"Soufi": "Sufi",
+"Ahmadiyya": "Ahmadiyya",
+"Islam — autre": "Islam — andere",
+"En cours de réversion": "Im Übertritt",
+"Non précisé": "Nicht angegeben",
+"Pas encore sûr(e)": "Noch nicht sicher",
+"Femme": "Frau",
+"Homme": "Mann",
+"Nouveau message": "Neue Nachricht",
+"Votre premier message est vérifié par la modération avant d'être transmis.": "Ihre erste Nachricht wird vor der Weiterleitung von der Moderation geprüft.",
+"Votre message de présentation, avec respect et sincérité…": "Ihre Vorstellung, mit Respekt und Aufrichtigkeit…",
+"Annuler": "Abbrechen",
+"Envoyer": "Senden",
+"Fermer": "Schliessen",
+"Merci d'écrire un court message.": "Bitte schreiben Sie eine kurze Nachricht.",
+"Le contact n'a pas pu être établi. Votre identité doit être vérifiée et le profil doit correspondre à votre recherche.": "Der Kontakt konnte nicht hergestellt werden. Ihre Identität muss überprüft sein und das Profil muss Ihrer Suche entsprechen.",
+"Connexion impossible pour le moment.": "Verbindung im Moment nicht möglich.",
+"Connexion impossible pour le moment. Vérifiez votre connexion Internet et rechargez la page.": "Verbindung im Moment nicht möglich. Prüfen Sie Ihre Internetverbindung und laden Sie die Seite neu.",
+"Message bloqué et signalé à l'administration.": "Nachricht blockiert und der Administration gemeldet.",
+"Votre compte est suspendu.": "Ihr Konto ist gesperrt.",
+"Message retenu pour vérification.": "Nachricht zur Überprüfung zurückgehalten.",
+"Message bloqué et signalé à l'administration. Les numéros de téléphone, adresses e-mail, réseaux sociaux, liens, demandes de contact hors du site et demandes d'argent sont interdits par la charte. À la prochaine tentative, votre compte sera suspendu.": "Nachricht blockiert und der Administration gemeldet. Telefonnummern, E-Mail-Adressen, soziale Netzwerke, Links, Kontaktanfragen ausserhalb der Website und Geldforderungen sind laut Charta verboten. Beim nächsten Versuch wird Ihr Konto gesperrt.",
+"Message retenu et transmis à l'administration pour vérification. Il ne sera envoyé qu'après son accord. S'il ne respecte pas la charte, votre compte pourra être suspendu.": "Nachricht zurückgehalten und der Administration zur Überprüfung übermittelt. Sie wird erst nach deren Zustimmung gesendet. Verstösst sie gegen die Charta, kann Ihr Konto gesperrt werden.",
+"Votre compte vient d'être suspendu : c'est la deuxième tentative d'envoyer des coordonnées ou une demande d'argent. L'administration va examiner votre dossier.": "Ihr Konto wurde soeben gesperrt: Dies ist der zweite Versuch, Kontaktdaten oder eine Geldforderung zu senden. Die Administration wird Ihr Dossier prüfen.",
+"Messages — Nikah": "Nachrichten — Nikah",
+"← Retour": "← Zurück",
+"Bloquer ou signaler": "Blockieren oder melden",
+"Bloquer cette personne": "Diese Person blockieren",
+"Pendant 24 heures": "Für 24 Stunden",
+"Pendant 7 jours": "Für 7 Tage",
+"Pendant 30 jours": "Für 30 Tage",
+"Définitivement": "Endgültig",
+"Débloquer": "Freigeben",
+"Signaler à l'administration": "Der Administration melden",
+"Aucune conversation pour le moment. Depuis « Mon espace », choisissez un profil et cliquez sur « Écrire ».": "Noch keine Unterhaltung. Wählen Sie in « Mein Bereich » ein Profil und klicken Sie auf « Schreiben ».",
+"L'administration lira cette conversation. La personne signalée n'est pas prévenue.": "Die Administration wird diese Unterhaltung lesen. Die gemeldete Person wird nicht informiert.",
+"Choisissez un motif…": "Wählen Sie einen Grund…",
+"Propos déplacés ou contraires à la charte": "Unangemessene oder chartawidrige Äusserungen",
+"Insistance ou harcèlement": "Aufdringlichkeit oder Belästigung",
+"Faux profil ou fausses informations": "Falsches Profil oder falsche Angaben",
+"Demande d'argent ou de cadeau": "Bitte um Geld oder Geschenke",
+"Demande de numéro ou de contact hors du site": "Bitte um Nummer oder Kontakt ausserhalb der Website",
+"Autre raison": "Anderer Grund",
+"Expliquez en quelques mots (facultatif)…": "Erklären Sie es in wenigen Worten (freiwillig)…",
+"Envoyer le signalement": "Meldung senden",
+"Merci de choisir un motif.": "Bitte wählen Sie einen Grund.",
+"Le signalement n'a pas pu être envoyé. Réessayez dans un instant.": "Die Meldung konnte nicht gesendet werden. Versuchen Sie es gleich noch einmal.",
+"Vous avez signalé cette conversation. L'administration va l'examiner.": "Sie haben diese Unterhaltung gemeldet. Die Administration wird sie prüfen.",
+"Vous avez bloqué cette personne définitivement. Elle ne peut plus vous écrire et n'apparaît plus dans vos recherches.": "Sie haben diese Person endgültig blockiert. Sie kann Ihnen nicht mehr schreiben und erscheint nicht mehr in Ihren Suchergebnissen.",
+"Vous ne pouvez plus écrire à cette personne pour le moment.": "Sie können dieser Person im Moment nicht mehr schreiben.",
+"Cette personne souhaite entrer en contact avec vous. Souhaitez-vous répondre ?": "Diese Person möchte mit Ihnen in Kontakt treten. Möchten Sie antworten?",
+"Accepter": "Annehmen",
+"Refuser": "Ablehnen",
+"Pour la sécurité de tous, votre premier message est vérifié avant d'être transmis. Vous serez informé(e) dès qu'il sera envoyé.": "Zur Sicherheit aller wird Ihre erste Nachricht vor der Weiterleitung geprüft. Sie werden informiert, sobald sie gesendet ist.",
+"Votre message n'a pas pu être transmis car il ne respecte pas la charte de la plateforme.": "Ihre Nachricht konnte nicht weitergeleitet werden, da sie gegen die Charta der Plattform verstösst.",
+"Votre demande a été envoyée. Vous pourrez continuer la conversation dès qu'elle sera acceptée.": "Ihre Anfrage wurde gesendet. Sie können die Unterhaltung fortsetzen, sobald sie angenommen wurde.",
+"Cette demande a été refusée.": "Diese Anfrage wurde abgelehnt.",
+"Votre message…": "Ihre Nachricht…",
+"Message en cours de vérification": "Nachricht wird geprüft",
+"Message non transmis": "Nachricht nicht weitergeleitet",
+"Demande envoyée — en attente": "Anfrage gesendet — ausstehend",
+"Nouvelle demande de contact": "Neue Kontaktanfrage",
+"Demande refusée": "Anfrage abgelehnt",
+"Contester une décision — Nikah": "Eine Entscheidung anfechten — Nikah",
+"Commission disciplinaire": "Disziplinarkommission",
+"Contester une décision": "Eine Entscheidung anfechten",
+"Expliquez pourquoi vous estimez que cette décision n'est pas fondée. La Commission disciplinaire relira la conversation concernée et vous répondra par e-mail. Une seule contestation est possible par décision.": "Erklären Sie, warum Sie diese Entscheidung für unbegründet halten. Die Disziplinarkommission wird die betreffende Unterhaltung erneut lesen und Ihnen per E-Mail antworten. Pro Entscheidung ist nur eine Anfechtung möglich.",
+"Votre explication (au moins 10 caractères)…": "Ihre Erklärung (mindestens 10 Zeichen)…",
+"Envoyer ma contestation": "Meine Anfechtung senden",
+"Votre contestation a déjà été transmise. La Commission disciplinaire l'examine et vous répondra par e-mail.": "Ihre Anfechtung wurde bereits übermittelt. Die Disziplinarkommission prüft sie und antwortet Ihnen per E-Mail.",
+"Cette décision a été réexaminée et maintenue par la Commission disciplinaire.": "Diese Entscheidung wurde von der Disziplinarkommission überprüft und bestätigt.",
+"Cette décision a été annulée par la Commission disciplinaire.": "Diese Entscheidung wurde von der Disziplinarkommission aufgehoben.",
+"Ce lien n'est pas valide.": "Dieser Link ist ungültig.",
+"Cette décision ne peut plus être contestée.": "Diese Entscheidung kann nicht mehr angefochten werden.",
+"Connexion impossible pour le moment. Rechargez la page dans un instant.": "Verbindung im Moment nicht möglich. Laden Sie die Seite gleich neu.",
+"Merci d'écrire une explication d'au moins 10 caractères.": "Bitte schreiben Sie eine Erklärung von mindestens 10 Zeichen.",
+"Votre contestation a bien été transmise à la Commission disciplinaire. Elle relira la conversation et vous répondra par e-mail.": "Ihre Anfechtung wurde der Disziplinarkommission übermittelt. Sie wird die Unterhaltung erneut lesen und Ihnen per E-Mail antworten.",
+"L'envoi n'a pas abouti. Merci de réessayer dans un instant.": "Das Senden ist fehlgeschlagen. Bitte versuchen Sie es gleich noch einmal."
 },
 "modeles": [
 [
@@ -237,6 +346,86 @@ window.NikahLangues.de = {
 [
 "(\\d+) ans",
 "$1 Jahre"
+],
+[
+"Vous recherchez une épouse âgé\\(e\\) de <b>(\\d+) à (\\d+) ans</b>\\. (\\d+) profils? (?:correspondent|correspond) exactement à votre recherche\\.",
+"Sie suchen eine Ehefrau im Alter von <b>$1 bis $2 Jahren</b>. Passende Profile: $3."
+],
+[
+"Vous recherchez un époux âgé\\(e\\) de <b>(\\d+) à (\\d+) ans</b>\\. (\\d+) profils? (?:correspondent|correspond) exactement à votre recherche\\.",
+"Sie suchen einen Ehemann im Alter von <b>$1 bis $2 Jahren</b>. Passende Profile: $3."
+],
+[
+"● (\\d+) avertissements? officiels? inscrits? à votre dossier\\. En cas de récidive, votre compte sera suspendu\\.",
+"● Offizielle Verwarnungen in Ihrem Dossier: $1. Im Wiederholungsfall wird Ihr Konto gesperrt."
+],
+[
+"(.+), (\\d+) ans",
+"$1, $2 Jahre"
+],
+[
+"(\\d+) ans · (.+)",
+"$1 Jahre · $2"
+],
+[
+"Écrire à (.+)",
+"$1 schreiben"
+],
+[
+"Messages \\((\\d+)\\)",
+"Nachrichten ($1)"
+],
+[
+"\\((\\d+)\\) Messages — Nikah",
+"($1) Nachrichten — Nikah"
+],
+[
+"\\((\\d+)\\) Mon espace — Nikah",
+"($1) Mein Bereich — Nikah"
+],
+[
+"(\\d\\d\\.\\d\\d \\d\\d:\\d\\d) · en attente de vérification",
+"$1 · wird geprüft"
+],
+[
+"(\\d\\d\\.\\d\\d \\d\\d:\\d\\d) · non transmis",
+"$1 · nicht weitergeleitet"
+],
+[
+"Vous avez bloqué cette personne jusqu'au (.+)\\. Elle ne peut pas vous écrire d'ici là\\.",
+"Sie haben diese Person bis zum $1 blockiert. Bis dahin kann sie Ihnen nicht schreiben."
+],
+[
+"Bloquer (.+) pendant 24 heures \\? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches\\.",
+"$1 für 24 Stunden blockieren? Die Person kann Ihnen dann nicht mehr schreiben und erscheint nicht mehr in Ihren Suchergebnissen."
+],
+[
+"Bloquer (.+) pendant 7 jours \\? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches\\.",
+"$1 für 7 Tage blockieren? Die Person kann Ihnen dann nicht mehr schreiben und erscheint nicht mehr in Ihren Suchergebnissen."
+],
+[
+"Bloquer (.+) pendant 30 jours \\? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches\\.",
+"$1 für 30 Tage blockieren? Die Person kann Ihnen dann nicht mehr schreiben und erscheint nicht mehr in Ihren Suchergebnissen."
+],
+[
+"Bloquer (.+) définitivement \\? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches\\.",
+"$1 endgültig blockieren? Die Person kann Ihnen dann nicht mehr schreiben und erscheint nicht mehr in Ihren Suchergebnissen."
+],
+[
+"Contester : avertissement",
+"Anfechten: Verwarnung"
+],
+[
+"Contester : suspension de (\\d+) jours",
+"Anfechten: Sperrung für $1 Tage"
+],
+[
+"Contester : fermeture du compte",
+"Anfechten: Schliessung des Kontos"
+],
+[
+"Décision du (.+)\\.",
+"Entscheidung vom $1."
 ]
 ]
 };

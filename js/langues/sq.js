@@ -223,7 +223,116 @@ window.NikahLangues.sq = {
 "L'âge minimum ne peut pas être supérieur à l'âge maximum.": "Mosha minimale nuk mund të jetë më e madhe se maksimalja.",
 "Merci de compléter tous les champs marqués en rouge pour continuer.": "Ju lutem plotësoni të gjitha fushat e shënuara me të kuqe për të vazhduar.",
 "Création en cours…": "Duke krijuar…",
-"Commencer l'inscription": "Fillo regjistrimin"
+"Commencer l'inscription": "Fillo regjistrimin",
+"Mon espace — Nikah": "Hapësira ime — Nikah",
+"Chargement de votre espace…": "Duke ngarkuar hapësirën tuaj…",
+"Chargement…": "Duke ngarkuar…",
+"Mon profil": "Profili im",
+"Ma photo": "Fotoja ime",
+"Vérifier mon identité": "Verifiko identitetin tim",
+"Pour que votre photo soit visible des autres membres, nous devons vérifier votre identité. Envoyez une photo de votre pièce d'identité (recto) et un selfie récent. Ces deux images sont lues uniquement par l'administrateur, puis <b>supprimées</b> dès sa décision.": "Që fotoja juaj të shihet nga anëtarët e tjerë, duhet të verifikojmë identitetin tuaj. Dërgoni një foto të dokumentit tuaj të identitetit (para) dhe një selfie të fundit. Këto dy imazhe i sheh vetëm administratori dhe <b>fshihen</b> sapo të vendosë.",
+"1. Photo de votre pièce d'identité": "1. Foto e dokumentit të identitetit",
+"2. Un selfie, visage bien visible": "2. Një selfie, me fytyrën qartë",
+"Aperçu": "Pamje paraprake",
+"Envoyer pour vérification": "Dërgo për verifikim",
+"Envoi en cours…": "Duke dërguar…",
+"Merci d'ajouter les deux images (pièce d'identité et selfie).": "Ju lutem shtoni të dy imazhet (dokumentin dhe selfien).",
+"Vos documents ont bien été reçus. L'administrateur va les examiner. Vous pouvez en renvoyer de nouveaux si nécessaire.": "Dokumentet tuaja u morën. Administratori do t'i shqyrtojë. Mund të dërgoni të reja nëse duhet.",
+"Merci ! Vos documents ont bien été reçus. L'administrateur va les examiner.": "Faleminderit! Dokumentet tuaja u morën. Administratori do t'i shqyrtojë.",
+"L'envoi n'a pas abouti. Merci de réessayer avec d'autres images.": "Dërgimi dështoi. Ju lutem provoni me imazhe të tjera.",
+"Identité vérifiée : votre photo est visible par les autres membres.": "Identiteti u verifikua: fotoja juaj shihet nga anëtarët e tjerë.",
+"Identité non vérifiée : votre photo n'est visible que par vous. Elle sera montrée aux autres membres après la vérification de votre identité.": "Identiteti nuk është verifikuar: fotoja juaj shihet vetëm nga ju. Do t'u shfaqet anëtarëve të tjerë pas verifikimit të identitetit.",
+"Aucun profil ne correspond exactement à votre recherche pour le moment.": "Për momentin asnjë profil nuk përputhet saktësisht me kërkimin tuaj.",
+"Photo visible après vérification d'identité": "Fotoja shihet pas verifikimit të identitetit",
+"Identité vérifiée": "Identiteti i verifikuar",
+"Écrire à cette personne": "Shkruaji këtij personi",
+"✉ Écrire": "✉ Shkruaj",
+"Écrire": "Shkruaj",
+"Croyance :": "Besimi:",
+"Pratique :": "Praktika:",
+"Situation :": "Gjendja:",
+"Enfants :": "Fëmijë:",
+"Mariage envisagé :": "Martesa e parashikuar:",
+"Sunnite": "Sunit",
+"Chiite": "Shiit",
+"Soufi": "Sufi",
+"Ahmadiyya": "Ahmadije",
+"Islam — autre": "Islam — tjetër",
+"En cours de réversion": "Në proces kthimi",
+"Non précisé": "Pa specifikuar",
+"Pas encore sûr(e)": "Ende jo i/e sigurt",
+"Femme": "Grua",
+"Homme": "Burrë",
+"Nouveau message": "Mesazh i ri",
+"Votre premier message est vérifié par la modération avant d'être transmis.": "Mesazhi juaj i parë kontrollohet nga moderimi para se të dërgohet.",
+"Votre message de présentation, avec respect et sincérité…": "Mesazhi juaj i prezantimit, me respekt dhe sinqeritet…",
+"Annuler": "Anulo",
+"Envoyer": "Dërgo",
+"Fermer": "Mbyll",
+"Merci d'écrire un court message.": "Ju lutem shkruani një mesazh të shkurtër.",
+"Le contact n'a pas pu être établi. Votre identité doit être vérifiée et le profil doit correspondre à votre recherche.": "Kontakti nuk u vendos dot. Identiteti juaj duhet të jetë i verifikuar dhe profili duhet të përputhet me kërkimin tuaj.",
+"Connexion impossible pour le moment.": "Lidhja nuk është e mundur për momentin.",
+"Connexion impossible pour le moment. Vérifiez votre connexion Internet et rechargez la page.": "Lidhja nuk është e mundur për momentin. Kontrolloni internetin dhe ringarkoni faqen.",
+"Message bloqué et signalé à l'administration.": "Mesazhi u bllokua dhe iu raportua administratës.",
+"Votre compte est suspendu.": "Llogaria juaj është pezulluar.",
+"Message retenu pour vérification.": "Mesazhi u mbajt për verifikim.",
+"Message bloqué et signalé à l'administration. Les numéros de téléphone, adresses e-mail, réseaux sociaux, liens, demandes de contact hors du site et demandes d'argent sont interdits par la charte. À la prochaine tentative, votre compte sera suspendu.": "Mesazhi u bllokua dhe iu raportua administratës. Numrat e telefonit, adresat e email-it, rrjetet sociale, lidhjet, kërkesat për kontakt jashtë faqes dhe kërkesat për para ndalohen nga karta. Në përpjekjen e radhës, llogaria juaj do të pezullohet.",
+"Message retenu et transmis à l'administration pour vérification. Il ne sera envoyé qu'après son accord. S'il ne respecte pas la charte, votre compte pourra être suspendu.": "Mesazhi u mbajt dhe iu dërgua administratës për verifikim. Do të dërgohet vetëm pas miratimit. Nëse nuk respekton kartën, llogaria juaj mund të pezullohet.",
+"Votre compte vient d'être suspendu : c'est la deuxième tentative d'envoyer des coordonnées ou une demande d'argent. L'administration va examiner votre dossier.": "Llogaria juaj sapo u pezullua: është përpjekja e dytë për të dërguar kontakte ose kërkesë për para. Administrata do ta shqyrtojë dosjen tuaj.",
+"Messages — Nikah": "Mesazhet — Nikah",
+"← Retour": "← Kthehu",
+"Bloquer ou signaler": "Blloko ose raporto",
+"Bloquer cette personne": "Blloko këtë person",
+"Pendant 24 heures": "Për 24 orë",
+"Pendant 7 jours": "Për 7 ditë",
+"Pendant 30 jours": "Për 30 ditë",
+"Définitivement": "Përgjithmonë",
+"Débloquer": "Zhblloko",
+"Signaler à l'administration": "Raporto te administrata",
+"Aucune conversation pour le moment. Depuis « Mon espace », choisissez un profil et cliquez sur « Écrire ».": "Ende asnjë bisedë. Nga « Hapësira ime », zgjidhni një profil dhe klikoni « Shkruaj ».",
+"L'administration lira cette conversation. La personne signalée n'est pas prévenue.": "Administrata do ta lexojë këtë bisedë. Personi i raportuar nuk njoftohet.",
+"Choisissez un motif…": "Zgjidhni një arsye…",
+"Propos déplacés ou contraires à la charte": "Fjalë të papërshtatshme ose kundër kartës",
+"Insistance ou harcèlement": "Ngulmim ose ngacmim",
+"Faux profil ou fausses informations": "Profil i rremë ose të dhëna të rreme",
+"Demande d'argent ou de cadeau": "Kërkesë për para ose dhurata",
+"Demande de numéro ou de contact hors du site": "Kërkesë për numër ose kontakt jashtë faqes",
+"Autre raison": "Arsye tjetër",
+"Expliquez en quelques mots (facultatif)…": "Shpjegoni me pak fjalë (opsionale)…",
+"Envoyer le signalement": "Dërgo raportimin",
+"Merci de choisir un motif.": "Ju lutem zgjidhni një arsye.",
+"Le signalement n'a pas pu être envoyé. Réessayez dans un instant.": "Raportimi nuk u dërgua dot. Provoni sërish pas pak.",
+"Vous avez signalé cette conversation. L'administration va l'examiner.": "E keni raportuar këtë bisedë. Administrata do ta shqyrtojë.",
+"Vous avez bloqué cette personne définitivement. Elle ne peut plus vous écrire et n'apparaît plus dans vos recherches.": "E keni bllokuar këtë person përgjithmonë. Nuk mund t'ju shkruajë më dhe nuk shfaqet më në kërkimet tuaja.",
+"Vous ne pouvez plus écrire à cette personne pour le moment.": "Për momentin nuk mund t'i shkruani më këtij personi.",
+"Cette personne souhaite entrer en contact avec vous. Souhaitez-vous répondre ?": "Ky person dëshiron të lidhet me ju. A dëshironi të përgjigjeni?",
+"Accepter": "Prano",
+"Refuser": "Refuzo",
+"Pour la sécurité de tous, votre premier message est vérifié avant d'être transmis. Vous serez informé(e) dès qu'il sera envoyé.": "Për sigurinë e të gjithëve, mesazhi juaj i parë kontrollohet para se të dërgohet. Do të njoftoheni sapo të dërgohet.",
+"Votre message n'a pas pu être transmis car il ne respecte pas la charte de la plateforme.": "Mesazhi juaj nuk u dërgua sepse nuk respekton kartën e platformës.",
+"Votre demande a été envoyée. Vous pourrez continuer la conversation dès qu'elle sera acceptée.": "Kërkesa juaj u dërgua. Mund ta vazhdoni bisedën sapo të pranohet.",
+"Cette demande a été refusée.": "Kjo kërkesë u refuzua.",
+"Votre message…": "Mesazhi juaj…",
+"Message en cours de vérification": "Mesazhi po verifikohet",
+"Message non transmis": "Mesazhi nuk u dërgua",
+"Demande envoyée — en attente": "Kërkesa u dërgua — në pritje",
+"Nouvelle demande de contact": "Kërkesë e re kontakti",
+"Demande refusée": "Kërkesa u refuzua",
+"Contester une décision — Nikah": "Kundërshto një vendim — Nikah",
+"Commission disciplinaire": "Komisioni disiplinor",
+"Contester une décision": "Kundërshto një vendim",
+"Expliquez pourquoi vous estimez que cette décision n'est pas fondée. La Commission disciplinaire relira la conversation concernée et vous répondra par e-mail. Une seule contestation est possible par décision.": "Shpjegoni pse mendoni se ky vendim nuk është i bazuar. Komisioni disiplinor do ta rilexojë bisedën dhe do t'ju përgjigjet me email. Lejohet vetëm një kundërshtim për çdo vendim.",
+"Votre explication (au moins 10 caractères)…": "Shpjegimi juaj (të paktën 10 karaktere)…",
+"Envoyer ma contestation": "Dërgo kundërshtimin tim",
+"Votre contestation a déjà été transmise. La Commission disciplinaire l'examine et vous répondra par e-mail.": "Kundërshtimi juaj është dërguar tashmë. Komisioni disiplinor po e shqyrton dhe do t'ju përgjigjet me email.",
+"Cette décision a été réexaminée et maintenue par la Commission disciplinaire.": "Ky vendim u rishqyrtua dhe u mbajt nga Komisioni disiplinor.",
+"Cette décision a été annulée par la Commission disciplinaire.": "Ky vendim u anulua nga Komisioni disiplinor.",
+"Ce lien n'est pas valide.": "Kjo lidhje nuk është e vlefshme.",
+"Cette décision ne peut plus être contestée.": "Ky vendim nuk mund të kundërshtohet më.",
+"Connexion impossible pour le moment. Rechargez la page dans un instant.": "Lidhja nuk është e mundur për momentin. Ringarkoni faqen pas pak.",
+"Merci d'écrire une explication d'au moins 10 caractères.": "Ju lutem shkruani një shpjegim prej të paktën 10 karakteresh.",
+"Votre contestation a bien été transmise à la Commission disciplinaire. Elle relira la conversation et vous répondra par e-mail.": "Kundërshtimi juaj iu dërgua Komisionit disiplinor. Ai do ta rilexojë bisedën dhe do t'ju përgjigjet me email.",
+"L'envoi n'a pas abouti. Merci de réessayer dans un instant.": "Dërgimi dështoi. Ju lutem provoni sërish pas pak."
 },
 "modeles": [
 [
@@ -237,6 +346,86 @@ window.NikahLangues.sq = {
 [
 "(\\d+) ans",
 "$1 vjeç"
+],
+[
+"Vous recherchez une épouse âgé\\(e\\) de <b>(\\d+) à (\\d+) ans</b>\\. (\\d+) profils? (?:correspondent|correspond) exactement à votre recherche\\.",
+"Kërkoni një bashkëshorte <b>$1 deri $2 vjeç</b>. Profile që përputhen: $3."
+],
+[
+"Vous recherchez un époux âgé\\(e\\) de <b>(\\d+) à (\\d+) ans</b>\\. (\\d+) profils? (?:correspondent|correspond) exactement à votre recherche\\.",
+"Kërkoni një bashkëshort <b>$1 deri $2 vjeç</b>. Profile që përputhen: $3."
+],
+[
+"● (\\d+) avertissements? officiels? inscrits? à votre dossier\\. En cas de récidive, votre compte sera suspendu\\.",
+"● Paralajmërime zyrtare në dosjen tuaj: $1. Në rast përsëritjeje, llogaria juaj do të pezullohet."
+],
+[
+"(.+), (\\d+) ans",
+"$1, $2 vjeç"
+],
+[
+"(\\d+) ans · (.+)",
+"$1 vjeç · $2"
+],
+[
+"Écrire à (.+)",
+"Shkruaji $1"
+],
+[
+"Messages \\((\\d+)\\)",
+"Mesazhet ($1)"
+],
+[
+"\\((\\d+)\\) Messages — Nikah",
+"($1) Mesazhet — Nikah"
+],
+[
+"\\((\\d+)\\) Mon espace — Nikah",
+"($1) Hapësira ime — Nikah"
+],
+[
+"(\\d\\d\\.\\d\\d \\d\\d:\\d\\d) · en attente de vérification",
+"$1 · në verifikim"
+],
+[
+"(\\d\\d\\.\\d\\d \\d\\d:\\d\\d) · non transmis",
+"$1 · nuk u dërgua"
+],
+[
+"Vous avez bloqué cette personne jusqu'au (.+)\\. Elle ne peut pas vous écrire d'ici là\\.",
+"E keni bllokuar këtë person deri më $1. Deri atëherë nuk mund t'ju shkruajë."
+],
+[
+"Bloquer (.+) pendant 24 heures \\? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches\\.",
+"Ta bllokoni $1 për 24 orë? Nuk do t'ju shkruajë më dhe nuk do të shfaqet në kërkimet tuaja."
+],
+[
+"Bloquer (.+) pendant 7 jours \\? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches\\.",
+"Ta bllokoni $1 për 7 ditë? Nuk do t'ju shkruajë më dhe nuk do të shfaqet në kërkimet tuaja."
+],
+[
+"Bloquer (.+) pendant 30 jours \\? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches\\.",
+"Ta bllokoni $1 për 30 ditë? Nuk do t'ju shkruajë më dhe nuk do të shfaqet në kërkimet tuaja."
+],
+[
+"Bloquer (.+) définitivement \\? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches\\.",
+"Ta bllokoni $1 përgjithmonë? Nuk do t'ju shkruajë më dhe nuk do të shfaqet në kërkimet tuaja."
+],
+[
+"Contester : avertissement",
+"Kundërshto: paralajmërimin"
+],
+[
+"Contester : suspension de (\\d+) jours",
+"Kundërshto: pezullimin $1-ditor"
+],
+[
+"Contester : fermeture du compte",
+"Kundërshto: mbylljen e llogarisë"
+],
+[
+"Décision du (.+)\\.",
+"Vendim i datës $1."
 ]
 ]
 };

@@ -223,7 +223,116 @@ window.NikahLangues.it = {
 "L'âge minimum ne peut pas être supérieur à l'âge maximum.": "L'età minima non può essere superiore all'età massima.",
 "Merci de compléter tous les champs marqués en rouge pour continuer.": "Completate tutti i campi segnati in rosso per continuare.",
 "Création en cours…": "Creazione in corso…",
-"Commencer l'inscription": "Inizia l'iscrizione"
+"Commencer l'inscription": "Inizia l'iscrizione",
+"Mon espace — Nikah": "Il mio spazio — Nikah",
+"Chargement de votre espace…": "Caricamento del vostro spazio…",
+"Chargement…": "Caricamento…",
+"Mon profil": "Il mio profilo",
+"Ma photo": "La mia foto",
+"Vérifier mon identité": "Verificare la mia identità",
+"Pour que votre photo soit visible des autres membres, nous devons vérifier votre identité. Envoyez une photo de votre pièce d'identité (recto) et un selfie récent. Ces deux images sont lues uniquement par l'administrateur, puis <b>supprimées</b> dès sa décision.": "Perché la vostra foto sia visibile agli altri membri, dobbiamo verificare la vostra identità. Inviate una foto del vostro documento d'identità (fronte) e un selfie recente. Queste due immagini sono viste solo dall'amministratore e poi <b>cancellate</b> appena ha deciso.",
+"1. Photo de votre pièce d'identité": "1. Foto del vostro documento d'identità",
+"2. Un selfie, visage bien visible": "2. Un selfie, con il viso ben visibile",
+"Aperçu": "Anteprima",
+"Envoyer pour vérification": "Invia per la verifica",
+"Envoi en cours…": "Invio in corso…",
+"Merci d'ajouter les deux images (pièce d'identité et selfie).": "Aggiungete le due immagini (documento d'identità e selfie).",
+"Vos documents ont bien été reçus. L'administrateur va les examiner. Vous pouvez en renvoyer de nouveaux si nécessaire.": "I vostri documenti sono stati ricevuti. L'amministratore li esaminerà. Potete inviarne di nuovi se necessario.",
+"Merci ! Vos documents ont bien été reçus. L'administrateur va les examiner.": "Grazie! I vostri documenti sono stati ricevuti. L'amministratore li esaminerà.",
+"L'envoi n'a pas abouti. Merci de réessayer avec d'autres images.": "L'invio non è riuscito. Riprovate con altre immagini.",
+"Identité vérifiée : votre photo est visible par les autres membres.": "Identità verificata: la vostra foto è visibile agli altri membri.",
+"Identité non vérifiée : votre photo n'est visible que par vous. Elle sera montrée aux autres membres après la vérification de votre identité.": "Identità non verificata: la vostra foto è visibile solo a voi. Sarà mostrata agli altri membri dopo la verifica della vostra identità.",
+"Aucun profil ne correspond exactement à votre recherche pour le moment.": "Al momento nessun profilo corrisponde esattamente alla vostra ricerca.",
+"Photo visible après vérification d'identité": "Foto visibile dopo la verifica dell'identità",
+"Identité vérifiée": "Identità verificata",
+"Écrire à cette personne": "Scrivere a questa persona",
+"✉ Écrire": "✉ Scrivi",
+"Écrire": "Scrivi",
+"Croyance :": "Credo:",
+"Pratique :": "Pratica:",
+"Situation :": "Situazione:",
+"Enfants :": "Figli:",
+"Mariage envisagé :": "Matrimonio previsto:",
+"Sunnite": "Sunnita",
+"Chiite": "Sciita",
+"Soufi": "Sufi",
+"Ahmadiyya": "Ahmadiyya",
+"Islam — autre": "Islam — altro",
+"En cours de réversion": "In conversione",
+"Non précisé": "Non precisato",
+"Pas encore sûr(e)": "Non ancora sicuro/a",
+"Femme": "Donna",
+"Homme": "Uomo",
+"Nouveau message": "Nuovo messaggio",
+"Votre premier message est vérifié par la modération avant d'être transmis.": "Il vostro primo messaggio viene controllato dalla moderazione prima di essere trasmesso.",
+"Votre message de présentation, avec respect et sincérité…": "Il vostro messaggio di presentazione, con rispetto e sincerità…",
+"Annuler": "Annulla",
+"Envoyer": "Invia",
+"Fermer": "Chiudi",
+"Merci d'écrire un court message.": "Scrivete un breve messaggio.",
+"Le contact n'a pas pu être établi. Votre identité doit être vérifiée et le profil doit correspondre à votre recherche.": "Non è stato possibile stabilire il contatto. La vostra identità deve essere verificata e il profilo deve corrispondere alla vostra ricerca.",
+"Connexion impossible pour le moment.": "Connessione impossibile al momento.",
+"Connexion impossible pour le moment. Vérifiez votre connexion Internet et rechargez la page.": "Connessione impossibile al momento. Verificate la connessione Internet e ricaricate la pagina.",
+"Message bloqué et signalé à l'administration.": "Messaggio bloccato e segnalato all'amministrazione.",
+"Votre compte est suspendu.": "Il vostro account è sospeso.",
+"Message retenu pour vérification.": "Messaggio trattenuto per verifica.",
+"Message bloqué et signalé à l'administration. Les numéros de téléphone, adresses e-mail, réseaux sociaux, liens, demandes de contact hors du site et demandes d'argent sont interdits par la charte. À la prochaine tentative, votre compte sera suspendu.": "Messaggio bloccato e segnalato all'amministrazione. Numeri di telefono, indirizzi e-mail, social network, link, richieste di contatto fuori dal sito e richieste di denaro sono vietati dalla carta. Al prossimo tentativo il vostro account sarà sospeso.",
+"Message retenu et transmis à l'administration pour vérification. Il ne sera envoyé qu'après son accord. S'il ne respecte pas la charte, votre compte pourra être suspendu.": "Messaggio trattenuto e trasmesso all'amministrazione per verifica. Sarà inviato solo dopo il suo consenso. Se non rispetta la carta, il vostro account potrà essere sospeso.",
+"Votre compte vient d'être suspendu : c'est la deuxième tentative d'envoyer des coordonnées ou une demande d'argent. L'administration va examiner votre dossier.": "Il vostro account è stato appena sospeso: è il secondo tentativo di inviare recapiti o una richiesta di denaro. L'amministrazione esaminerà il vostro fascicolo.",
+"Messages — Nikah": "Messaggi — Nikah",
+"← Retour": "← Indietro",
+"Bloquer ou signaler": "Bloccare o segnalare",
+"Bloquer cette personne": "Bloccare questa persona",
+"Pendant 24 heures": "Per 24 ore",
+"Pendant 7 jours": "Per 7 giorni",
+"Pendant 30 jours": "Per 30 giorni",
+"Définitivement": "Definitivamente",
+"Débloquer": "Sbloccare",
+"Signaler à l'administration": "Segnalare all'amministrazione",
+"Aucune conversation pour le moment. Depuis « Mon espace », choisissez un profil et cliquez sur « Écrire ».": "Ancora nessuna conversazione. Da « Il mio spazio », scegliete un profilo e cliccate su « Scrivi ».",
+"L'administration lira cette conversation. La personne signalée n'est pas prévenue.": "L'amministrazione leggerà questa conversazione. La persona segnalata non viene avvisata.",
+"Choisissez un motif…": "Scegliete un motivo…",
+"Propos déplacés ou contraires à la charte": "Parole inappropriate o contrarie alla carta",
+"Insistance ou harcèlement": "Insistenza o molestie",
+"Faux profil ou fausses informations": "Profilo falso o informazioni false",
+"Demande d'argent ou de cadeau": "Richiesta di denaro o di regali",
+"Demande de numéro ou de contact hors du site": "Richiesta di numero o di contatto fuori dal sito",
+"Autre raison": "Altro motivo",
+"Expliquez en quelques mots (facultatif)…": "Spiegate in poche parole (facoltativo)…",
+"Envoyer le signalement": "Invia la segnalazione",
+"Merci de choisir un motif.": "Scegliete un motivo.",
+"Le signalement n'a pas pu être envoyé. Réessayez dans un instant.": "Non è stato possibile inviare la segnalazione. Riprovate tra un istante.",
+"Vous avez signalé cette conversation. L'administration va l'examiner.": "Avete segnalato questa conversazione. L'amministrazione la esaminerà.",
+"Vous avez bloqué cette personne définitivement. Elle ne peut plus vous écrire et n'apparaît plus dans vos recherches.": "Avete bloccato questa persona definitivamente. Non può più scrivervi e non compare più nelle vostre ricerche.",
+"Vous ne pouvez plus écrire à cette personne pour le moment.": "Per il momento non potete più scrivere a questa persona.",
+"Cette personne souhaite entrer en contact avec vous. Souhaitez-vous répondre ?": "Questa persona desidera entrare in contatto con voi. Volete rispondere?",
+"Accepter": "Accetta",
+"Refuser": "Rifiuta",
+"Pour la sécurité de tous, votre premier message est vérifié avant d'être transmis. Vous serez informé(e) dès qu'il sera envoyé.": "Per la sicurezza di tutti, il vostro primo messaggio viene controllato prima di essere trasmesso. Sarete informati appena sarà inviato.",
+"Votre message n'a pas pu être transmis car il ne respecte pas la charte de la plateforme.": "Il vostro messaggio non è stato trasmesso perché non rispetta la carta della piattaforma.",
+"Votre demande a été envoyée. Vous pourrez continuer la conversation dès qu'elle sera acceptée.": "La vostra richiesta è stata inviata. Potrete continuare la conversazione appena sarà accettata.",
+"Cette demande a été refusée.": "Questa richiesta è stata rifiutata.",
+"Votre message…": "Il vostro messaggio…",
+"Message en cours de vérification": "Messaggio in verifica",
+"Message non transmis": "Messaggio non trasmesso",
+"Demande envoyée — en attente": "Richiesta inviata — in attesa",
+"Nouvelle demande de contact": "Nuova richiesta di contatto",
+"Demande refusée": "Richiesta rifiutata",
+"Contester une décision — Nikah": "Contestare una decisione — Nikah",
+"Commission disciplinaire": "Commissione disciplinare",
+"Contester une décision": "Contestare una decisione",
+"Expliquez pourquoi vous estimez que cette décision n'est pas fondée. La Commission disciplinaire relira la conversation concernée et vous répondra par e-mail. Une seule contestation est possible par décision.": "Spiegate perché ritenete che questa decisione non sia fondata. La Commissione disciplinare rileggerà la conversazione e vi risponderà via e-mail. È possibile una sola contestazione per decisione.",
+"Votre explication (au moins 10 caractères)…": "La vostra spiegazione (almeno 10 caratteri)…",
+"Envoyer ma contestation": "Invia la mia contestazione",
+"Votre contestation a déjà été transmise. La Commission disciplinaire l'examine et vous répondra par e-mail.": "La vostra contestazione è già stata trasmessa. La Commissione disciplinare la sta esaminando e vi risponderà via e-mail.",
+"Cette décision a été réexaminée et maintenue par la Commission disciplinaire.": "Questa decisione è stata riesaminata e confermata dalla Commissione disciplinare.",
+"Cette décision a été annulée par la Commission disciplinaire.": "Questa decisione è stata annullata dalla Commissione disciplinare.",
+"Ce lien n'est pas valide.": "Questo link non è valido.",
+"Cette décision ne peut plus être contestée.": "Questa decisione non può più essere contestata.",
+"Connexion impossible pour le moment. Rechargez la page dans un instant.": "Connessione impossibile al momento. Ricaricate la pagina tra un istante.",
+"Merci d'écrire une explication d'au moins 10 caractères.": "Scrivete una spiegazione di almeno 10 caratteri.",
+"Votre contestation a bien été transmise à la Commission disciplinaire. Elle relira la conversation et vous répondra par e-mail.": "La vostra contestazione è stata trasmessa alla Commissione disciplinare. Rileggerà la conversazione e vi risponderà via e-mail.",
+"L'envoi n'a pas abouti. Merci de réessayer dans un instant.": "L'invio non è riuscito. Riprovate tra un istante."
 },
 "modeles": [
 [
@@ -237,6 +346,86 @@ window.NikahLangues.it = {
 [
 "(\\d+) ans",
 "$1 anni"
+],
+[
+"Vous recherchez une épouse âgé\\(e\\) de <b>(\\d+) à (\\d+) ans</b>\\. (\\d+) profils? (?:correspondent|correspond) exactement à votre recherche\\.",
+"Cercate una moglie di età compresa tra <b>$1 e $2 anni</b>. Profili corrispondenti: $3."
+],
+[
+"Vous recherchez un époux âgé\\(e\\) de <b>(\\d+) à (\\d+) ans</b>\\. (\\d+) profils? (?:correspondent|correspond) exactement à votre recherche\\.",
+"Cercate un marito di età compresa tra <b>$1 e $2 anni</b>. Profili corrispondenti: $3."
+],
+[
+"● (\\d+) avertissements? officiels? inscrits? à votre dossier\\. En cas de récidive, votre compte sera suspendu\\.",
+"● Avvertimenti ufficiali nel vostro fascicolo: $1. In caso di recidiva, il vostro account sarà sospeso."
+],
+[
+"(.+), (\\d+) ans",
+"$1, $2 anni"
+],
+[
+"(\\d+) ans · (.+)",
+"$1 anni · $2"
+],
+[
+"Écrire à (.+)",
+"Scrivere a $1"
+],
+[
+"Messages \\((\\d+)\\)",
+"Messaggi ($1)"
+],
+[
+"\\((\\d+)\\) Messages — Nikah",
+"($1) Messaggi — Nikah"
+],
+[
+"\\((\\d+)\\) Mon espace — Nikah",
+"($1) Il mio spazio — Nikah"
+],
+[
+"(\\d\\d\\.\\d\\d \\d\\d:\\d\\d) · en attente de vérification",
+"$1 · in verifica"
+],
+[
+"(\\d\\d\\.\\d\\d \\d\\d:\\d\\d) · non transmis",
+"$1 · non trasmesso"
+],
+[
+"Vous avez bloqué cette personne jusqu'au (.+)\\. Elle ne peut pas vous écrire d'ici là\\.",
+"Avete bloccato questa persona fino al $1. Fino ad allora non può scrivervi."
+],
+[
+"Bloquer (.+) pendant 24 heures \\? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches\\.",
+"Bloccare $1 per 24 ore? Non potrà più scrivervi e non comparirà più nelle vostre ricerche."
+],
+[
+"Bloquer (.+) pendant 7 jours \\? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches\\.",
+"Bloccare $1 per 7 giorni? Non potrà più scrivervi e non comparirà più nelle vostre ricerche."
+],
+[
+"Bloquer (.+) pendant 30 jours \\? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches\\.",
+"Bloccare $1 per 30 giorni? Non potrà più scrivervi e non comparirà più nelle vostre ricerche."
+],
+[
+"Bloquer (.+) définitivement \\? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches\\.",
+"Bloccare $1 definitivamente? Non potrà più scrivervi e non comparirà più nelle vostre ricerche."
+],
+[
+"Contester : avertissement",
+"Contestare: avvertimento"
+],
+[
+"Contester : suspension de (\\d+) jours",
+"Contestare: sospensione di $1 giorni"
+],
+[
+"Contester : fermeture du compte",
+"Contestare: chiusura dell'account"
+],
+[
+"Décision du (.+)\\.",
+"Decisione del $1."
 ]
 ]
 };

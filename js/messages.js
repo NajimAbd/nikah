@@ -100,7 +100,7 @@
     zone.innerHTML = "";
     r.messages.forEach(function (m) {
       var b = el("div", "bulle " + (m.moi ? "moi" : "autre") + (m.statut === "attente" ? " en-attente" : m.statut === "refuse" ? " refuse" : ""));
-      b.appendChild(el("div", "", m.texte));
+      var corpsMsg = el("div", "", m.texte); corpsMsg.setAttribute("data-no-i18n", ""); b.appendChild(corpsMsg);
       b.appendChild(el("small", "", heure(m.date) + (m.statut === "attente" ? " · en attente de vérification" : m.statut === "refuse" ? " · non transmis" : "")));
       zone.appendChild(b);
     });
@@ -174,7 +174,7 @@
   var dernierFil = null;
   var menu = document.getElementById("menuOptions");
   var btnOptions = document.getElementById("btnOptions");
-  function dateFin(t) { var p = String(t).split(/[-T:]/); return p.length >= 5 ? p[2] + "." + p[1] + "." + p[0] + " à " + p[3] + "h" + p[4] : t; }
+  function dateFin(t) { var p = String(t).split(/[-T:]/); return p.length >= 5 ? p[2] + "." + p[1] + "." + p[0] + ", " + p[3] + ":" + p[4] : t; }
   function fermerMenu() { menu.hidden = true; btnOptions.setAttribute("aria-expanded", "false"); }
   function majMenu(r) {
     var bloque = !!(r.blocage && r.blocage.par_moi);

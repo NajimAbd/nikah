@@ -33,7 +33,7 @@
   function traduire(texte) {
     if (!dico || texte == null) return texte;
     var n = norm(texte);
-    if (!n) return texte;
+    if (!n) return null;
     if (Object.prototype.hasOwnProperty.call(dico, n)) return dico[n];
     for (var i = 0; i < modeles.length; i++) {
       var m = n.match(modeles[i][0]);
@@ -66,7 +66,8 @@
       if (!INLINE[c.tagName] || c.children.length) return false;
     }
     var cle = norm(el.innerHTML.replace(/\s*class="[^"]*"/g, "").replace(/<br\s*\/?>/g, "<br>"));
-    if (dico && Object.prototype.hasOwnProperty.call(dico, cle)) { if (dico[cle] !== cle) el.innerHTML = dico[cle]; return true; }
+    var t = traduire(cle);
+    if (t != null) { if (t !== cle) el.innerHTML = t; return true; }
     return false;
   }
   function parcourir(racine) {
@@ -83,7 +84,9 @@
       }
       return;
     }
-    if (racine.nodeType !== 1 || INTERDIT[racine.tagName] || protege(racine)) return;
+    if (racine.nodeType !== 1 || protege(racine)) return;
+    if (racine.tagName === "TEXTAREA") { traduireAttributs(racine); return; }
+    if (INTERDIT[racine.tagName]) return;
     traduireAttributs(racine);
     if (traduireBloc(racine)) return;
     var enfants = Array.prototype.slice.call(racine.childNodes);
@@ -130,7 +133,7 @@
     selecteur();
     if (langue === "fr") return;
     var s = document.createElement("script");
-    s.src = "js/langues/" + langue + ".js?v=20261017a";
+    s.src = "js/langues/" + langue + ".js?v=20261017b";
     s.onload = function () {
       var L = window.NikahLangues[langue] || {};
       dico = L.textes || {};
@@ -140,6 +143,7 @@
       new MutationObserver(function (liste) {
         liste.forEach(function (m) {
           if (m.type === "characterData") parcourir(m.target);
+          else if (!protege(m.target) && traduireBloc(m.target)) return;
           else Array.prototype.forEach.call(m.addedNodes, parcourir);
         });
       }).observe(document.body, { childList: true, subtree: true, characterData: true });
