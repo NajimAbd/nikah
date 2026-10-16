@@ -23,7 +23,7 @@
       },
       {
         "parameters": {
-          "jsCode": "const b = $input.first().json.body || {};\nconst token = String(b.token || '');\nconst action = String(b.action || '');\nif (!/^[a-f0-9]{64}$/.test(token)) return [{ json: { ok: false, error: 'session_invalide' } }];\nif (['list', 'moderate', 'report_done'].indexOf(action) === -1) return [{ json: { ok: false, error: 'requete_invalide' } }];\nconst AUTH = \"a.id=1 AND a.session_hash=SHA2('\" + token + \"',256) AND a.session_expires > NOW()\";\nlet q0 = 'SELECT 1';\nif (action === 'moderate') {\n  const cid = parseInt(b.cid, 10);\n  const st = b.decision === 'approve' ? 'demande' : b.decision === 'reject' ? 'rejetee' : null;\n  if (!Number.isInteger(cid) || cid < 1 || !st) return [{ json: { ok: false, error: 'requete_invalide' } }];\n  q0 = \"UPDATE conversations c JOIN admin_access a ON \" + AUTH + \" SET c.status='\" + st + \"' WHERE c.id=\" + cid + \" AND c.status='moderation'\";\n}\nif (action === 'report_done') {\n  const cid = parseInt(b.cid, 10);\n  if (!Number.isInteger(cid) || cid < 1) return [{ json: { ok: false, error: 'requete_invalide' } }];\n  q0 = \"UPDATE member_reports r JOIN admin_access a ON \" + AUTH + \" SET r.status='traite' WHERE r.conversation_id=\" + cid + \" AND r.status='nouveau'\";\n}\nconst q1 = \"SELECT a.id AS admin_id, c.id AS cid, c.status, c.created_at AS cdate, ma.id AS a_id, ma.email AS a_email, ma.display_name AS a_nom, ma.gender AS a_genre, mb.id AS b_id, mb.email AS b_email, mb.display_name AS b_nom, mb.gender AS b_genre, (SELECT JSON_ARRAYAGG(JSON_OBJECT('id', r.id, 'par', r.reporter_id, 'motif', r.reason, 'details', r.details, 'date', DATE_FORMAT(r.created_at,'%Y-%m-%dT%H:%i'), 'statut', r.status)) FROM member_reports r WHERE r.conversation_id=c.id) AS rapports, m.id AS mid, m.sender_id, m.body, m.created_at AS mdate \" +\n  \"FROM (SELECT 1 AS x) d LEFT JOIN admin_access a ON \" + AUTH + \" LEFT JOIN conversations c ON a.id IS NOT NULL LEFT JOIN members ma ON ma.id=c.member_a LEFT JOIN members mb ON mb.id=c.member_b LEFT JOIN messages m ON m.conversation_id=c.id \" +\n  \"ORDER BY (c.status='moderation') DESC, (SELECT COUNT(*) FROM member_reports r2 WHERE r2.conversation_id=c.id AND r2.status='nouveau') DESC, c.id DESC, m.id ASC LIMIT 1000\";\nreturn [{ json: { ok: true, q0, q1 } }];\n"
+          "jsCode": "const b = $input.first().json.body || {};\nconst token = String(b.token || '');\nconst action = String(b.action || '');\nif (!/^[a-f0-9]{64}$/.test(token)) return [{ json: { ok: false, error: 'session_invalide' } }];\nif (['list', 'moderate', 'report_done', 'warn', 'suspend', 'exclude', 'lift'].indexOf(action) === -1) return [{ json: { ok: false, error: 'requete_invalide' } }];\nconst AUTH = \"a.id=1 AND a.session_hash=SHA2('\" + token + \"',256) AND a.session_expires > NOW()\";\nlet q0 = 'SELECT 1', q0b = 'SELECT 1', sanction = null;\nif (action === 'moderate') {\n  const cid = parseInt(b.cid, 10);\n  const st = b.decision === 'approve' ? 'demande' : b.decision === 'reject' ? 'rejetee' : null;\n  if (!Number.isInteger(cid) || cid < 1 || !st) return [{ json: { ok: false, error: 'requete_invalide' } }];\n  q0 = \"UPDATE conversations c JOIN admin_access a ON \" + AUTH + \" SET c.status='\" + st + \"' WHERE c.id=\" + cid + \" AND c.status='moderation'\";\n}\nif (action === 'report_done') {\n  const cid = parseInt(b.cid, 10);\n  if (!Number.isInteger(cid) || cid < 1) return [{ json: { ok: false, error: 'requete_invalide' } }];\n  q0 = \"UPDATE member_reports r JOIN admin_access a ON \" + AUTH + \" SET r.status='traite' WHERE r.conversation_id=\" + cid + \" AND r.status='nouveau'\";\n}\nif (['warn', 'suspend', 'exclude', 'lift'].indexOf(action) !== -1) {\n  const mid = parseInt(b.member_id, 10);\n  if (!Number.isInteger(mid) || mid < 1) return [{ json: { ok: false, error: 'requete_invalide' } }];\n  let days = null;\n  if (action === 'suspend') { days = parseInt(b.days, 10); if ([7, 30].indexOf(days) === -1) return [{ json: { ok: false, error: 'requete_invalide' } }]; }\n  const SET = { warn: null,\n    suspend: \"m.status='suspendu', m.suspended_until=DATE_ADD(NOW(), INTERVAL \" + days + \" DAY), m.session_hash=NULL, m.session_expires=NULL\",\n    exclude: \"m.status='exclu', m.suspended_until=NULL, m.session_hash=NULL, m.session_expires=NULL\",\n    lift: \"m.status='actif', m.suspended_until=NULL\" }[action];\n  if (SET) q0 = \"UPDATE members m JOIN admin_access a ON \" + AUTH + \" SET \" + SET + \" WHERE m.id=\" + mid + (action === 'suspend' ? \" AND m.status<>'exclu'\" : \"\");\n  q0b = \"INSERT INTO member_sanctions (member_id, kind, days) SELECT m.id, '\" + action + \"', \" + (days === null ? 'NULL' : days) + \" FROM members m JOIN admin_access a ON \" + AUTH + \" WHERE m.id=\" + mid;\n  sanction = { action, member_id: mid, days };\n}\nconst SANC = (x) => \"(SELECT JSON_ARRAYAGG(JSON_OBJECT('type', s.kind, 'jours', s.days, 'date', DATE_FORMAT(s.created_at,'%Y-%m-%dT%H:%i'))) FROM member_sanctions s WHERE s.member_id=\" + x + \")\";\nconst q1 = \"SELECT a.id AS admin_id, c.id AS cid, c.status, c.created_at AS cdate, ma.id AS a_id, ma.email AS a_email, ma.display_name AS a_nom, ma.gender AS a_genre, mb.id AS b_id, mb.email AS b_email, mb.display_name AS b_nom, mb.gender AS b_genre, ma.status AS a_statut, DATE_FORMAT(ma.suspended_until,'%d.%m.%Y') AS a_fin, mb.status AS b_statut, DATE_FORMAT(mb.suspended_until,'%d.%m.%Y') AS b_fin, \" + SANC('ma.id') + \" AS a_sanctions, \" + SANC('mb.id') + \" AS b_sanctions, (SELECT JSON_ARRAYAGG(JSON_OBJECT('id', r.id, 'par', r.reporter_id, 'motif', r.reason, 'details', r.details, 'date', DATE_FORMAT(r.created_at,'%Y-%m-%dT%H:%i'), 'statut', r.status, 'contre', r.reported_id)) FROM member_reports r WHERE r.conversation_id=c.id) AS rapports, m.id AS mid, m.sender_id, m.body, m.created_at AS mdate \" +\n  \"FROM (SELECT 1 AS x) d LEFT JOIN admin_access a ON \" + AUTH + \" LEFT JOIN conversations c ON a.id IS NOT NULL LEFT JOIN members ma ON ma.id=c.member_a LEFT JOIN members mb ON mb.id=c.member_b LEFT JOIN messages m ON m.conversation_id=c.id \" +\n  \"ORDER BY (c.status='moderation') DESC, (SELECT COUNT(*) FROM member_reports r2 WHERE r2.conversation_id=c.id AND r2.status='nouveau') DESC, c.id DESC, m.id ASC LIMIT 1000\";\nreturn [{ json: { ok: true, q0, q0b, q1, sanction } }];\n"
         },
         "name": "Prepare",
         "type": "n8n-nodes-base.code",
@@ -134,7 +134,7 @@
       },
       {
         "parameters": {
-          "jsCode": "const rows = $input.all().map(i => i.json);\nif (!rows.length || rows[0].admin_id === null || rows[0].admin_id === undefined) return [{ json: { success: false, error: 'session_invalide' } }];\nconst map = new Map();\nfor (const r of rows) {\n  if (r.cid === null || r.cid === undefined) continue;\n  if (!map.has(r.cid)) map.set(r.cid, {\n    cid: r.cid, statut: r.status, date: r.cdate,\n    a: { id: r.a_id, email: r.a_email, nom: r.a_nom, genre: r.a_genre },\n    b: { id: r.b_id, email: r.b_email, nom: r.b_nom, genre: r.b_genre }, messages: [],\n    signalements: (function (x) { try { const v = typeof x === 'string' ? JSON.parse(x) : x; return Array.isArray(v) ? v : []; } catch (e) { return []; } })(r.rapports)\n  });\n  if (r.mid !== null && r.mid !== undefined) map.get(r.cid).messages.push({ id: r.mid, de_a: Number(r.sender_id) === Number(r.a_id), texte: r.body, date: r.mdate });\n}\nconst conversations = Array.from(map.values());\nreturn [{ json: { success: true, a_traiter: conversations.filter(c => c.signalements.some(s => s.statut === 'nouveau')).length, a_moderer: conversations.filter(c => c.statut === 'moderation').length, conversations } }];\n"
+          "jsCode": "const rows = $input.all().map(i => i.json);\nif (!rows.length || rows[0].admin_id === null || rows[0].admin_id === undefined) return [{ json: { success: false, error: 'session_invalide' } }];\nconst map = new Map();\nfor (const r of rows) {\n  if (r.cid === null || r.cid === undefined) continue;\n  if (!map.has(r.cid)) map.set(r.cid, {\n    cid: r.cid, statut: r.status, date: r.cdate,\n    a: { id: r.a_id, email: r.a_email, nom: r.a_nom, genre: r.a_genre, statut: r.a_statut, fin: r.a_fin, sanctions: (function (x) { try { const v = typeof x === 'string' ? JSON.parse(x) : x; return Array.isArray(v) ? v : []; } catch (e) { return []; } })(r.a_sanctions) },\n    b: { id: r.b_id, email: r.b_email, nom: r.b_nom, genre: r.b_genre, statut: r.b_statut, fin: r.b_fin, sanctions: (function (x) { try { const v = typeof x === 'string' ? JSON.parse(x) : x; return Array.isArray(v) ? v : []; } catch (e) { return []; } })(r.b_sanctions) }, messages: [],\n    signalements: (function (x) { try { const v = typeof x === 'string' ? JSON.parse(x) : x; return Array.isArray(v) ? v : []; } catch (e) { return []; } })(r.rapports)\n  });\n  if (r.mid !== null && r.mid !== undefined) map.get(r.cid).messages.push({ id: r.mid, de_a: Number(r.sender_id) === Number(r.a_id), texte: r.body, date: r.mdate });\n}\nconst conversations = Array.from(map.values());\n// E-mail au membre sanctionné\nlet _mail = null;\nconst sc = $('Prepare').first().json.sanction;\nif (sc && sc.action !== 'lift') {\n  let cible = null;\n  for (const c of conversations) { if (Number(c.a.id) === sc.member_id) cible = c.a; else if (Number(c.b.id) === sc.member_id) cible = c.b; if (cible) break; }\n  if (cible && cible.email) {\n    const pied = '\\n\\nSi vous souhaitez vous expliquer, vous pouvez répondre par écrit à cet e-mail.\\n\\nNikah — modération';\n    const fin = new Date(Date.now() + (sc.days || 0) * 86400000);\n    const finTxt = ('0' + fin.getDate()).slice(-2) + '.' + ('0' + (fin.getMonth() + 1)).slice(-2) + '.' + fin.getFullYear();\n    const T = {\n      warn: ['Nikah — avertissement', \"Bonjour,\\n\\nL'équipe de modération de Nikah a été informée d'un comportement contraire à la charte de la plateforme dans l'une de vos conversations.\\n\\nCeci est un avertissement. Les échanges doivent rester respectueux, sérieux et tournés vers le mariage. Les propos déplacés, l'insistance, les demandes d'argent et les demandes de coordonnées hors du site sont interdits.\\n\\nEn cas de récidive, votre compte pourra être suspendu ou fermé.\"],\n      suspend: ['Nikah — suspension de votre compte', \"Bonjour,\\n\\nÀ la suite d'un signalement, et après lecture de la conversation concernée, votre compte Nikah est suspendu pendant \" + sc.days + \" jours, jusqu'au \" + finTxt + \".\\n\\nPendant cette période, vous ne pouvez plus vous connecter et votre profil n'apparaît plus dans les recherches. Votre compte sera rétabli automatiquement à la fin de la suspension.\\n\\nEn cas de nouveau manquement à la charte, votre compte pourra être fermé définitivement.\"],\n      exclude: ['Nikah — fermeture de votre compte', \"Bonjour,\\n\\nÀ la suite d'un signalement, et après lecture de la conversation concernée, votre compte Nikah a été fermé définitivement pour un manquement grave à la charte de la plateforme.\\n\\nVous ne pouvez plus vous connecter et votre profil n'est plus visible.\"]\n    }[sc.action];\n    if (T) _mail = { to: cible.email, subject: T[0], text: T[1] + pied };\n  }\n}\nreturn [{ json: { _mail, success: true, a_traiter: conversations.filter(c => c.signalements.some(s => s.statut === 'nouveau')).length, a_moderer: conversations.filter(c => c.statut === 'moderation').length, conversations } }];\n"
         },
         "name": "Formater",
         "type": "n8n-nodes-base.code",
@@ -147,7 +147,7 @@
       {
         "parameters": {
           "respondWith": "text",
-          "responseBody": "={{ JSON.stringify($json) }}",
+          "responseBody": "={{ JSON.stringify(Object.assign({}, $('Formater').first().json, { _mail: undefined })) }}",
           "options": {
             "responseHeaders": {
               "entries": [
@@ -167,9 +167,88 @@
         "type": "n8n-nodes-base.respondToWebhook",
         "typeVersion": 1.1,
         "position": [
-          1320,
+          1700,
           200
         ]
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "={{ $('Prepare').first().json.q0b }}",
+          "options": {}
+        },
+        "name": "Enregistrer sanction",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          660,
+          380
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "gcGQgiKQ83lHOaak",
+            "name": "MySQL account 2"
+          }
+        },
+        "id": "node-sanction"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose"
+            },
+            "conditions": [
+              {
+                "id": "m1",
+                "leftValue": "={{ !!($json._mail && $json._mail.to) }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "name": "Mail a envoyer",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          1300,
+          200
+        ],
+        "id": "nikah-adm-msg-ifmail"
+      },
+      {
+        "parameters": {
+          "fromEmail": "Nikah <contact@roqyasuisse.com>",
+          "toEmail": "={{ $json._mail.to }}",
+          "subject": "={{ $json._mail.subject }}",
+          "emailFormat": "text",
+          "text": "={{ $json._mail.text }}",
+          "options": {}
+        },
+        "name": "Mail sanction",
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          1500,
+          80
+        ],
+        "credentials": {
+          "smtp": {
+            "id": "aZdlgWWAq11USGu7",
+            "name": "SMTP account"
+          }
+        },
+        "id": "nikah-adm-msg-mail",
+        "onError": "continueRegularOutput"
       }
     ],
     "connections": {
@@ -217,7 +296,7 @@
         "main": [
           [
             {
-              "node": "Lire conversations",
+              "node": "Enregistrer sanction",
               "type": "main",
               "index": 0
             }
@@ -236,6 +315,46 @@
         ]
       },
       "Formater": {
+        "main": [
+          [
+            {
+              "node": "Mail a envoyer",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enregistrer sanction": {
+        "main": [
+          [
+            {
+              "node": "Lire conversations",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mail a envoyer": {
+        "main": [
+          [
+            {
+              "node": "Mail sanction",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Reponse",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mail sanction": {
         "main": [
           [
             {

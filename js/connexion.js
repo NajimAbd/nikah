@@ -16,7 +16,9 @@
 
   var MESSAGES = {
     identifiants_invalides: "Adresse e-mail ou mot de passe incorrect.",
-    compte_bloque: "Trop de tentatives. Pour votre sécurité, réessayez dans 15 minutes."
+    compte_bloque: "Trop de tentatives. Pour votre sécurité, réessayez dans 15 minutes.",
+    compte_suspendu: "Votre compte est suspendu à la suite d'un manquement à la charte.",
+    compte_exclu: "Votre compte a été fermé définitivement à la suite d'un manquement grave à la charte."
   };
 
   function erreur(texte, champ) {
@@ -65,7 +67,7 @@
         }
         bouton.disabled = false;
         bouton.textContent = "Se connecter";
-        erreur(MESSAGES[res && res.error] || "Une erreur est survenue. Merci de réessayer dans un instant.");
+        erreur(res && res.error === "compte_suspendu" && res.fin ? "Votre compte est suspendu jusqu'au " + res.fin + " à la suite d'un manquement à la charte." : (MESSAGES[res && res.error] || "Une erreur est survenue. Merci de réessayer dans un instant."));
         if (res && res.error === "identifiants_invalides") { champEmail.classList.add("invalide"); champMdp.classList.add("invalide"); }
       })
       .catch(function () {

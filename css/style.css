@@ -573,3 +573,8 @@ body.chat-ouvert { overflow: hidden; }
 /* Signalements (administration) */
 .admin-signalement { background: #fbeeee; border: 1px solid #ecc9c9; border-radius: 10px; padding: 10px 12px; margin: 8px 0; font-size: 0.9rem; }
 .admin-signalement.traite { background: #f3f3f3; border-color: #e0e0e0; color: #666; }
+
+.admin-sanction { border: 1px solid #e3ddd2; background: #faf7f2; border-radius: 10px; padding: 10px 12px; margin: 8px 0; font-size: 0.9rem; }
+.admin-sanction .admin-actions { flex-wrap: wrap; }
+.btn-danger { background: #a33; color: #fff; border: 1px solid #a33; }
+.btn-danger:hover { background: #8a2a2a; }

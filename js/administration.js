@@ -123,6 +123,14 @@
         if (sg.details) bloc.appendChild(el("div", "", "« " + sg.details + " »"));
         boite.appendChild(bloc);
       });
+      // Sanctions : pour chaque personne signalée
+      var vus = {};
+      c.signalements.forEach(function (sg) {
+        var cible = Number(sg.contre) === Number(c.a.id) ? c.a : Number(sg.contre) === Number(c.b.id) ? c.b : null;
+        if (!cible || vus[cible.id]) return;
+        vus[cible.id] = true;
+        boite.appendChild(blocSanction(cible));
+      });
       if (nouveaux) {
         var ok = el("button", "btn btn-primary", "Marquer comme traité"); ok.type = "button";
         ok.addEventListener("click", function () {
@@ -147,6 +155,36 @@
     }
     return boite;
   }
+  var LIB_SANCTION = { warn: "Avertissement", suspend: "Suspension", exclude: "Exclusion", lift: "Sanction levée" };
+  function blocSanction(m) {
+    var nom = m.nom || m.email;
+    var bloc = el("div", "admin-sanction");
+    var etat = m.statut === "suspendu" ? "Compte suspendu" + (m.fin ? " jusqu'au " + m.fin : "") : m.statut === "exclu" ? "Compte fermé définitivement" : "Compte actif";
+    bloc.appendChild(el("strong", "", "Personne signalée : " + nom + " — " + etat));
+    var hist = (m.sanctions || []).map(function (x) { return LIB_SANCTION[x.type] + (x.jours ? " " + x.jours + " j" : "") + " (" + String(x.date || "").slice(0, 10) + ")"; });
+    bloc.appendChild(el("div", "", hist.length ? "Sanctions précédentes : " + hist.join(", ") : "Aucune sanction précédente."));
+    var rg = el("div", "admin-actions");
+    function bouton(libelle, classe, corps, question) {
+      var b = el("button", "btn " + classe, libelle); b.type = "button";
+      b.addEventListener("click", function () {
+        if (!window.confirm(question)) return;
+        b.disabled = true;
+        post("nikah-admin-messages", Object.assign({ token: lire(), member_id: m.id }, corps))
+          .then(function (r) { if (r && r.success) { donneesMessages = null; rendreMessages(r); } else { b.disabled = false; alert("Action impossible pour le moment."); } })
+          .catch(function () { b.disabled = false; alert("Action impossible pour le moment."); });
+      });
+      rg.appendChild(b);
+    }
+    if (m.statut !== "exclu") {
+      bouton("Envoyer un avertissement", "btn-outline", { action: "warn" }, "Envoyer un e-mail d'avertissement à " + nom + " ?");
+      bouton("Suspendre 7 jours", "btn-outline", { action: "suspend", days: 7 }, "Suspendre le compte de " + nom + " pendant 7 jours ? Il sera déconnecté et recevra un e-mail.");
+      bouton("Suspendre 30 jours", "btn-outline", { action: "suspend", days: 30 }, "Suspendre le compte de " + nom + " pendant 30 jours ? Il sera déconnecté et recevra un e-mail.");
+      bouton("Exclure définitivement", "btn-danger", { action: "exclude" }, "Fermer DÉFINITIVEMENT le compte de " + nom + " ? Il sera déconnecté et recevra un e-mail.");
+    }
+    if (m.statut === "suspendu" || m.statut === "exclu") bouton("Lever la sanction", "btn-outline", { action: "lift" }, "Rétablir le compte de " + nom + " ?");
+    bloc.appendChild(rg);
+    return bloc;
+  }
   function afficherMessages() {
     if (!donneesMessages || ongletCourant === "profils") return;
     var zone = document.getElementById("listeMessagesAdmin");
@@ -157,7 +195,7 @@
   }
   function rendreMessages(r) {
     if (!r || !r.success) return;
-    var sig = JSON.stringify(r.conversations.map(function (c) { return [c.cid, c.statut, c.messages.length, (c.signalements || []).map(function (x) { return x.id + x.statut; })]; }));
+    var sig = JSON.stringify(r.conversations.map(function (c) { return [c.cid, c.statut, c.messages.length, (c.signalements || []).map(function (x) { return x.id + x.statut; }), c.a.statut, c.b.statut, (c.a.sanctions || []).length, (c.b.sanctions || []).length]; }));
     if (donneesMessages && sig === donneesMessages._sig) return;
     r._sig = sig;
     donneesMessages = r;
