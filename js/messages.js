@@ -68,8 +68,9 @@
         ligne.appendChild(rond(c.autre));
         var txt = el("span", "msg-ligne-texte");
         txt.appendChild(el("strong", "", nomAffiche(c.autre)));
-        var sous = c.statut === "moderation" ? "Message en cours de vérification" : c.statut === "rejetee" ? "Message non transmis" : c.statut === "demande" ? (c.initiateur ? "Demande envoyée — en attente" : "Nouvelle demande de contact") : c.statut === "refusee" ? "Demande refusée" : (c.dernier || "");
-        txt.appendChild(el("span", "", sous.length > 50 ? sous.slice(0, 50) + "…" : sous));
+        // Liste de gauche : visage, nom et quelques informations seulement (les messages restent à droite)
+        var infos = [c.autre && c.autre.age ? c.autre.age + " ans" : "", c.autre && (c.autre.ville || c.autre.region) || ""].filter(Boolean).join(" · ");
+        if (infos) txt.appendChild(el("span", "", infos));
         ligne.appendChild(txt);
         if (c.non_lus > 0) ligne.appendChild(el("span", "badge-non-lu", String(c.non_lus)));
         ligne.addEventListener("click", function () { ouvrir(c.cid); });
