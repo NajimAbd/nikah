@@ -430,6 +430,8 @@ body.cmp-ouvert { overflow: hidden; }
 .hero { background: linear-gradient(rgba(250,247,242,0.38), rgba(250,247,242,0.55)), url("../img/couple-fond-2026-10-14.webp?v=2") center / cover no-repeat; }
 .deja-inscrit { margin-top: 22px; font-family: "Helvetica Neue", Arial, sans-serif; color: #5c5c5c; }
 .deja-inscrit .btn { margin-left: 6px; }
+/* Toute la photo (ovale complet) sur ordinateur : largeur entière, en partant du haut */
+@media (min-width: 601px) { .hero { background-color: #FAF7F2; background-size: 100% auto, 100% auto; background-position: center top, center top; } }
 @media (max-width: 600px) { .hero { background-position: 46% center; } }
 .hero h1, .hero .soustitre, .deja-inscrit { text-shadow: 0 1px 10px rgba(250,247,242,0.95), 0 0 3px rgba(250,247,242,0.9); }
 .hero .soustitre, .deja-inscrit { color: #3A3A3A; }
