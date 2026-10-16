@@ -615,3 +615,10 @@ body.chat-ouvert { overflow: hidden; }
 .reassurance .carte { padding: 18px 14px; }
 .reassurance .emoji { font-size: 1.5rem; margin-bottom: 6px; }
 .reassurance p strong { color: #3A3A3A; }
+
+/* Accueil : boutons et carrés descendus sous les visages, photo plus nette au milieu */
+@media (min-width: 601px) {
+  .hero { background-image: linear-gradient(rgba(250,247,242,0.45) 0%, rgba(250,247,242,0.08) 30%, rgba(250,247,242,0.02) 55%, rgba(250,247,242,0.35) 85%, rgba(250,247,242,0.6) 100%), url("../img/couple-fond-2026-10-14.webp?v=2") !important; }
+  .hero-actions { margin-top: max(40px, calc(43vw - 250px)); }
+  .hero .reassurance { margin-top: 28px; margin-bottom: 8px; }
+}
