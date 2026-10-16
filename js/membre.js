@@ -80,12 +80,14 @@
     var texte = fenTexte.value.trim();
     erreurChat("");
     if (!texte) { erreurChat("Merci d'écrire un court message."); fenTexte.focus(); return; }
+    if (window.NikahFiltre && NikahFiltre.detecter(texte)) { erreurChat(NikahFiltre.MESSAGE); fenTexte.focus(); return; }
     fenEnvoyer.disabled = true; fenEnvoyer.textContent = "Envoi…";
     fetch(URL_MSG, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: jeton(), action: "start", to: destinataire, body: texte }) })
       .then(function (r) { return r.json(); })
       .then(function (r) {
         if (r && r.success) { window.location.href = "messages.html?c=" + r.cid; return; }
         fenEnvoyer.disabled = false; fenEnvoyer.textContent = "Envoyer";
+        if (r && r.error === "coordonnees_interdites") { erreurChat(window.NikahFiltre ? NikahFiltre.MESSAGE : "Les coordonnées personnelles sont interdites."); return; }
         erreurChat("Le contact n'a pas pu être établi. Votre identité doit être vérifiée et le profil doit correspondre à votre recherche.");
       })
       .catch(function () { fenEnvoyer.disabled = false; fenEnvoyer.textContent = "Envoyer"; erreurChat("Connexion impossible pour le moment."); });

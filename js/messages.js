@@ -145,17 +145,23 @@
         if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); if (form.requestSubmit) form.requestSubmit(); else envoyer.click(); }
       });
       form.appendChild(champ); form.appendChild(envoyer);
+      var alerte = el("p", "alerte-filtre"); alerte.style.display = "none";
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         var t = champ.value.trim();
         if (!t) return;
+        alerte.style.display = "none";
+        var miens = dernierFil && dernierFil.messages ? dernierFil.messages.filter(function (m) { return m.moi; }).map(function (m) { return m.texte; }) : [];
+        if (window.NikahFiltre && NikahFiltre.detecterSuite(t, miens)) { alerte.textContent = NikahFiltre.MESSAGE; alerte.style.display = "block"; champ.focus(); return; }
         envoyer.disabled = true;
         appel({ action: "send", cid: courante, body: t }).then(function (res) {
           envoyer.disabled = false;
           if (res && res.success) { champ.value = ""; afficherFil(res); chargerListe(); document.getElementById("filMessages").scrollTop = 1e9; }
+          else if (res && res.error === "coordonnees_interdites") { alerte.textContent = window.NikahFiltre ? NikahFiltre.MESSAGE : "Les coordonnées personnelles sont interdites."; alerte.style.display = "block"; }
         }).catch(function () { envoyer.disabled = false; });
       });
       action.appendChild(form);
+      action.appendChild(alerte);
     }
   }
 

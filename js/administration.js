@@ -112,13 +112,13 @@
     });
     boite.appendChild(fil);
     if (c.signalements && c.signalements.length) {
-      var MOTIFS = { propos_deplaces: "Propos déplacés ou contraires à la charte", harcelement: "Insistance ou harcèlement", faux_profil: "Faux profil ou fausses informations", demande_argent: "Demande d'argent ou de cadeau", coordonnees: "Demande de contact hors du site", autre: "Autre raison" };
+      var MOTIFS = { propos_deplaces: "Propos déplacés ou contraires à la charte", harcelement: "Insistance ou harcèlement", faux_profil: "Faux profil ou fausses informations", demande_argent: "Demande d'argent ou de cadeau", coordonnees: "Demande de contact hors du site", autre: "Autre raison", filtre_auto: "Coordonnées bloquées automatiquement" };
       var nouveaux = 0;
       c.signalements.forEach(function (sg) {
         if (sg.statut === "nouveau") nouveaux++;
         var auteur = Number(sg.par) === Number(c.a.id) ? c.a : c.b;
         var bloc = el("div", "admin-signalement" + (sg.statut === "traite" ? " traite" : ""));
-        bloc.appendChild(el("strong", "", "Signalé par " + (auteur.nom || auteur.email) + " — " + (MOTIFS[sg.motif] || sg.motif)));
+        bloc.appendChild(el("strong", "", (sg.motif === "filtre_auto" ? "Blocage automatique — message de " : "Signalé par ") + (auteur.nom || auteur.email) + " — " + (MOTIFS[sg.motif] || sg.motif)));
         bloc.appendChild(el("div", "", String(sg.date || "").replace("T", " ") + (sg.statut === "traite" ? " · traité" : " · à traiter")));
         if (sg.details) bloc.appendChild(el("div", "", "« " + sg.details + " »"));
         boite.appendChild(bloc);
