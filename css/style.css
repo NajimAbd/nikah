@@ -622,3 +622,21 @@ body.chat-ouvert { overflow: hidden; }
   .hero-actions { margin-top: max(40px, calc(43vw - 250px)); }
   .hero .reassurance { margin-top: 28px; margin-bottom: 8px; }
 }
+
+/* Accueil : tout visible dès l'arrivée, photo en retrait et transparente */
+@media (min-width: 601px) {
+  .hero {
+    min-height: calc(100vh - 80px); display: flex; padding: 28px 0 22px;
+    background-image: linear-gradient(rgba(250,247,242,0.55), rgba(250,247,242,0.55)), url("../img/couple-fond-2026-10-14.webp?v=2") !important;
+    background-size: 100% 100%, contain !important; background-position: center, center !important; background-repeat: no-repeat !important;
+  }
+  .hero > .container { display: flex; flex-direction: column; width: 100%; }
+  .hero h1 { font-size: 2.3rem; margin-bottom: 0.2em; }
+  .hero .soustitre { font-size: 1rem; margin-bottom: 0; }
+  .hero-actions { margin-top: auto !important; padding-top: 24px; }
+  .hero .reassurance { margin: 18px 0 0 !important; gap: 12px; }
+  .hero .reassurance .carte { padding: 12px 12px; background: rgba(255,255,255,0.92); }
+  .hero .reassurance .emoji { font-size: 1.3rem; margin-bottom: 4px; }
+  .hero .reassurance h3 { font-size: 0.95rem; margin-bottom: 2px; }
+  .hero .reassurance p { font-size: 0.82rem; }
+}
