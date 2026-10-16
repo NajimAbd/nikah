@@ -301,4 +301,11 @@
         .then(function () { setTimeout(function () { lienOubli.removeAttribute("data-envoi"); }, 30000); });
     });
   }
+  // Les onglets restent collés juste sous l'en-tête
+  function ajusterOnglets() {
+    var h = document.querySelector(".site-header");
+    if (h) document.documentElement.style.setProperty("--hauteur-entete", h.offsetHeight + "px");
+  }
+  ajusterOnglets();
+  window.addEventListener("resize", ajusterOnglets);
 })();

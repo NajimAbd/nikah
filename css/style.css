@@ -586,3 +586,6 @@ body.chat-ouvert { overflow: hidden; }
 .sanction-ligne.annulee { color: #999; text-decoration: line-through; }
 .sanction-texte { font-style: italic; margin-top: 4px; }
 .commission-titre { font-family: Helvetica, Arial, sans-serif; font-size: 0.8rem; letter-spacing: .08em; text-transform: uppercase; color: #7a1f1f; font-weight: 700; margin: 0 0 4px; }
+
+/* Onglets d'administration toujours visibles en défilant */
+.admin-onglets { position: sticky; top: var(--hauteur-entete, 64px); z-index: 40; background: var(--creme); padding: 10px 0; margin: 0 0 12px; flex-wrap: wrap; box-shadow: 0 6px 8px -8px rgba(0,0,0,0.25); }
