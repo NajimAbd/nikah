@@ -79,13 +79,14 @@
 
   var ongletCourant = "profils";
   var donneesMessages = null;
-  var ONGLETS = { profils: "ongletProfils", controler: "ongletMessages", approuves: "ongletApprouves", refuses: "ongletRefuses", signalements: "ongletSignalements" };
-  var TITRES = { controler: "Messages à contrôler", approuves: "Messages approuvés", refuses: "Messages refusés", signalements: "Conversations signalées" };
+  var ONGLETS = { profils: "ongletProfils", controler: "ongletMessages", approuves: "ongletApprouves", refuses: "ongletRefuses", signalements: "ongletSignalements", retenus: "ongletRetenus" };
+  var TITRES = { controler: "Messages à contrôler", approuves: "Messages approuvés", refuses: "Messages refusés", signalements: "Conversations signalées", retenus: "Messages retenus" };
   var FILTRES = {
     controler: function (c) { return c.statut === "moderation"; },
     approuves: function (c) { return c.statut === "demande" || c.statut === "acceptee" || c.statut === "refusee"; },
     refuses: function (c) { return c.statut === "rejetee"; },
-    signalements: function (c) { return c.signalements && c.signalements.length > 0; }
+    signalements: function (c) { return c.signalements && c.signalements.length > 0; },
+    retenus: function (c) { return c.messages.some(function (m) { return m.statut === "attente"; }); }
   };
   function montrerOnglet(nom) {
     ongletCourant = nom;
@@ -108,6 +109,23 @@
       var l = el("div", "admin-msg " + (m.de_a ? "de-a" : "de-b"));
       l.appendChild(el("small", "", (m.de_a ? (c.a.nom || "A") : (c.b.nom || "B")) + " — " + String(m.date || "").replace("T", " ").slice(0, 16)));
       l.appendChild(el("div", "", m.texte));
+      if (m.statut === "attente" || m.statut === "refuse") {
+        var RAISONS = { chiffres: "chiffres", ecriture: "autre écriture", pseudo: "pseudo ou identifiant", contact: "mot de contact", argent: "argent" };
+        l.className += m.statut === "attente" ? " retenu" : " refuse";
+        l.appendChild(el("small", "", (m.statut === "attente" ? "Retenu — " : "Refusé — ") + (RAISONS[m.raison] || m.raison || "")));
+        if (m.statut === "attente") {
+          var rm = el("div", "admin-actions");
+          [["Transmettre", "btn-primary", "msg_approve"], ["Refuser", "btn-outline", "msg_reject"]].forEach(function (d) {
+            var bt = el("button", "btn " + d[1], d[0]); bt.type = "button";
+            bt.addEventListener("click", function () {
+              bt.disabled = true;
+              post("nikah-admin-messages", { token: lire(), action: d[2], message_id: m.id }).then(function (r) { donneesMessages = null; rendreMessages(r); }).catch(function () { bt.disabled = false; });
+            });
+            rm.appendChild(bt);
+          });
+          l.appendChild(rm);
+        }
+      }
       fil.appendChild(l);
     });
     boite.appendChild(fil);
@@ -220,12 +238,13 @@
   }
   function rendreMessages(r) {
     if (!r || !r.success) return;
-    var sig = JSON.stringify(r.conversations.map(function (c) { return [c.cid, c.statut, c.messages.length, (c.signalements || []).map(function (x) { return x.id + x.statut; }), c.a.statut, c.b.statut, JSON.stringify(c.a.sanctions || []), JSON.stringify(c.b.sanctions || [])]; }));
+    var sig = JSON.stringify(r.conversations.map(function (c) { return [c.cid, c.statut, c.messages.map(function (m) { return m.id + m.statut; }).join(","), (c.signalements || []).map(function (x) { return x.id + x.statut; }), c.a.statut, c.b.statut, JSON.stringify(c.a.sanctions || []), JSON.stringify(c.b.sanctions || [])]; }));
     if (donneesMessages && sig === donneesMessages._sig) return;
     r._sig = sig;
     donneesMessages = r;
     document.getElementById("ongletMessages").textContent = r.a_moderer > 0 ? "Messages à contrôler (" + r.a_moderer + ")" : "Messages à contrôler";
     document.getElementById("ongletSignalements").textContent = r.a_traiter > 0 ? "Signalements (" + r.a_traiter + ")" : "Signalements";
+    document.getElementById("ongletRetenus").textContent = r.a_retenir > 0 ? "Messages retenus (" + r.a_retenir + ")" : "Messages retenus";
     afficherMessages();
   }
   function chargerMessages() {

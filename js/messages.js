@@ -83,7 +83,7 @@
   }
 
   function afficherFil(r) {
-    var sigF = JSON.stringify([r.cid, r.statut, r.initiateur, r.blocage, r.deja_signale, r.messages.map(function (m) { return m.id; })]);
+    var sigF = JSON.stringify([r.cid, r.statut, r.initiateur, r.blocage, r.deja_signale, r.messages.map(function (m) { return m.id + (m.statut || ""); })]);
     dernierFil = r;
     majMenu(r);
     if (sigF === signatureFil) return;
@@ -99,9 +99,9 @@
     var enBas = zone.scrollHeight - zone.scrollTop - zone.clientHeight < 60;
     zone.innerHTML = "";
     r.messages.forEach(function (m) {
-      var b = el("div", "bulle " + (m.moi ? "moi" : "autre"));
+      var b = el("div", "bulle " + (m.moi ? "moi" : "autre") + (m.statut === "attente" ? " en-attente" : m.statut === "refuse" ? " refuse" : ""));
       b.appendChild(el("div", "", m.texte));
-      b.appendChild(el("small", "", heure(m.date)));
+      b.appendChild(el("small", "", heure(m.date) + (m.statut === "attente" ? " · en attente de vérification" : m.statut === "refuse" ? " · non transmis" : "")));
       zone.appendChild(b);
     });
     if (enBas) zone.scrollTop = zone.scrollHeight;
@@ -150,13 +150,16 @@
         e.preventDefault();
         var t = champ.value.trim();
         if (!t) return;
-        alerte.style.display = "none";
+        alerte.style.display = "none"; alerte.className = "alerte-filtre";
         var miens = dernierFil && dernierFil.messages ? dernierFil.messages.filter(function (m) { return m.moi; }).map(function (m) { return m.texte; }) : [];
         if (window.NikahFiltre && NikahFiltre.detecterSuite(t, miens)) { alerte.textContent = NikahFiltre.MESSAGE; alerte.style.display = "block"; champ.focus(); return; }
         envoyer.disabled = true;
         appel({ action: "send", cid: courante, body: t }).then(function (res) {
           envoyer.disabled = false;
-          if (res && res.success) { champ.value = ""; afficherFil(res); chargerListe(); document.getElementById("filMessages").scrollTop = 1e9; }
+          if (res && res.success) {
+            champ.value = ""; afficherFil(res); chargerListe(); document.getElementById("filMessages").scrollTop = 1e9;
+            if (res.retenu) { alerte.className = "alerte-filtre info"; alerte.textContent = "Votre message sera transmis après vérification par l'administration."; alerte.style.display = "block"; }
+          }
           else if (res && res.error === "coordonnees_interdites") { alerte.textContent = window.NikahFiltre ? NikahFiltre.MESSAGE : "Les coordonnées personnelles sont interdites."; alerte.style.display = "block"; }
         }).catch(function () { envoyer.disabled = false; });
       });

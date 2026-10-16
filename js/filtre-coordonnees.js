@@ -18,8 +18,19 @@ var NikahFiltre = (function () {
     nje: "1", dy: "2", kater: "4", pese: "5", gjashte: "6", shtate: "7", tete: "8", nente: "9",
     // arabe (écriture arabe et translittération courante)
     "صفر": "0", "واحد": "1", "اثنان": "2", "اثنين": "2", "زوج": "2", "ثلاثة": "3", "ثلاث": "3", "أربعة": "4", "اربعة": "4", "خمسة": "5", "ستة": "6", "سبعة": "7", "ثمانية": "8", "تسعة": "9",
-    sifr: "0", wahed: "1", wa7ed: "1", jouj: "2", tnin: "2", tlata: "3", arba: "4", khamsa: "5", setta: "6", sab3a: "7", tmanya: "8", tes3a: "9"
+    sifr: "0", wahed: "1", wa7ed: "1", jouj: "2", tnin: "2", tlata: "3", arba: "4", khamsa: "5", setta: "6", sab3a: "7", tmanya: "8", tes3a: "9",
+    // espagnol et portugais
+    cero: "0", dos: "2", tres: "3", cuatro: "4", cinco: "5", seis: "6", siete: "7", ocho: "8", nueve: "9", diez: "10",
+    um: "1", dois: "2", quatro: "4", sete: "7", oito: "8",
+    // turc
+    sifir: "0", bir: "1", iki: "2", uc: "3", dort: "4", bes: "5", alti: "6", yedi: "7", sekiz: "8", dokuz: "9",
+    // bosniaque, croate, serbe
+    nula: "0", jedan: "1", jedna: "1", dva: "2", dvije: "2", tri: "3", cetiri: "4", pet: "5", sest: "6", sedam: "7", osam: "8", devet: "9",
+    // russe
+    "ноль": "0", "один": "1", "два": "2", "три": "3", "четыре": "4", "пять": "5", "шесть": "6", "семь": "7", "восемь": "8", "девять": "9"
   };
+  var CHINOIS = { "零": "0", "〇": "0", "一": "1", "壹": "1", "幺": "1", "二": "2", "两": "2", "兩": "2", "贰": "2", "貳": "2", "三": "3", "叁": "3", "參": "3",
+    "四": "4", "肆": "4", "五": "5", "伍": "5", "六": "6", "陆": "6", "陸": "6", "七": "7", "柒": "7", "八": "8", "捌": "8", "九": "9", "玖": "9" };
   var DIZAINES = {
     vingt: "2", trente: "3", quarante: "4", cinquante: "5", soixante: "6", septante: "7", huitante: "8", octante: "8", nonante: "9",
     twenty: "2", thirty: "3", forty: "4", fifty: "5", sixty: "6", seventy: "7", eighty: "8", ninety: "9",
@@ -39,6 +50,30 @@ var NikahFiltre = (function () {
     "|\\b(numri|numrin|telefoni|telefonin|emaili|emailin|numero|nummer)\\s+(tend|tuaj|tuo|tua|vostro|di te)\\b" +
     "|\\b(appelle moi|appelez moi|appele moi|je t appelle|je vous appelle|on s appelle|on peut s appeler|tu peux m appeler|call me|text me|ruf mich an|chiamami|ecris moi sur|ecris moi en prive|ecrivez moi sur|en prive|en mp|hors du site|hors de la plateforme|hors plateforme|ailleurs qu ici|ajoute moi|ajoutez moi|add me|contacte moi sur|contactez moi sur)\\b");
 
+  // Mots de contact en espagnol, portugais, turc, bosniaque-croate-serbe, chinois et russe
+  var AUTRES_LANGUES = new RegExp(
+    "\\b(tu|su|teu|seu|tvoj|tvoja|tvoju|vas|vasu)\\s+(\\w+\\s+)?(numero|telefono|telefone|celular|movil|correo|broj|telefon|mail|email)\\b" +
+    "|\\b(numaran|numarani|numarasi|telefonun|telefonunu|mailin|instan|snapin|daj broj|posalji broj|dame tu numero|pasame tu numero|me da seu numero|me passa seu numero|me manda seu numero)\\b" +
+    "|(电话|電話|号码|號碼|手机|手機|微信|邮箱|郵箱|加我|联系方式|聯繫方式|qq号|телефон|номер|вотсап|ватсап|телеграм|инстаграм|почта|позвони)");
+
+  // Signes plus faibles : le message n'est pas refusé, il attend l'approbation de l'administration
+  var SOUPCON_CONTACT = /\b(numero|num|numeros|telephone|natel|portable|mobile|mail|email|contact|coordonnees|pseudo|dm|pv|inbox|phone|number|call|nummer|handy|anrufen|telefono|cellulare|chiamare|numri|telefon|broj|numara|celular|rejoins moi|trouve moi|cherche moi|retrouve moi)\b/;
+  var SOUPCON_ARGENT = /\b(argent|virement|western union|moneygram|transfert d argent|iban|twint|paypal|revolut|bitcoin|crypto|carte bancaire|carte de credit|envoie moi|envoyer de l argent|prete moi|preter de l argent|cadeau|money|geld|soldi)\b/;
+  var SOUPCON_ARABE = /(فلوس|حوالة|تحويل|اتصل|كلمني|خاص|رقم|هاتف|حساب)/;
+  var ECRITURES = /[\u0370-\u03FF\u0400-\u04FF\u0590-\u05FF\u0900-\u097F\u0E00-\u0E7F\u3040-\u30FF\u3400-\u9FFF\uAC00-\uD7AF]/;
+  function soupconner(texte) {
+    var s = normaliser(texte);
+    if (!s.trim()) return null;
+    var espaces = " " + s.replace(/[^a-z0-9\u0600-\u06FF]+/g, " ").replace(/\s+/g, " ") + " ";
+    if (chiffres(s) >= 5) return "chiffres";
+    if (ECRITURES.test(String(texte))) return "ecriture";
+    if (/[a-z]{2,}[._][a-z0-9]{2,}/.test(s.replace(/\.\s/g, " ")) || /\b[a-z]{3,}\d{2,}\b/.test(s)) return "pseudo";
+    if (SOUPCON_CONTACT.test(espaces)) return "contact";
+    if (SOUPCON_ARGENT.test(espaces)) return "argent";
+    if (SOUPCON_ARABE.test(s)) return "contact";
+    return null;
+  }
+
   function normaliser(t) {
     var s = String(t || "");
     try { s = s.normalize("NFKC"); } catch (e) { /* ancien navigateur */ }
@@ -46,7 +81,8 @@ var NikahFiltre = (function () {
          .replace(/[۰-۹]/g, function (c) { return String(c.charCodeAt(0) - 0x06F0); })
          .replace(/[️⃣​-‍⁠]/g, "");
     try { s = s.normalize("NFD"); } catch (e) { /* ignoré */ }
-    return s.replace(/[̀-ͯ]/g, "").toLowerCase();
+    s = s.replace(/[\u3007\u4e00-\u9fff]/g, function (c) { return CHINOIS.hasOwnProperty(c) ? " " + CHINOIS[c] + " " : c; });
+    return s.replace(/[̀-ͯ]/g, "").replace(/ı/g, "i").toLowerCase();
   }
   function leet(s) {
     return s.replace(/0/g, "o").replace(/1/g, "i").replace(/3/g, "e").replace(/4/g, "a").replace(/5/g, "s").replace(/7/g, "t").replace(/@/g, "a").replace(/\$/g, "s").replace(/\|/g, "i");
@@ -56,7 +92,7 @@ var NikahFiltre = (function () {
     // Enlève dates et heures pour ne pas les confondre avec un numéro
     s = s.replace(/\b\d{1,2}\s*[.\/-]\s*\d{1,2}\s*[.\/-]\s*\d{2,4}\b/g, " ")
          .replace(/\b\d{1,2}\s*[h:]\s*\d{2}\b/g, " ");
-    var mots = s.replace(/[-_'’]/g, " ").split(/[^a-z0-9+؀-ۿ]+/).filter(Boolean);
+    var mots = s.replace(/[-_'’]/g, " ").split(/[^a-z0-9+\u0600-\u06FF\u0400-\u04FF]+/).filter(Boolean);
     var meilleur = 0, courant = "", trous = 0;
     function fin() { if (courant.length > meilleur) meilleur = courant.length; courant = ""; trous = 0; }
     for (var i = 0; i < mots.length; i++) {
@@ -101,6 +137,7 @@ var NikahFiltre = (function () {
     for (var j = 0; j < RESEAUX_COLLES.length; j++) if (colle.indexOf(RESEAUX_COLLES[j]) !== -1) return "reseau";
     if (RESEAUX_MOTS.test(" " + leet(espaces).replace(/\s+/g, " ") + " ")) return "reseau";
     if (RESEAUX_ARABE.test(s)) return "reseau";
+    if (AUTRES_LANGUES.test(s)) return "demande";
 
     // Demandes de contact hors du site
     if (DEMANDES.test(espaces.replace(/\s+/g, " "))) return "demande";
@@ -116,6 +153,6 @@ var NikahFiltre = (function () {
   }
 
   var MESSAGE = "Pour la sécurité de tous, les numéros de téléphone, adresses e-mail, réseaux sociaux, liens et demandes de contact hors du site sont interdits. Tous les échanges se font ici, sur Nikah.";
-  return { detecter: detecter, detecterSuite: detecterSuite, MESSAGE: MESSAGE };
+  return { detecter: detecter, detecterSuite: detecterSuite, soupconner: soupconner, MESSAGE: MESSAGE };
 })();
 if (typeof module !== "undefined") module.exports = NikahFiltre;

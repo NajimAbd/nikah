@@ -591,3 +591,9 @@ body.chat-ouvert { overflow: hidden; }
 .admin-onglets { position: sticky; top: var(--hauteur-entete, 64px); z-index: 40; background: var(--creme); padding: 10px 0; margin: 0 0 12px; flex-wrap: wrap; box-shadow: 0 6px 8px -8px rgba(0,0,0,0.25); }
 
 .alerte-filtre { color: #8a2a2a; background: #fbeeee; border: 1px solid #ecc9c9; border-radius: 8px; padding: 8px 12px; font-family: "Helvetica Neue", Arial, sans-serif; font-size: 0.88rem; margin: 8px 0 0; }
+
+.bulle.en-attente { opacity: 0.6; border: 1px dashed #c9a961; }
+.bulle.refuse { opacity: 0.5; text-decoration: line-through; }
+.alerte-filtre.info { color: #6b5a2e; background: #f7f0de; border-color: #e6d6a8; }
+.admin-msg.retenu { border: 2px solid #c9a961; background: #fbf6e8; }
+.admin-msg.refuse { opacity: 0.6; text-decoration: line-through; }
