@@ -33,7 +33,8 @@
     var photo = p.photo ? "<img alt='Photo du profil' src='" + p.photo + "'>" : (p.nom ? "<div class='avatar-grand'>" + cercleLettre(p.nom, p.couleur, true) + "</div>" : photoCachee());
     var lieu = [p.ville, p.region].filter(Boolean).map(echapper).join(", ");
     return "<article class='profil-carte'>" +
-      "<div class='profil-photo'>" + photo + "</div>" +
+      "<div class='profil-photo profil-photo-cliquable' data-ecrire='" + p.id + "' data-nom='" + echapper(p.nom || "") + "' role='button' tabindex='0' title='Écrire à cette personne'>" + photo +
+      "<span class='pastille-ecrire'>✉ Écrire</span></div>" +
       "<div class='profil-corps'>" +
       "<h3>" + echapper(p.nom || (p.genre === "femme" ? "Femme" : "Homme")) + ", " + p.age + " ans <span class='badge-verifie' title='Identité vérifiée'>✓</span></h3>" +
       "<p class='profil-lieu'>" + lieu + "</p>" +
@@ -44,40 +45,61 @@
       "<li><b>Enfants :</b> " + echapper(lib("enfants", p.enfants)) + "</li>" +
       "<li><b>Mariage envisagé :</b> " + echapper(lib("delai", p.delai)) + "</li>" +
       "</ul>" +
-      "<div class='contact-zone'><button type='button' class='btn btn-outline btn-contact' data-id='" + p.id + "'>Écrire</button>" +
-      "<div class='contact-form' hidden><textarea maxlength='1000' rows='3' placeholder='Votre message de présentation, avec respect et sincérité…'></textarea>" +
-      "<button type='button' class='btn btn-primary btn-envoyer-contact' data-id='" + p.id + "'>Envoyer la demande</button>" +
-      "<p class='contact-erreur' style='color:#a33; font-size:0.85rem; margin:6px 0 0; display:none;'></p></div></div>" +
+      "<div class='contact-zone'><button type='button' class='btn btn-outline btn-contact' data-ecrire='" + p.id + "' data-nom='" + echapper(p.nom || "") + "'>Écrire</button></div>" +
       "</div></article>";
   }
 
-  document.addEventListener("click", function (e) {
-    var ouvrir = e.target.closest ? e.target.closest(".btn-contact") : null;
-    if (ouvrir) { var f = ouvrir.parentNode.querySelector(".contact-form"); f.hidden = !f.hidden; return; }
-    var envoyer = e.target.closest ? e.target.closest(".btn-envoyer-contact") : null;
-    if (!envoyer) return;
-    var zone = envoyer.parentNode, champ = zone.querySelector("textarea"), err = zone.querySelector(".contact-erreur");
-    var texte = champ.value.trim();
-    err.style.display = "none";
-    if (!texte) { err.textContent = "Merci d'écrire un court message."; err.style.display = "block"; return; }
-    envoyer.disabled = true;
-    fetch(URL_MSG, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: jeton(), action: "start", to: parseInt(envoyer.getAttribute("data-id"), 10), body: texte }) })
+  // Fenêtre de discussion instantanée : s'ouvre en cliquant sur la photo ou sur « Écrire »
+  var fen = document.getElementById("fenetreChat");
+  var fenNom = document.getElementById("fenetreChatNom");
+  var fenTexte = document.getElementById("fenetreChatTexte");
+  var fenErreur = document.getElementById("fenetreChatErreur");
+  var fenEnvoyer = document.getElementById("fenetreChatEnvoyer");
+  var destinataire = 0;
+  function fermerChat() { fen.hidden = true; destinataire = 0; document.body.classList.remove("chat-ouvert"); }
+  function erreurChat(t) { fenErreur.textContent = t; fenErreur.style.display = t ? "block" : "none"; }
+  function ouvrirChat(id, nom) {
+    // Conversation déjà commencée avec cette personne ? On l'ouvre directement.
+    fetch(URL_MSG, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: jeton(), action: "list" }) })
       .then(function (r) { return r.json(); })
       .then(function (r) {
-        envoyer.disabled = false;
-        if (r && r.success) { window.location.href = "messages.html?c=" + r.cid; }
-        else { err.textContent = "Le contact n'a pas pu être établi. Votre identité doit être vérifiée et le profil doit correspondre à votre recherche."; err.style.display = "block"; }
+        var deja = r && r.success ? r.conversations.filter(function (c) { return c.autre && c.autre.id === id; })[0] : null;
+        if (deja) { window.location.href = "messages.html?c=" + deja.cid; return; }
+        montrerChat(id, nom);
       })
-      .catch(function () { envoyer.disabled = false; err.textContent = "Connexion impossible pour le moment."; err.style.display = "block"; });
+      .catch(function () { montrerChat(id, nom); });
+  }
+  function montrerChat(id, nom) {
+    destinataire = id;
+    fenNom.textContent = nom ? "Écrire à " + nom : "Nouveau message";
+    fenTexte.value = ""; erreurChat(""); fenEnvoyer.disabled = false;
+    fen.hidden = false; document.body.classList.add("chat-ouvert");
+    setTimeout(function () { fenTexte.focus(); }, 30);
+  }
+  function envoyerChat() {
+    var texte = fenTexte.value.trim();
+    erreurChat("");
+    if (!texte) { erreurChat("Merci d'écrire un court message."); fenTexte.focus(); return; }
+    fenEnvoyer.disabled = true; fenEnvoyer.textContent = "Envoi…";
+    fetch(URL_MSG, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: jeton(), action: "start", to: destinataire, body: texte }) })
+      .then(function (r) { return r.json(); })
+      .then(function (r) {
+        if (r && r.success) { window.location.href = "messages.html?c=" + r.cid; return; }
+        fenEnvoyer.disabled = false; fenEnvoyer.textContent = "Envoyer";
+        erreurChat("Le contact n'a pas pu être établi. Votre identité doit être vérifiée et le profil doit correspondre à votre recherche.");
+      })
+      .catch(function () { fenEnvoyer.disabled = false; fenEnvoyer.textContent = "Envoyer"; erreurChat("Connexion impossible pour le moment."); });
+  }
+  document.addEventListener("click", function (e) {
+    var cible = e.target.closest ? e.target.closest("[data-ecrire]") : null;
+    if (cible) { ouvrirChat(parseInt(cible.getAttribute("data-ecrire"), 10), cible.getAttribute("data-nom")); return; }
+    if (e.target.closest && e.target.closest("[data-fermer-chat]")) fermerChat();
   });
-
+  fenEnvoyer.addEventListener("click", envoyerChat);
   document.addEventListener("keydown", function (e) {
-    if (e.key !== "Enter" || e.shiftKey || e.isComposing) return;
-    var t = e.target;
-    if (t && t.tagName === "TEXTAREA" && t.closest && t.closest(".contact-form")) {
-      e.preventDefault();
-      t.closest(".contact-form").querySelector(".btn-envoyer-contact").click();
-    }
+    if (e.key === "Escape" && !fen.hidden) { fermerChat(); return; }
+    if ((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("profil-photo-cliquable")) { e.preventDefault(); e.target.click(); return; }
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing && e.target === fenTexte) { e.preventDefault(); envoyerChat(); }
   });
 
   var TITRE_BASE = document.title;

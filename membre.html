@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
 <title>Mon espace — Nikah</title>
-<link rel="stylesheet" href="css/style.css?v=20261015h">
+<link rel="stylesheet" href="css/style.css?v=20261016b">
 </head>
 <body>
 
@@ -47,6 +47,23 @@
   </div>
 </main>
 
+<div id="fenetreChat" class="fenetre-chat" hidden>
+  <div class="fenetre-chat-fond" data-fermer-chat></div>
+  <div class="fenetre-chat-boite" role="dialog" aria-modal="true" aria-labelledby="fenetreChatNom">
+    <div class="fenetre-chat-tete">
+      <strong id="fenetreChatNom">Nouveau message</strong>
+      <button type="button" class="fenetre-chat-fermer" data-fermer-chat aria-label="Fermer">×</button>
+    </div>
+    <p class="fenetre-chat-info">Votre premier message est vérifié par la modération avant d'être transmis.</p>
+    <textarea id="fenetreChatTexte" maxlength="1000" rows="4" placeholder="Votre message de présentation, avec respect et sincérité…"></textarea>
+    <p id="fenetreChatErreur" class="fenetre-chat-erreur"></p>
+    <div class="fenetre-chat-actions">
+      <button type="button" class="btn btn-ghost" data-fermer-chat>Annuler</button>
+      <button type="button" class="btn btn-primary" id="fenetreChatEnvoyer">Envoyer</button>
+    </div>
+  </div>
+</div>
+
 <footer class="site-footer">
   <div class="container">
     <a href="confidentialite.html">Politique de confidentialité</a>
@@ -57,7 +74,7 @@
   </div>
 </footer>
 
-<script src="js/membre.js?v=20261015h"></script>
+<script src="js/membre.js?v=20261016b"></script>
 <script src="js/cookies.js?v=20261015h"></script>
 </body>
 </html>

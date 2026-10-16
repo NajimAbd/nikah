@@ -537,3 +537,22 @@ body.cmp-ouvert { overflow: hidden; }
 .admin-msg.de-a { background: #efeae0; }
 .admin-msg.de-b { background: #e5eee8; }
 #lienMessages.a-lire { color: #9a6b1e; font-weight: 700; }
+
+/* Photo cliquable + fenêtre de discussion instantanée */
+.profil-photo-cliquable { position: relative; cursor: pointer; }
+.profil-photo-cliquable:focus-visible { outline: 3px solid #C9A961; outline-offset: -3px; }
+.pastille-ecrire { position: absolute; right: 10px; bottom: 10px; background: #7C9885; color: #fff; font-family: "Helvetica Neue", Arial, sans-serif; font-size: 0.9rem; font-weight: 600; padding: 7px 14px; border-radius: 999px; box-shadow: 0 2px 8px rgba(0,0,0,0.18); transition: background .15s; }
+.profil-photo-cliquable:hover .pastille-ecrire { background: #5f7b69; }
+.fenetre-chat[hidden] { display: none; }
+.fenetre-chat { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: flex-end; justify-content: center; }
+.fenetre-chat-fond { position: absolute; inset: 0; background: rgba(30,30,30,0.35); }
+.fenetre-chat-boite { position: relative; width: 100%; max-width: 480px; margin: 0 16px 16px; background: #fff; border-radius: 16px; padding: 16px 18px 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-family: "Helvetica Neue", Arial, sans-serif; }
+@media (min-width: 700px) { .fenetre-chat { align-items: center; } }
+.fenetre-chat-tete { display: flex; justify-content: space-between; align-items: center; }
+.fenetre-chat-tete strong { font-size: 1.1rem; }
+.fenetre-chat-fermer { background: none; border: 0; font-size: 1.8rem; line-height: 1; cursor: pointer; color: #777; padding: 0 4px; }
+.fenetre-chat-info { margin: 6px 0 10px; font-size: 0.85rem; color: #6b6b6b; }
+.fenetre-chat-boite textarea { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #d9d2c5; border-radius: 10px; font: inherit; resize: vertical; }
+.fenetre-chat-erreur { color: #a33; font-size: 0.85rem; margin: 6px 0 0; display: none; }
+.fenetre-chat-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px; }
+body.chat-ouvert { overflow: hidden; }
