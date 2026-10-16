@@ -83,7 +83,9 @@
   }
 
   function afficherFil(r) {
-    var sigF = JSON.stringify([r.cid, r.statut, r.initiateur, r.messages.map(function (m) { return m.id; })]);
+    var sigF = JSON.stringify([r.cid, r.statut, r.initiateur, r.blocage, r.deja_signale, r.messages.map(function (m) { return m.id; })]);
+    dernierFil = r;
+    majMenu(r);
     if (sigF === signatureFil) return;
     signatureFil = sigF;
     var fil = document.getElementById("colFil");
@@ -105,10 +107,22 @@
     if (enBas) zone.scrollTop = zone.scrollHeight;
 
     var action = document.getElementById("filAction");
-    if (action.getAttribute("data-etat") === r.statut + (r.initiateur ? "1" : "0") && action.firstChild) return;
-    action.setAttribute("data-etat", r.statut + (r.initiateur ? "1" : "0"));
+    var etat = r.statut + (r.initiateur ? "1" : "0") + JSON.stringify(r.blocage || {}) + (r.deja_signale ? "s" : "");
+    if (action.getAttribute("data-etat") === etat && action.firstChild) return;
+    action.setAttribute("data-etat", etat);
     action.innerHTML = "";
-    if (r.statut === "demande" && !r.initiateur) {
+    var blo = r.blocage || {};
+    if (r.deja_signale) action.appendChild(el("p", "msg-note", "Vous avez signalé cette conversation. L'administration va l'examiner."));
+    if (blo.par_moi) {
+      action.appendChild(el("p", "aide", blo.par_moi === "definitif"
+        ? "Vous avez bloqué cette personne définitivement. Elle ne peut plus vous écrire et n'apparaît plus dans vos recherches."
+        : "Vous avez bloqué cette personne jusqu'au " + dateFin(blo.par_moi) + ". Elle ne peut pas vous écrire d'ici là."));
+      var deb = el("button", "btn btn-outline", "Débloquer"); deb.type = "button";
+      deb.addEventListener("click", function () { agir({ action: "unblock", cid: courante }); });
+      action.appendChild(deb);
+    } else if (blo.par_lui) {
+      action.appendChild(el("p", "aide", "Vous ne pouvez plus écrire à cette personne pour le moment."));
+    } else if (r.statut === "demande" && !r.initiateur) {
       action.appendChild(el("p", "aide", "Cette personne souhaite entrer en contact avec vous. Souhaitez-vous répondre ?"));
       var oui = el("button", "btn btn-primary", "Accepter"); oui.type = "button";
       var non = el("button", "btn btn-outline", "Refuser"); non.type = "button";
@@ -144,6 +158,64 @@
       action.appendChild(form);
     }
   }
+
+  // Blocage et signalement
+  var dernierFil = null;
+  var menu = document.getElementById("menuOptions");
+  var btnOptions = document.getElementById("btnOptions");
+  function dateFin(t) { var p = String(t).split(/[-T:]/); return p.length >= 5 ? p[2] + "." + p[1] + "." + p[0] + " à " + p[3] + "h" + p[4] : t; }
+  function fermerMenu() { menu.hidden = true; btnOptions.setAttribute("aria-expanded", "false"); }
+  function majMenu(r) {
+    var bloque = !!(r.blocage && r.blocage.par_moi);
+    Array.prototype.forEach.call(menu.querySelectorAll("[data-bloquer]"), function (b) { b.hidden = bloque; });
+    document.getElementById("btnDebloquer").hidden = !bloque;
+    document.getElementById("btnSignaler").hidden = !!r.deja_signale;
+  }
+  function agir(corps) {
+    fermerMenu();
+    return appel(corps).then(function (r) {
+      if (r && r.success) { document.getElementById("filAction").removeAttribute("data-etat"); signatureFil = ""; afficherFil(r); chargerListe(); }
+      return r;
+    });
+  }
+  btnOptions.addEventListener("click", function (e) {
+    e.stopPropagation();
+    menu.hidden = !menu.hidden;
+    btnOptions.setAttribute("aria-expanded", menu.hidden ? "false" : "true");
+  });
+  document.addEventListener("click", function (e) { if (!menu.hidden && !menu.contains(e.target)) fermerMenu(); });
+  var LIB_DUREE = { "24h": "pendant 24 heures", "7j": "pendant 7 jours", "30j": "pendant 30 jours", "definitif": "définitivement" };
+  Array.prototype.forEach.call(menu.querySelectorAll("[data-bloquer]"), function (b) {
+    b.addEventListener("click", function () {
+      var d = b.getAttribute("data-bloquer");
+      var nom = dernierFil && dernierFil.autre ? nomAffiche(dernierFil.autre) : "cette personne";
+      if (!window.confirm("Bloquer " + nom + " " + LIB_DUREE[d] + " ? Elle ne pourra plus vous écrire et n'apparaîtra plus dans vos recherches.")) { fermerMenu(); return; }
+      agir({ action: "block", cid: courante, duree: d });
+    });
+  });
+  document.getElementById("btnDebloquer").addEventListener("click", function () { agir({ action: "unblock", cid: courante }); });
+
+  var fenSignal = document.getElementById("fenetreSignal");
+  var sigMotif = document.getElementById("signalMotif"), sigDetails = document.getElementById("signalDetails");
+  var sigErreur = document.getElementById("signalErreur"), sigEnvoyer = document.getElementById("signalEnvoyer");
+  function fermerSignal() { fenSignal.hidden = true; }
+  document.getElementById("btnSignaler").addEventListener("click", function () {
+    fermerMenu();
+    sigMotif.value = ""; sigDetails.value = ""; sigErreur.style.display = "none"; sigEnvoyer.disabled = false; sigEnvoyer.textContent = "Envoyer le signalement";
+    fenSignal.hidden = false; sigMotif.focus();
+  });
+  fenSignal.addEventListener("click", function (e) { if (e.target.closest && e.target.closest("[data-fermer-signal]")) fermerSignal(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { fermerSignal(); fermerMenu(); } });
+  sigEnvoyer.addEventListener("click", function () {
+    sigErreur.style.display = "none";
+    if (!sigMotif.value) { sigErreur.textContent = "Merci de choisir un motif."; sigErreur.style.display = "block"; sigMotif.focus(); return; }
+    sigEnvoyer.disabled = true; sigEnvoyer.textContent = "Envoi…";
+    agir({ action: "report", cid: courante, motif: sigMotif.value, details: sigDetails.value.trim() }).then(function (r) {
+      if (r && r.success) { fermerSignal(); return; }
+      sigEnvoyer.disabled = false; sigEnvoyer.textContent = "Envoyer le signalement";
+      sigErreur.textContent = "Le signalement n'a pas pu être envoyé. Réessayez dans un instant."; sigErreur.style.display = "block";
+    }).catch(function () { sigEnvoyer.disabled = false; sigEnvoyer.textContent = "Envoyer le signalement"; sigErreur.textContent = "Connexion impossible pour le moment."; sigErreur.style.display = "block"; });
+  });
 
   function ouvrir(cid) {
     courante = cid;

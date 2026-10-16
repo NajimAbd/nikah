@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
 <title>Messages — Nikah</title>
-<link rel="stylesheet" href="css/style.css?v=20261015h">
+<link rel="stylesheet" href="css/style.css?v=20261016e">
 </head>
 <body>
 
@@ -27,7 +27,21 @@
     <div id="messagerie" class="messagerie" style="display:none;">
       <aside id="colListe" class="msg-liste"></aside>
       <section id="colFil" class="msg-fil" style="display:none;">
-        <div class="msg-entete"><button type="button" id="btnRetour" class="btn btn-ghost msg-retour">← Retour</button><span id="filTitre"></span></div>
+        <div class="msg-entete"><button type="button" id="btnRetour" class="btn btn-ghost msg-retour">← Retour</button><span id="filTitre"></span>
+          <div class="msg-options">
+            <button type="button" id="btnOptions" class="msg-options-bouton" aria-haspopup="true" aria-expanded="false" title="Bloquer ou signaler">⋯</button>
+            <div id="menuOptions" class="msg-options-menu" hidden>
+              <p class="msg-options-titre">Bloquer cette personne</p>
+              <button type="button" data-bloquer="24h">Pendant 24 heures</button>
+              <button type="button" data-bloquer="7j">Pendant 7 jours</button>
+              <button type="button" data-bloquer="30j">Pendant 30 jours</button>
+              <button type="button" data-bloquer="definitif" class="danger">Définitivement</button>
+              <button type="button" id="btnDebloquer" hidden>Débloquer</button>
+              <hr>
+              <button type="button" id="btnSignaler" class="danger">Signaler à l'administration</button>
+            </div>
+          </div>
+        </div>
         <div id="filMessages" class="msg-messages"></div>
         <div id="filAction"></div>
       </section>
@@ -35,6 +49,32 @@
     </div>
   </div>
 </main>
+
+<div id="fenetreSignal" class="fenetre-chat" hidden>
+  <div class="fenetre-chat-fond" data-fermer-signal></div>
+  <div class="fenetre-chat-boite" role="dialog" aria-modal="true" aria-labelledby="signalTitre">
+    <div class="fenetre-chat-tete">
+      <strong id="signalTitre">Signaler à l'administration</strong>
+      <button type="button" class="fenetre-chat-fermer" data-fermer-signal aria-label="Fermer">×</button>
+    </div>
+    <p class="fenetre-chat-info">L'administration lira cette conversation. La personne signalée n'est pas prévenue.</p>
+    <select id="signalMotif" class="champ-texte">
+      <option value="">Choisissez un motif…</option>
+      <option value="propos_deplaces">Propos déplacés ou contraires à la charte</option>
+      <option value="harcelement">Insistance ou harcèlement</option>
+      <option value="faux_profil">Faux profil ou fausses informations</option>
+      <option value="demande_argent">Demande d'argent ou de cadeau</option>
+      <option value="coordonnees">Demande de numéro ou de contact hors du site</option>
+      <option value="autre">Autre raison</option>
+    </select>
+    <textarea id="signalDetails" maxlength="1000" rows="3" placeholder="Expliquez en quelques mots (facultatif)…" style="margin-top:10px;"></textarea>
+    <p id="signalErreur" class="fenetre-chat-erreur"></p>
+    <div class="fenetre-chat-actions">
+      <button type="button" class="btn btn-ghost" data-fermer-signal>Annuler</button>
+      <button type="button" class="btn btn-primary" id="signalEnvoyer">Envoyer le signalement</button>
+    </div>
+  </div>
+</div>
 
 <footer class="site-footer">
   <div class="container">
@@ -46,7 +86,7 @@
   </div>
 </footer>
 
-<script src="js/messages.js?v=20261016d"></script>
+<script src="js/messages.js?v=20261016e"></script>
 <script src="js/cookies.js?v=20261015h"></script>
 </body>
 </html>

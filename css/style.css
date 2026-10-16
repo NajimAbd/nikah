@@ -556,3 +556,20 @@ body.cmp-ouvert { overflow: hidden; }
 .fenetre-chat-erreur { color: #a33; font-size: 0.85rem; margin: 6px 0 0; display: none; }
 .fenetre-chat-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px; }
 body.chat-ouvert { overflow: hidden; }
+
+/* Bloquer / signaler */
+.msg-options { position: relative; margin-left: auto; }
+.msg-options-bouton { background: none; border: 1px solid #e3ddd2; border-radius: 10px; font-size: 1.4rem; line-height: 1; padding: 4px 12px 10px; cursor: pointer; color: #555; }
+.msg-options-bouton:hover { background: #f4f0e8; }
+.msg-options-menu { position: absolute; right: 0; top: calc(100% + 6px); z-index: 50; background: #fff; border: 1px solid #e3ddd2; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); padding: 8px; min-width: 240px; font-family: "Helvetica Neue", Arial, sans-serif; }
+.msg-options-menu[hidden] { display: none; }
+.msg-options-titre { margin: 4px 8px 6px; font-size: 0.8rem; color: #777; text-transform: uppercase; letter-spacing: .04em; }
+.msg-options-menu button { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 9px 10px; border-radius: 8px; font: inherit; font-size: 0.95rem; cursor: pointer; color: #333; }
+.msg-options-menu button:hover { background: #f4f0e8; }
+.msg-options-menu button[hidden] { display: none; }
+.msg-options-menu .danger { color: #a33; }
+.msg-options-menu hr { border: 0; border-top: 1px solid #eee8dc; margin: 6px 0; }
+.msg-note { font-family: "Helvetica Neue", Arial, sans-serif; font-size: 0.85rem; color: #6b5a2e; background: #f7f0de; padding: 8px 12px; border-radius: 8px; margin: 0 0 10px; }
+/* Signalements (administration) */
+.admin-signalement { background: #fbeeee; border: 1px solid #ecc9c9; border-radius: 10px; padding: 10px 12px; margin: 8px 0; font-size: 0.9rem; }
+.admin-signalement.traite { background: #f3f3f3; border-color: #e0e0e0; color: #666; }

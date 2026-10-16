@@ -79,12 +79,13 @@
 
   var ongletCourant = "profils";
   var donneesMessages = null;
-  var ONGLETS = { profils: "ongletProfils", controler: "ongletMessages", approuves: "ongletApprouves", refuses: "ongletRefuses" };
-  var TITRES = { controler: "Messages à contrôler", approuves: "Messages approuvés", refuses: "Messages refusés" };
+  var ONGLETS = { profils: "ongletProfils", controler: "ongletMessages", approuves: "ongletApprouves", refuses: "ongletRefuses", signalements: "ongletSignalements" };
+  var TITRES = { controler: "Messages à contrôler", approuves: "Messages approuvés", refuses: "Messages refusés", signalements: "Conversations signalées" };
   var FILTRES = {
     controler: function (c) { return c.statut === "moderation"; },
     approuves: function (c) { return c.statut === "demande" || c.statut === "acceptee" || c.statut === "refusee"; },
-    refuses: function (c) { return c.statut === "rejetee"; }
+    refuses: function (c) { return c.statut === "rejetee"; },
+    signalements: function (c) { return c.signalements && c.signalements.length > 0; }
   };
   function montrerOnglet(nom) {
     ongletCourant = nom;
@@ -110,6 +111,27 @@
       fil.appendChild(l);
     });
     boite.appendChild(fil);
+    if (c.signalements && c.signalements.length) {
+      var MOTIFS = { propos_deplaces: "Propos déplacés ou contraires à la charte", harcelement: "Insistance ou harcèlement", faux_profil: "Faux profil ou fausses informations", demande_argent: "Demande d'argent ou de cadeau", coordonnees: "Demande de contact hors du site", autre: "Autre raison" };
+      var nouveaux = 0;
+      c.signalements.forEach(function (sg) {
+        if (sg.statut === "nouveau") nouveaux++;
+        var auteur = Number(sg.par) === Number(c.a.id) ? c.a : c.b;
+        var bloc = el("div", "admin-signalement" + (sg.statut === "traite" ? " traite" : ""));
+        bloc.appendChild(el("strong", "", "Signalé par " + (auteur.nom || auteur.email) + " — " + (MOTIFS[sg.motif] || sg.motif)));
+        bloc.appendChild(el("div", "", String(sg.date || "").replace("T", " ") + (sg.statut === "traite" ? " · traité" : " · à traiter")));
+        if (sg.details) bloc.appendChild(el("div", "", "« " + sg.details + " »"));
+        boite.appendChild(bloc);
+      });
+      if (nouveaux) {
+        var ok = el("button", "btn btn-primary", "Marquer comme traité"); ok.type = "button";
+        ok.addEventListener("click", function () {
+          ok.disabled = true;
+          post("nikah-admin-messages", { token: lire(), action: "report_done", cid: c.cid }).then(function (r) { rendreMessages(r); }).catch(function () { ok.disabled = false; });
+        });
+        var rg = el("div", "admin-actions"); rg.appendChild(ok); boite.appendChild(rg);
+      }
+    }
     if (c.statut === "moderation") {
       var rangee = el("div", "admin-actions");
       [["Approuver et transmettre", "btn-primary", "approve", null], ["Refuser", "btn-outline", "reject", "Refuser ce message ? Il ne sera pas transmis."]].forEach(function (d) {
@@ -135,11 +157,12 @@
   }
   function rendreMessages(r) {
     if (!r || !r.success) return;
-    var sig = JSON.stringify(r.conversations.map(function (c) { return [c.cid, c.statut, c.messages.length]; }));
+    var sig = JSON.stringify(r.conversations.map(function (c) { return [c.cid, c.statut, c.messages.length, (c.signalements || []).map(function (x) { return x.id + x.statut; })]; }));
     if (donneesMessages && sig === donneesMessages._sig) return;
     r._sig = sig;
     donneesMessages = r;
     document.getElementById("ongletMessages").textContent = r.a_moderer > 0 ? "Messages à contrôler (" + r.a_moderer + ")" : "Messages à contrôler";
+    document.getElementById("ongletSignalements").textContent = r.a_traiter > 0 ? "Signalements (" + r.a_traiter + ")" : "Signalements";
     afficherMessages();
   }
   function chargerMessages() {
