@@ -1,6 +1,18 @@
 # Nikah — traductions : page « Mon compte » (mot de passe, suppression) et compte supprimé dans la messagerie
 ajoute({
 "Mon compte — Nikah": ("Mein Konto — Nikah", "Il mio account — Nikah", "My account — Nikah", "Llogaria ime — Nikah"),
+"Mes critères de recherche": ("Meine Suchkriterien", "I miei criteri di ricerca", "My search criteria", "Kriteret e mia të kërkimit"),
+"Choisissez l'âge de la personne que vous recherchez. Les profils proposés dans « Mon espace » seront mis à jour.":
+ ("Wählen Sie das Alter der Person, die Sie suchen. Die Profile in «Mein Bereich» werden entsprechend angepasst.",
+  "Scegliete l'età della persona che cercate. I profili proposti in «Il mio spazio» saranno aggiornati.",
+  "Choose the age of the person you are looking for. The profiles shown in “My space” will be updated.",
+  "Zgjidhni moshën e personit që kërkoni. Profilet në «Hapësira ime» do të përditësohen."),
+"De": ("Von", "Da", "From", "Nga"),
+"à": ("bis", "a", "to", "deri"),
+"ans": ("Jahre", "anni", "years", "vjeç"),
+"Enregistrer mes critères": ("Meine Kriterien speichern", "Salvare i miei criteri", "Save my criteria", "Ruaj kriteret e mia"),
+"L'âge maximum doit être plus grand que l'âge minimum.": ("Das Höchstalter muss grösser sein als das Mindestalter.", "L'età massima deve essere maggiore dell'età minima.", "The maximum age must be higher than the minimum age.", "Mosha maksimale duhet të jetë më e madhe se mosha minimale."),
+"Vos critères ont bien été enregistrés.": ("Ihre Kriterien wurden gespeichert.", "I vostri criteri sono stati salvati.", "Your criteria have been saved.", "Kriteret tuaja u ruajtën."),
 "Mon compte": ("Mein Konto", "Il mio account", "My account", "Llogaria ime"),
 "Changer mon mot de passe": ("Mein Passwort ändern", "Cambiare la mia password", "Change my password", "Ndrysho fjalëkalimin tim"),
 "Le nouveau mot de passe doit contenir au moins 10 caractères, dont un caractère spécial (par exemple ! ? # @ -). Un e-mail de confirmation vous sera envoyé.":

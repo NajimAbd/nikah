@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>Administration — Nikah</title>
-<link rel="stylesheet" href="css/style.css?v=20261016j">
+<link rel="stylesheet" href="css/style.css?v=20261017e">
 </head>
 <body>
 
 <header class="site-header">
   <div class="container">
     <span class="logo">Nikah — administration</span>
-    <nav class="site-nav"><a href="#" id="btnSortir" style="display:none;">Se déconnecter</a></nav>
+    <nav class="site-nav"><a href="#" id="btnMdpAdmin" style="display:none;">Mot de passe</a><a href="#" id="btnSortir" style="display:none;">Se déconnecter</a></nav>
   </div>
 </header>
 
@@ -55,6 +55,24 @@
   </div>
 </main>
 
-<script src="js/administration.js?v=20261016j"></script>
+<div id="fenetreMdpAdmin" class="fenetre-chat" hidden>
+  <div class="fenetre-chat-fond" data-fermer-mdp></div>
+  <div class="fenetre-chat-boite" role="dialog" aria-labelledby="titreMdpAdmin">
+    <div class="fenetre-chat-entete" style="display:flex; justify-content:space-between; align-items:center;">
+      <strong id="titreMdpAdmin">Changer le mot de passe administrateur</strong>
+      <button type="button" class="fenetre-chat-fermer" data-fermer-mdp aria-label="Fermer" style="background:none;border:0;font-size:1.4rem;cursor:pointer;">×</button>
+    </div>
+    <p class="aide" style="font-size:0.88rem;">Au moins 10 caractères, dont un caractère spécial. Un e-mail de confirmation sera envoyé à l'adresse de l'administrateur.</p>
+    <form id="formMdpAdmin" novalidate>
+      <div class="mdp-wrap"><input type="password" id="mdpAdminActuel" class="champ-texte" placeholder="Mot de passe actuel" autocomplete="current-password"><button type="button" class="mdp-oeil" data-cible="mdpAdminActuel" aria-label="Afficher le mot de passe"></button></div>
+      <div class="mdp-wrap"><input type="password" id="mdpAdminNouveau" class="champ-texte" placeholder="Nouveau mot de passe" autocomplete="new-password"><button type="button" class="mdp-oeil" data-cible="mdpAdminNouveau" aria-label="Afficher le mot de passe"></button></div>
+      <div class="mdp-wrap"><input type="password" id="mdpAdminNouveau2" class="champ-texte" placeholder="Confirmez le nouveau mot de passe" autocomplete="new-password"><button type="button" class="mdp-oeil" data-cible="mdpAdminNouveau2" aria-label="Afficher le mot de passe"></button></div>
+      <p id="mdpAdminMessage" class="compte-message"></p>
+      <div class="compte-actions"><button type="submit" class="btn btn-primary" id="btnMdpAdminValider">Enregistrer</button></div>
+    </form>
+  </div>
+</div>
+
+<script src="js/administration.js?v=20261017a"></script>
 </body>
 </html>

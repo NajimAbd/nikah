@@ -10,9 +10,13 @@ const b = $input.first().json.body || {};
 const action = String(b.action || '');
 const token = String(b.token || '');
 if (!/^[a-f0-9]{64}$/.test(token)) return [{ json: { ok: false, error: 'session_invalide' } }];
-if (action !== 'password' && action !== 'delete') return [{ json: { ok: false, error: 'requete_invalide' } }];
+if (['password', 'delete', 'criteria'].indexOf(action) === -1) return [{ json: { ok: false, error: 'requete_invalide' } }];
+if (action === 'criteria') {
+  const min = parseInt(b.age_min, 10), max = parseInt(b.age_max, 10);
+  if (!(min >= 18 && max >= min && max <= 99)) return [{ json: { ok: false, error: 'tranche_age_invalide' } }];
+}
 const actuel = String(b.actuel || '');
-if (!actuel || actuel.length > 200) return [{ json: { ok: false, error: 'mot_de_passe_incorrect' } }];
+if (action !== 'criteria' && (!actuel || actuel.length > 200)) return [{ json: { ok: false, error: 'mot_de_passe_incorrect' } }];
 if (action === 'password') {
   const nouveau = String(b.nouveau || '');
   if (nouveau.length < 10 || nouveau.length > 200 || !/[^A-Za-z0-9]/.test(nouveau)) return [{ json: { ok: false, error: 'mot_de_passe_faible' } }];
@@ -31,6 +35,13 @@ const S = 'SELECT 1';
 const nope = (error, q) => [{ json: { ok: false, error, q1: q || S } }];
 if (row.id === null || row.id === undefined) return nope('session_invalide');
 const id = parseInt(row.id, 10);
+// Critères de recherche : pas besoin du mot de passe (la session suffit), pas d'e-mail
+if (action === 'criteria') {
+  const min = parseInt(b.age_min, 10), max = parseInt(b.age_max, 10);
+  return [{ json: { ok: true, email: '', sujet: '', texte: '', min, max,
+    q1: 'UPDATE search_preferences SET age_min=' + min + ', age_max=' + max + ' WHERE member_id=' + id,
+    q2: S, q3: S, q4: S, q5: S, q6: S } }];
+}
 if (Number(row.locked) === 1) return nope('compte_bloque');
 const parts = String(row.password_hash).split(':');
 const calc = crypto.pbkdf2Sync(String(b.actuel || ''), parts[2], parseInt(parts[1], 10), 32, 'sha256');
@@ -84,6 +95,7 @@ x = 1320
 for i in range(1, 7):
     nodes.append(sql("Ecrire %d" % i, "={{ $('Verifier').first().json.q%d }}" % i, x, 100)); x += 200
 nodes.append({"parameters": {"fromEmail": "Nikah <contact@roqyasuisse.com>", "toEmail": "={{ $('Verifier').first().json.email }}", "subject": "={{ $('Verifier').first().json.sujet }}", "emailFormat": "text", "text": "={{ $('Verifier').first().json.texte }}", "options": {"appendAttribution": False}}, "name": "Envoyer mail", "type": "n8n-nodes-base.emailSend", "typeVersion": 2.1, "position": [x, 100], "credentials": CRED_SMTP, "continueOnFail": True, "alwaysOutputData": True})
+nodes.append(ifnode("Mail a envoyer", "={{ !!$('Verifier').first().json.sujet }}", x, 300))
 nodes.append(rep("Reponse ok", "={{ JSON.stringify({success:true,action:$('Prepare').first().json.action}) }}", x + 220, 100))
 
 C = lambda *dst: {"main": [[{"node": d, "type": "main", "index": 0}] for d in dst]}
@@ -94,7 +106,7 @@ conn = {
     "Verification ok": C("Ecrire 1", "Noter echec"),
     "Noter echec": C("Reponse echec"),
     "Ecrire 1": C("Ecrire 2"), "Ecrire 2": C("Ecrire 3"), "Ecrire 3": C("Ecrire 4"), "Ecrire 4": C("Ecrire 5"), "Ecrire 5": C("Ecrire 6"),
-    "Ecrire 6": C("Envoyer mail"), "Envoyer mail": C("Reponse ok"),
+    "Ecrire 6": C("Mail a envoyer"), "Mail a envoyer": C("Envoyer mail", "Reponse ok"), "Envoyer mail": C("Reponse ok"),
 }
 wf = [{"id": "NikahAccount001", "name": "Nikah Account", "nodes": nodes, "connections": conn, "active": False, "settings": {"executionOrder": "v1"}}]
 json.dump(wf, open(os.path.join(ROOT, "n8n", "nikah-account-2026-10-17.json"), "w"), ensure_ascii=False, indent=2)

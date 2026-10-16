@@ -58,10 +58,38 @@
     .then(function (r) { return r.json(); })
     .then(function (res) {
       if (!res || !res.success) { oublierJeton(); versConnexion(); return; }
+      if (res.search) {
+        if (res.search.age_min) document.getElementById("ageMin").value = String(parseInt(res.search.age_min, 10));
+        if (res.search.age_max) document.getElementById("ageMax").value = String(parseInt(res.search.age_max, 10));
+      }
       document.getElementById("chargement").style.display = "none";
       document.getElementById("contenu").style.display = "";
     })
     .catch(function () { document.getElementById("chargement").textContent = ERREUR_RESEAU; });
+
+  // --- Critères de recherche (âge) ---
+  var selMin = document.getElementById("ageMin"), selMax = document.getElementById("ageMax");
+  for (var an = 18; an <= 99; an++) {
+    [selMin, selMax].forEach(function (sel) { var o = document.createElement("option"); o.value = String(an); o.textContent = String(an); sel.appendChild(o); });
+  }
+  selMin.value = "25"; selMax.value = "45";
+  [selMin, selMax].forEach(function (sel) { sel.addEventListener("change", function () { message("criteresMessage", ""); }); });
+  var btnCrit = document.getElementById("btnCriteres");
+  var texteBtnCrit = btnCrit.textContent;
+  document.getElementById("formCriteres").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var min = parseInt(selMin.value, 10), max = parseInt(selMax.value, 10);
+    if (max < min) { message("criteresMessage", "L'âge maximum doit être plus grand que l'âge minimum."); return; }
+    btnCrit.disabled = true; btnCrit.textContent = "Enregistrement…";
+    appeler({ action: "criteria", age_min: min, age_max: max })
+      .then(function (res) {
+        btnCrit.disabled = false; btnCrit.textContent = texteBtnCrit;
+        if (res && res.success) { message("criteresMessage", "Vos critères ont bien été enregistrés.", true); return; }
+        if (res && res.error === "session_invalide") { oublierJeton(); versConnexion(); return; }
+        message("criteresMessage", ERREUR_GENERALE);
+      })
+      .catch(function () { btnCrit.disabled = false; btnCrit.textContent = texteBtnCrit; message("criteresMessage", ERREUR_RESEAU); });
+  });
 
   // --- Changer le mot de passe ---
   var a = document.getElementById("mdpActuel"), n1 = document.getElementById("mdpNouveau"), n2 = document.getElementById("mdpNouveau2");

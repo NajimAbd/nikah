@@ -23,7 +23,7 @@
       },
       {
         "parameters": {
-          "jsCode": "const b = $input.first().json.body || {};\nconst action = String(b.action || '');\nconst token = String(b.token || '');\nif (!/^[a-f0-9]{64}$/.test(token)) return [{ json: { ok: false, error: 'session_invalide' } }];\nif (action !== 'password' && action !== 'delete') return [{ json: { ok: false, error: 'requete_invalide' } }];\nconst actuel = String(b.actuel || '');\nif (!actuel || actuel.length > 200) return [{ json: { ok: false, error: 'mot_de_passe_incorrect' } }];\nif (action === 'password') {\n  const nouveau = String(b.nouveau || '');\n  if (nouveau.length < 10 || nouveau.length > 200 || !/[^A-Za-z0-9]/.test(nouveau)) return [{ json: { ok: false, error: 'mot_de_passe_faible' } }];\n  if (nouveau === actuel) return [{ json: { ok: false, error: 'mot_de_passe_identique' } }];\n}\nconst q0 = \"SELECT m.id, m.email, m.display_name, m.password_hash, (m.locked_until IS NOT NULL AND m.locked_until > NOW()) AS locked FROM (SELECT 1 AS x) d LEFT JOIN members m ON m.session_hash=SHA2('\" + token + \"',256) AND m.session_expires > NOW() AND m.status='actif'\";\nreturn [{ json: { ok: true, action, q0 } }];"
+          "jsCode": "const b = $input.first().json.body || {};\nconst action = String(b.action || '');\nconst token = String(b.token || '');\nif (!/^[a-f0-9]{64}$/.test(token)) return [{ json: { ok: false, error: 'session_invalide' } }];\nif (['password', 'delete', 'criteria'].indexOf(action) === -1) return [{ json: { ok: false, error: 'requete_invalide' } }];\nif (action === 'criteria') {\n  const min = parseInt(b.age_min, 10), max = parseInt(b.age_max, 10);\n  if (!(min >= 18 && max >= min && max <= 99)) return [{ json: { ok: false, error: 'tranche_age_invalide' } }];\n}\nconst actuel = String(b.actuel || '');\nif (action !== 'criteria' && (!actuel || actuel.length > 200)) return [{ json: { ok: false, error: 'mot_de_passe_incorrect' } }];\nif (action === 'password') {\n  const nouveau = String(b.nouveau || '');\n  if (nouveau.length < 10 || nouveau.length > 200 || !/[^A-Za-z0-9]/.test(nouveau)) return [{ json: { ok: false, error: 'mot_de_passe_faible' } }];\n  if (nouveau === actuel) return [{ json: { ok: false, error: 'mot_de_passe_identique' } }];\n}\nconst q0 = \"SELECT m.id, m.email, m.display_name, m.password_hash, (m.locked_until IS NOT NULL AND m.locked_until > NOW()) AS locked FROM (SELECT 1 AS x) d LEFT JOIN members m ON m.session_hash=SHA2('\" + token + \"',256) AND m.session_expires > NOW() AND m.status='actif'\";\nreturn [{ json: { ok: true, action, q0 } }];"
         },
         "name": "Prepare",
         "type": "n8n-nodes-base.code",
@@ -115,7 +115,7 @@
       },
       {
         "parameters": {
-          "jsCode": "const crypto = require('crypto');\nconst b = $('Webhook').first().json.body || {};\nconst action = $('Prepare').first().json.action;\nconst row = $input.first().json;\nconst S = 'SELECT 1';\nconst nope = (error, q) => [{ json: { ok: false, error, q1: q || S } }];\nif (row.id === null || row.id === undefined) return nope('session_invalide');\nconst id = parseInt(row.id, 10);\nif (Number(row.locked) === 1) return nope('compte_bloque');\nconst parts = String(row.password_hash).split(':');\nconst calc = crypto.pbkdf2Sync(String(b.actuel || ''), parts[2], parseInt(parts[1], 10), 32, 'sha256');\nconst expected = Buffer.from(parts[3] || '', 'hex');\nconst same = calc.length === expected.length && crypto.timingSafeEqual(calc, expected);\nif (!same) return nope('mot_de_passe_incorrect', 'UPDATE members SET login_failures=login_failures+1, locked_until=IF(login_failures>=5, DATE_ADD(NOW(), INTERVAL 15 MINUTE), locked_until) WHERE id=' + id);\nconst nom = row.display_name ? ' ' + row.display_name : '';\nconst fin = \"\\n\\nQue Allah facilite votre chemin vers un mariage béni.\\n\\nNikah — mariageislamique.ch\\n(Message automatique, merci de ne pas y répondre. Pour nous écrire : https://mariageislamique.ch/contact.html)\";\nif (action === 'password') {\n  const salt = crypto.randomBytes(16).toString('hex');\n  const hash = crypto.pbkdf2Sync(String(b.nouveau), salt, 100000, 32, 'sha256').toString('hex');\n  return [{ json: { ok: true, email: row.email,\n    sujet: 'Nikah — votre mot de passe a été modifié',\n    texte: 'Assalamou alaykoum' + nom + ',\\n\\nLe mot de passe de votre compte Nikah vient d\\'être modifié.\\n\\nSi c\\'est bien vous, vous n\\'avez rien à faire.\\n\\nSi ce n\\'est pas vous, choisissez tout de suite un nouveau mot de passe ici :\\nhttps://mariageislamique.ch/oubli.html\\npuis prévenez-nous depuis la page Contact.' + fin,\n    q1: \"UPDATE members SET password_hash='pbkdf2:100000:\" + salt + \":\" + hash + \"', login_failures=0, locked_until=NULL, reset_hash=NULL, reset_expires=NULL WHERE id=\" + id,\n    q2: S, q3: S, q4: S, q5: S, q6: S } }];\n}\n// Suppression : les données du profil sont effacées ; les conversations restent dans l'archive sécurisée (2 ans, voir la politique de confidentialité)\nreturn [{ json: { ok: true, email: row.email,\n  sujet: 'Nikah — votre compte a été supprimé',\n  texte: 'Assalamou alaykoum' + nom + ',\\n\\nVotre compte Nikah a bien été supprimé, à votre demande.\\n\\nVotre profil, vos photos, vos documents et vos critères de recherche ont été effacés. Vous n\\'apparaissez plus dans les recherches et plus personne ne peut vous écrire.\\n\\nComme prévu par notre politique de confidentialité, vos conversations sont conservées dans une archive sécurisée pendant deux ans, uniquement pour la protection des membres (signalement, litige ou demande d\\'une autorité), puis supprimées.\\n\\nSi vous n\\'êtes pas à l\\'origine de cette suppression, écrivez-nous rapidement depuis la page Contact.' + fin,\n  q1: 'DELETE FROM member_photos WHERE member_id=' + id,\n  q2: 'DELETE FROM member_documents WHERE member_id=' + id,\n  q3: 'DELETE FROM practice_priorities WHERE member_id=' + id,\n  q4: 'DELETE FROM search_preferences WHERE member_id=' + id,\n  q5: 'DELETE FROM profiles WHERE member_id=' + id,\n  q6: \"UPDATE members SET status='supprime', deleted_at=NOW(), email=CONCAT('supprime-', id, '@supprime.invalid'), password_hash='supprime', session_hash=NULL, session_expires=NULL, reset_hash=NULL, reset_expires=NULL, identity_verified=0 WHERE id=\" + id } }];"
+          "jsCode": "const crypto = require('crypto');\nconst b = $('Webhook').first().json.body || {};\nconst action = $('Prepare').first().json.action;\nconst row = $input.first().json;\nconst S = 'SELECT 1';\nconst nope = (error, q) => [{ json: { ok: false, error, q1: q || S } }];\nif (row.id === null || row.id === undefined) return nope('session_invalide');\nconst id = parseInt(row.id, 10);\n// Critères de recherche : pas besoin du mot de passe (la session suffit), pas d'e-mail\nif (action === 'criteria') {\n  const min = parseInt(b.age_min, 10), max = parseInt(b.age_max, 10);\n  return [{ json: { ok: true, email: '', sujet: '', texte: '', min, max,\n    q1: 'UPDATE search_preferences SET age_min=' + min + ', age_max=' + max + ' WHERE member_id=' + id,\n    q2: S, q3: S, q4: S, q5: S, q6: S } }];\n}\nif (Number(row.locked) === 1) return nope('compte_bloque');\nconst parts = String(row.password_hash).split(':');\nconst calc = crypto.pbkdf2Sync(String(b.actuel || ''), parts[2], parseInt(parts[1], 10), 32, 'sha256');\nconst expected = Buffer.from(parts[3] || '', 'hex');\nconst same = calc.length === expected.length && crypto.timingSafeEqual(calc, expected);\nif (!same) return nope('mot_de_passe_incorrect', 'UPDATE members SET login_failures=login_failures+1, locked_until=IF(login_failures>=5, DATE_ADD(NOW(), INTERVAL 15 MINUTE), locked_until) WHERE id=' + id);\nconst nom = row.display_name ? ' ' + row.display_name : '';\nconst fin = \"\\n\\nQue Allah facilite votre chemin vers un mariage béni.\\n\\nNikah — mariageislamique.ch\\n(Message automatique, merci de ne pas y répondre. Pour nous écrire : https://mariageislamique.ch/contact.html)\";\nif (action === 'password') {\n  const salt = crypto.randomBytes(16).toString('hex');\n  const hash = crypto.pbkdf2Sync(String(b.nouveau), salt, 100000, 32, 'sha256').toString('hex');\n  return [{ json: { ok: true, email: row.email,\n    sujet: 'Nikah — votre mot de passe a été modifié',\n    texte: 'Assalamou alaykoum' + nom + ',\\n\\nLe mot de passe de votre compte Nikah vient d\\'être modifié.\\n\\nSi c\\'est bien vous, vous n\\'avez rien à faire.\\n\\nSi ce n\\'est pas vous, choisissez tout de suite un nouveau mot de passe ici :\\nhttps://mariageislamique.ch/oubli.html\\npuis prévenez-nous depuis la page Contact.' + fin,\n    q1: \"UPDATE members SET password_hash='pbkdf2:100000:\" + salt + \":\" + hash + \"', login_failures=0, locked_until=NULL, reset_hash=NULL, reset_expires=NULL WHERE id=\" + id,\n    q2: S, q3: S, q4: S, q5: S, q6: S } }];\n}\n// Suppression : les données du profil sont effacées ; les conversations restent dans l'archive sécurisée (2 ans, voir la politique de confidentialité)\nreturn [{ json: { ok: true, email: row.email,\n  sujet: 'Nikah — votre compte a été supprimé',\n  texte: 'Assalamou alaykoum' + nom + ',\\n\\nVotre compte Nikah a bien été supprimé, à votre demande.\\n\\nVotre profil, vos photos, vos documents et vos critères de recherche ont été effacés. Vous n\\'apparaissez plus dans les recherches et plus personne ne peut vous écrire.\\n\\nComme prévu par notre politique de confidentialité, vos conversations sont conservées dans une archive sécurisée pendant deux ans, uniquement pour la protection des membres (signalement, litige ou demande d\\'une autorité), puis supprimées.\\n\\nSi vous n\\'êtes pas à l\\'origine de cette suppression, écrivez-nous rapidement depuis la page Contact.' + fin,\n  q1: 'DELETE FROM member_photos WHERE member_id=' + id,\n  q2: 'DELETE FROM member_documents WHERE member_id=' + id,\n  q3: 'DELETE FROM practice_priorities WHERE member_id=' + id,\n  q4: 'DELETE FROM search_preferences WHERE member_id=' + id,\n  q5: 'DELETE FROM profiles WHERE member_id=' + id,\n  q6: \"UPDATE members SET status='supprime', deleted_at=NOW(), email=CONCAT('supprime-', id, '@supprime.invalid'), password_hash='supprime', session_hash=NULL, session_expires=NULL, reset_hash=NULL, reset_expires=NULL, identity_verified=0 WHERE id=\" + id } }];"
         },
         "name": "Verifier",
         "type": "n8n-nodes-base.code",
@@ -360,6 +360,38 @@
       },
       {
         "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ !!$('Verifier').first().json.sujet }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "name": "Mail a envoyer",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          2520,
+          300
+        ]
+      },
+      {
+        "parameters": {
           "respondWith": "text",
           "responseBody": "={{ JSON.stringify({success:true,action:$('Prepare').first().json.action}) }}",
           "options": {
@@ -537,7 +569,25 @@
         "main": [
           [
             {
+              "node": "Mail a envoyer",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mail a envoyer": {
+        "main": [
+          [
+            {
               "node": "Envoyer mail",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Reponse ok",
               "type": "main",
               "index": 0
             }

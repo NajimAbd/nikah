@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
 <title>Mon compte — Nikah</title>
-<link rel="stylesheet" href="css/style.css?v=20261017d">
+<link rel="stylesheet" href="css/style.css?v=20261017e">
 </head>
 <body>
 
@@ -25,6 +25,20 @@
     <p id="chargement" class="aide" style="text-align:center; padding:60px 0;">Chargement…</p>
     <div id="contenu" style="display:none;">
       <h1>Mon compte</h1>
+
+      <section class="compte-carte">
+        <h2>Mes critères de recherche</h2>
+        <p class="aide">Choisissez l'âge de la personne que vous recherchez. Les profils proposés dans « Mon espace » seront mis à jour.</p>
+        <form id="formCriteres" novalidate>
+          <div class="compte-ages">
+            <label>De <select id="ageMin" class="champ-texte"></select></label>
+            <label>à <select id="ageMax" class="champ-texte"></select></label>
+            <span>ans</span>
+          </div>
+          <p id="criteresMessage" class="compte-message"></p>
+          <div class="compte-actions"><button type="submit" class="btn btn-primary" id="btnCriteres">Enregistrer mes critères</button></div>
+        </form>
+      </section>
 
       <section class="compte-carte">
         <h2>Changer mon mot de passe</h2>
@@ -69,7 +83,7 @@
   </div>
 </footer>
 
-<script src="js/compte.js?v=20261017a"></script>
+<script src="js/compte.js?v=20261017b"></script>
 <script src="js/cookies.js?v=20261016p"></script>
 <script src="js/i18n.js?v=20261017d"></script>
 </body>

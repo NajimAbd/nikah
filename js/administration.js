@@ -75,7 +75,7 @@
     return c;
   }
 
-  function afficherConnexion() { blocListe.style.display = "none"; document.getElementById("blocMessagesAdmin").style.display = "none"; document.getElementById("blocOnglets").style.display = "none"; blocConnexion.style.display = ""; btnSortir.style.display = "none"; }
+  function afficherConnexion() { document.getElementById("btnMdpAdmin").style.display = "none"; blocListe.style.display = "none"; document.getElementById("blocMessagesAdmin").style.display = "none"; document.getElementById("blocOnglets").style.display = "none"; blocConnexion.style.display = ""; btnSortir.style.display = "none"; }
 
   var ongletCourant = "profils";
   var donneesMessages = null;
@@ -259,6 +259,7 @@
       montrerOnglet(ongletCourant);
       chargerMessages();
       btnSortir.style.display = "";
+      document.getElementById("btnMdpAdmin").style.display = "";
       liste.innerHTML = "";
       var n = res.membres.length;
       resume.textContent = n + (n > 1 ? " profils" : " profil") + " au total.";
@@ -320,6 +321,53 @@
         .then(function () { setTimeout(function () { lienOubli.removeAttribute("data-envoi"); }, 30000); });
     });
   }
+
+  // Changer le mot de passe administrateur depuis le panneau (e-mail de confirmation à l'administrateur)
+  var fenMdp = document.getElementById("fenetreMdpAdmin");
+  var champsMdpAdmin = ["mdpAdminActuel", "mdpAdminNouveau", "mdpAdminNouveau2"].map(function (id) { return document.getElementById(id); });
+  function messageMdp(t, ok) { var p = document.getElementById("mdpAdminMessage"); p.textContent = t || ""; p.className = "compte-message" + (t ? (ok ? " ok" : " erreur") : ""); }
+  function fermerMdp() { fenMdp.hidden = true; }
+  document.getElementById("btnMdpAdmin").addEventListener("click", function (e) {
+    e.preventDefault();
+    champsMdpAdmin.forEach(function (c) { c.value = ""; c.type = "password"; c.classList.remove("invalide"); });
+    messageMdp("");
+    fenMdp.hidden = false;
+    champsMdpAdmin[0].focus();
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-fermer-mdp]"), function (b) { b.addEventListener("click", fermerMdp); });
+  Array.prototype.forEach.call(fenMdp.querySelectorAll(".mdp-oeil"), function (b) {
+    b.innerHTML = OEIL;
+    b.addEventListener("click", function () {
+      var c = document.getElementById(b.getAttribute("data-cible"));
+      var visible = c.type === "text";
+      c.type = visible ? "password" : "text";
+      b.innerHTML = visible ? OEIL : OEIL_BARRE;
+    });
+  });
+  champsMdpAdmin.forEach(function (c) { c.addEventListener("input", function () { messageMdp(""); c.classList.remove("invalide"); }); });
+  document.getElementById("formMdpAdmin").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var a = champsMdpAdmin[0], n1 = champsMdpAdmin[1], n2 = champsMdpAdmin[2];
+    if (!a.value) { messageMdp("Indiquez le mot de passe actuel."); a.classList.add("invalide"); return; }
+    if (n1.value.length < 10 || !/[^A-Za-z0-9]/.test(n1.value)) { messageMdp("Le nouveau mot de passe doit contenir au moins 10 caractères, dont un caractère spécial."); n1.classList.add("invalide"); return; }
+    if (n1.value !== n2.value) { messageMdp("Les deux mots de passe ne sont pas identiques."); n2.classList.add("invalide"); return; }
+    if (n1.value === a.value) { messageMdp("Le nouveau mot de passe doit être différent de l'ancien."); n1.classList.add("invalide"); return; }
+    var bouton = document.getElementById("btnMdpAdminValider");
+    bouton.disabled = true; bouton.textContent = "Enregistrement…";
+    post("nikah-admin-password", { token: lire(), actuel: a.value, nouveau: n1.value }).then(function (r) {
+      bouton.disabled = false; bouton.textContent = "Enregistrer";
+      if (r && r.success) {
+        champsMdpAdmin.forEach(function (c) { c.value = ""; });
+        messageMdp("Le mot de passe administrateur a bien été modifié. Un e-mail de confirmation a été envoyé.", true);
+        setTimeout(fermerMdp, 3500);
+        return;
+      }
+      if (r && r.error === "session_invalide") { fermerMdp(); ecrire(""); afficherConnexion(); montrerErreur("Votre session a expiré. Reconnectez-vous."); return; }
+      var M = { mot_de_passe_incorrect: "Le mot de passe actuel n'est pas correct.", mot_de_passe_faible: "Le nouveau mot de passe doit contenir au moins 10 caractères, dont un caractère spécial.", mot_de_passe_identique: "Le nouveau mot de passe doit être différent de l'ancien.", compte_bloque: "Trop de tentatives. Réessayez dans 15 minutes." };
+      messageMdp(M[r && r.error] || "Une erreur est survenue. Réessayez dans un instant.");
+      if (r && r.error === "mot_de_passe_incorrect") a.classList.add("invalide");
+    }).catch(function () { bouton.disabled = false; bouton.textContent = "Enregistrer"; messageMdp("Connexion impossible pour le moment."); });
+  });
   // Les onglets restent collés juste sous l'en-tête
   function ajusterOnglets() {
     var h = document.querySelector(".site-header");
