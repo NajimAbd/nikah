@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Mon compte — Nikah</title>
+<link rel="stylesheet" href="css/style.css?v=20261017d">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="membre.html" class="logo">Nikah</a>
+    <nav class="site-nav">
+      <a href="membre.html">Mon espace</a>
+      <a href="messages.html">Messages</a>
+      <a href="#" id="btnDeconnexion">Se déconnecter</a>
+    </nav>
+  </div>
+</header>
+
+<main class="espace">
+  <div class="container compte-wrap">
+    <p id="chargement" class="aide" style="text-align:center; padding:60px 0;">Chargement…</p>
+    <div id="contenu" style="display:none;">
+      <h1>Mon compte</h1>
+
+      <section class="compte-carte">
+        <h2>Changer mon mot de passe</h2>
+        <p class="aide">Le nouveau mot de passe doit contenir au moins 10 caractères, dont un caractère spécial (par exemple ! ? # @ -). Un e-mail de confirmation vous sera envoyé.</p>
+        <form id="formMdp" novalidate>
+          <div class="mdp-wrap"><input type="password" id="mdpActuel" class="champ-texte" placeholder="Mot de passe actuel" autocomplete="current-password"><button type="button" class="mdp-oeil" data-cible="mdpActuel" aria-label="Afficher le mot de passe"></button></div>
+          <div class="mdp-wrap"><input type="password" id="mdpNouveau" class="champ-texte" placeholder="Nouveau mot de passe" autocomplete="new-password"><button type="button" class="mdp-oeil" data-cible="mdpNouveau" aria-label="Afficher le mot de passe"></button></div>
+          <div class="mdp-wrap"><input type="password" id="mdpNouveau2" class="champ-texte" placeholder="Confirmez le nouveau mot de passe" autocomplete="new-password"><button type="button" class="mdp-oeil" data-cible="mdpNouveau2" aria-label="Afficher le mot de passe"></button></div>
+          <p id="mdpMessage" class="compte-message"></p>
+          <div class="compte-actions"><button type="submit" class="btn btn-primary" id="btnMdp">Enregistrer le nouveau mot de passe</button></div>
+        </form>
+      </section>
+
+      <section class="compte-carte compte-danger">
+        <h2>Supprimer mon compte</h2>
+        <p class="aide">Votre profil, vos photos, vos documents et vos critères de recherche seront effacés. Vous n'apparaîtrez plus dans les recherches et plus personne ne pourra vous écrire. <b>Cette action est définitive.</b></p>
+        <p class="aide">Pour la protection des membres, vos conversations restent dans une archive sécurisée pendant deux ans, puis sont supprimées (voir la <a href="confidentialite.html">politique de confidentialité</a>).</p>
+        <form id="formSuppr" novalidate>
+          <div class="mdp-wrap"><input type="password" id="mdpSuppr" class="champ-texte" placeholder="Votre mot de passe" autocomplete="current-password"><button type="button" class="mdp-oeil" data-cible="mdpSuppr" aria-label="Afficher le mot de passe"></button></div>
+          <label class="compte-case"><input type="checkbox" id="caseSuppr"> <span>Je comprends que la suppression de mon compte est définitive.</span></label>
+          <p id="supprMessage" class="compte-message"></p>
+          <div class="compte-actions"><button type="submit" class="btn btn-danger" id="btnSuppr">Supprimer définitivement mon compte</button></div>
+        </form>
+      </section>
+    </div>
+
+    <div id="blocSupprime" class="compte-carte" style="display:none; text-align:center;">
+      <h2>Votre compte a été supprimé</h2>
+      <p class="aide">Un e-mail de confirmation vous a été envoyé. Merci d'avoir fait confiance à Nikah. Que Allah facilite votre chemin.</p>
+      <div class="compte-actions" style="justify-content:center;"><a href="index.html" class="btn btn-primary">Retour à l'accueil</a></div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <a href="confidentialite.html">Politique de confidentialité</a>
+    <a href="conditions.html">Conditions d'utilisation</a>
+    <a href="#" data-cookies>Gérer mes cookies</a>
+    <a href="contact.html">Contact</a>
+    <p style="margin-top:14px;">&copy; 2026 Nikah — la plateforme du mariage sérieux</p>
+  </div>
+</footer>
+
+<script src="js/compte.js?v=20261017a"></script>
+<script src="js/cookies.js?v=20261016p"></script>
+<script src="js/i18n.js?v=20261017d"></script>
+</body>
+</html>

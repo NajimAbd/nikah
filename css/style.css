@@ -662,3 +662,19 @@ html[lang="fr"] .note-langue { display: none; }
 .choix-langue .drapeau { width: 20px; height: 15px; border-radius: 3px; object-fit: cover; box-shadow: 0 0 0 1px rgba(0,0,0,0.12); flex-shrink: 0; display: block; }
 .choix-langue-fleche { font-size: 0.7rem; color: #8a8378; }
 .choix-langue-liste button.actif { background: #f1f5f2; }
+/* Mon compte */
+.compte-wrap { max-width: 640px; }
+.compte-carte { background: var(--blanc); border: 1px solid var(--bordure); border-radius: 14px; padding: 24px; margin: 18px 0; box-shadow: var(--ombre); }
+.compte-carte h2 { margin-top: 0; font-size: 1.25rem; }
+.compte-carte .mdp-wrap { margin-top: 12px; }
+.compte-danger { border-color: #e8c9c4; }
+.compte-danger h2 { color: #9a3b30; }
+.compte-actions { display: flex; justify-content: flex-end; margin-top: 16px; }
+.compte-message { font-family: Helvetica, Arial, sans-serif; font-size: 0.9rem; margin: 12px 0 0; display: none; }
+.compte-message.erreur { display: block; color: #a33; }
+.compte-message.ok { display: block; color: #3d6b4f; }
+.compte-case { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; font-family: Helvetica, Arial, sans-serif; font-size: 0.92rem; cursor: pointer; }
+.compte-case input { margin-top: 3px; width: 18px; height: 18px; accent-color: #9a3b30; }
+.btn-danger { background: #9a3b30; color: #fff; border: 0; }
+.btn-danger:hover { background: #7f2f26; }
+.btn-danger:disabled, .btn-primary:disabled { opacity: 0.6; cursor: default; }

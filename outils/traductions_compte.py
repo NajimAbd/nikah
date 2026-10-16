@@ -1,0 +1,47 @@
+# Nikah — traductions : page « Mon compte » (mot de passe, suppression) et compte supprimé dans la messagerie
+ajoute({
+"Mon compte — Nikah": ("Mein Konto — Nikah", "Il mio account — Nikah", "My account — Nikah", "Llogaria ime — Nikah"),
+"Mon compte": ("Mein Konto", "Il mio account", "My account", "Llogaria ime"),
+"Changer mon mot de passe": ("Mein Passwort ändern", "Cambiare la mia password", "Change my password", "Ndrysho fjalëkalimin tim"),
+"Le nouveau mot de passe doit contenir au moins 10 caractères, dont un caractère spécial (par exemple ! ? # @ -). Un e-mail de confirmation vous sera envoyé.":
+ ("Das neue Passwort muss mindestens 10 Zeichen enthalten, davon ein Sonderzeichen (zum Beispiel ! ? # @ -). Sie erhalten eine Bestätigung per E-Mail.",
+  "La nuova password deve contenere almeno 10 caratteri, di cui un carattere speciale (per esempio ! ? # @ -). Riceverete un'e-mail di conferma.",
+  "The new password must contain at least 10 characters, including a special character (for example ! ? # @ -). A confirmation e-mail will be sent to you.",
+  "Fjalëkalimi i ri duhet të ketë të paktën 10 karaktere, prej të cilave një karakter i veçantë (për shembull ! ? # @ -). Do t'ju dërgohet një e-mail konfirmimi."),
+"Mot de passe actuel": ("Aktuelles Passwort", "Password attuale", "Current password", "Fjalëkalimi aktual"),
+"Confirmez le nouveau mot de passe": ("Neues Passwort bestätigen", "Confermate la nuova password", "Confirm the new password", "Konfirmoni fjalëkalimin e ri"),
+"Enregistrer le nouveau mot de passe": ("Neues Passwort speichern", "Salvare la nuova password", "Save the new password", "Ruaj fjalëkalimin e ri"),
+"Enregistrement…": ("Wird gespeichert…", "Salvataggio…", "Saving…", "Duke ruajtur…"),
+"Supprimer mon compte": ("Mein Konto löschen", "Eliminare il mio account", "Delete my account", "Fshi llogarinë time"),
+"Votre profil, vos photos, vos documents et vos critères de recherche seront effacés. Vous n'apparaîtrez plus dans les recherches et plus personne ne pourra vous écrire. <b>Cette action est définitive.</b>":
+ ("Ihr Profil, Ihre Fotos, Ihre Dokumente und Ihre Suchkriterien werden gelöscht. Sie erscheinen nicht mehr in den Suchergebnissen und niemand kann Ihnen mehr schreiben. <b>Dieser Schritt ist endgültig.</b>",
+  "Il vostro profilo, le vostre foto, i vostri documenti e i vostri criteri di ricerca saranno cancellati. Non comparirete più nelle ricerche e nessuno potrà più scrivervi. <b>Questa azione è definitiva.</b>",
+  "Your profile, photos, documents and search criteria will be erased. You will no longer appear in searches and no one will be able to write to you. <b>This action is permanent.</b>",
+  "Profili, fotot, dokumentet dhe kriteret tuaja të kërkimit do të fshihen. Nuk do të shfaqeni më në kërkime dhe askush nuk do të mund t'ju shkruajë. <b>Ky veprim është përfundimtar.</b>"),
+"Pour la protection des membres, vos conversations restent dans une archive sécurisée pendant deux ans, puis sont supprimées (voir la":
+ ("Zum Schutz der Mitglieder bleiben Ihre Unterhaltungen zwei Jahre lang in einem sicheren Archiv und werden danach gelöscht (siehe",
+  "Per la protezione dei membri, le vostre conversazioni restano in un archivio sicuro per due anni, poi vengono cancellate (vedere l'",
+  "To protect members, your conversations remain in a secure archive for two years and are then deleted (see the",
+  "Për mbrojtjen e anëtarëve, bisedat tuaja mbeten në një arkiv të sigurt për dy vjet dhe pastaj fshihen (shihni"),
+"Votre mot de passe": ("Ihr Passwort", "La vostra password", "Your password", "Fjalëkalimi juaj"),
+"Je comprends que la suppression de mon compte est définitive.": ("Ich verstehe, dass die Löschung meines Kontos endgültig ist.", "Capisco che l'eliminazione del mio account è definitiva.", "I understand that deleting my account is permanent.", "E kuptoj që fshirja e llogarisë sime është përfundimtare."),
+"Supprimer définitivement mon compte": ("Mein Konto endgültig löschen", "Eliminare definitivamente il mio account", "Permanently delete my account", "Fshi përgjithmonë llogarinë time"),
+"Suppression…": ("Wird gelöscht…", "Eliminazione…", "Deleting…", "Duke fshirë…"),
+"Votre compte a été supprimé": ("Ihr Konto wurde gelöscht", "Il vostro account è stato eliminato", "Your account has been deleted", "Llogaria juaj u fshi"),
+"Un e-mail de confirmation vous a été envoyé. Merci d'avoir fait confiance à Nikah. Que Allah facilite votre chemin.":
+ ("Sie haben eine Bestätigung per E-Mail erhalten. Danke für Ihr Vertrauen in Nikah. Möge Allah Ihnen den Weg erleichtern.",
+  "Vi è stata inviata un'e-mail di conferma. Grazie per aver dato fiducia a Nikah. Che Allah vi faciliti il cammino.",
+  "A confirmation e-mail has been sent to you. Thank you for trusting Nikah. May Allah make your path easy.",
+  "Ju është dërguar një e-mail konfirmimi. Faleminderit që i besuat Nikah. Allahu jua lehtësoftë rrugën."),
+"Retour à l'accueil": ("Zurück zur Startseite", "Torna alla pagina iniziale", "Back to the home page", "Kthehu në faqen kryesore"),
+"Le mot de passe actuel n'est pas correct.": ("Das aktuelle Passwort ist nicht korrekt.", "La password attuale non è corretta.", "The current password is not correct.", "Fjalëkalimi aktual nuk është i saktë."),
+"Le nouveau mot de passe doit être différent de l'ancien.": ("Das neue Passwort muss sich vom alten unterscheiden.", "La nuova password deve essere diversa dalla precedente.", "The new password must be different from the old one.", "Fjalëkalimi i ri duhet të jetë ndryshe nga i vjetri."),
+"Indiquez votre mot de passe actuel.": ("Geben Sie Ihr aktuelles Passwort ein.", "Inserite la vostra password attuale.", "Enter your current password.", "Shkruani fjalëkalimin tuaj aktual."),
+"Votre mot de passe a bien été modifié. Un e-mail de confirmation vous a été envoyé.": ("Ihr Passwort wurde geändert. Sie haben eine Bestätigung per E-Mail erhalten.", "La vostra password è stata modificata. Vi è stata inviata un'e-mail di conferma.", "Your password has been changed. A confirmation e-mail has been sent to you.", "Fjalëkalimi juaj u ndryshua. Ju është dërguar një e-mail konfirmimi."),
+"Indiquez votre mot de passe pour confirmer.": ("Geben Sie zur Bestätigung Ihr Passwort ein.", "Inserite la vostra password per confermare.", "Enter your password to confirm.", "Shkruani fjalëkalimin për të konfirmuar."),
+"Cochez la case pour confirmer que vous avez compris.": ("Kreuzen Sie das Kästchen an, um zu bestätigen, dass Sie es verstanden haben.", "Spuntate la casella per confermare di aver capito.", "Tick the box to confirm that you have understood.", "Shënoni kutinë për të konfirmuar që e keni kuptuar."),
+"Voulez-vous vraiment supprimer votre compte ? Cette action est définitive.": ("Möchten Sie Ihr Konto wirklich löschen? Dieser Schritt ist endgültig.", "Volete davvero eliminare il vostro account? Questa azione è definitiva.", "Do you really want to delete your account? This action is permanent.", "Doni vërtet ta fshini llogarinë? Ky veprim është përfundimtar."),
+# Messagerie : correspondant qui a supprimé son compte
+"Compte supprimé": ("Konto gelöscht", "Account eliminato", "Account deleted", "Llogari e fshirë"),
+"Ce membre a supprimé son compte. Vous ne pouvez plus lui écrire.": ("Dieses Mitglied hat sein Konto gelöscht. Sie können ihm nicht mehr schreiben.", "Questo membro ha eliminato il suo account. Non potete più scrivergli.", "This member has deleted their account. You can no longer write to them.", "Ky anëtar e ka fshirë llogarinë. Nuk mund t'i shkruani më."),
+})

@@ -69,7 +69,7 @@
         var txt = el("span", "msg-ligne-texte");
         txt.appendChild(el("strong", "", nomAffiche(c.autre)));
         // Liste de gauche : visage, nom et quelques informations seulement (les messages restent à droite)
-        var infos = [c.autre && c.autre.age ? c.autre.age + " ans" : "", c.autre && (c.autre.ville || c.autre.region) || ""].filter(Boolean).join(" · ");
+        var infos = c.autre && c.autre.supprime ? "Compte supprimé" : [c.autre && c.autre.age ? c.autre.age + " ans" : "", c.autre && (c.autre.ville || c.autre.region) || ""].filter(Boolean).join(" · ");
         if (infos) txt.appendChild(el("span", "", infos));
         ligne.appendChild(txt);
         if (c.non_lus > 0) ligne.appendChild(el("span", "badge-non-lu", String(c.non_lus)));
@@ -83,7 +83,7 @@
   }
 
   function afficherFil(r) {
-    var sigF = JSON.stringify([r.cid, r.statut, r.initiateur, r.blocage, r.deja_signale, r.messages.map(function (m) { return m.id + (m.statut || ""); })]);
+    var sigF = JSON.stringify([r.cid, r.statut, r.initiateur, r.blocage, r.deja_signale, r.autre && r.autre.supprime, r.messages.map(function (m) { return m.id + (m.statut || ""); })]);
     dernierFil = r;
     majMenu(r);
     if (sigF === signatureFil) return;
@@ -107,13 +107,15 @@
     if (enBas) zone.scrollTop = zone.scrollHeight;
 
     var action = document.getElementById("filAction");
-    var etat = r.statut + (r.initiateur ? "1" : "0") + JSON.stringify(r.blocage || {}) + (r.deja_signale ? "s" : "");
+    var etat = r.statut + (r.initiateur ? "1" : "0") + JSON.stringify(r.blocage || {}) + (r.deja_signale ? "s" : "") + (r.autre && r.autre.supprime ? "x" : "");
     if (action.getAttribute("data-etat") === etat && action.firstChild) return;
     action.setAttribute("data-etat", etat);
     action.innerHTML = "";
     var blo = r.blocage || {};
     if (r.deja_signale) action.appendChild(el("p", "msg-note", "Vous avez signalé cette conversation. L'administration va l'examiner."));
-    if (blo.par_moi) {
+    if (r.autre && r.autre.supprime) {
+      action.appendChild(el("p", "aide", "Ce membre a supprimé son compte. Vous ne pouvez plus lui écrire."));
+    } else if (blo.par_moi) {
       action.appendChild(el("p", "aide", blo.par_moi === "definitif"
         ? "Vous avez bloqué cette personne définitivement. Elle ne peut plus vous écrire et n'apparaît plus dans vos recherches."
         : "Vous avez bloqué cette personne jusqu'au " + dateFin(blo.par_moi) + ". Elle ne peut pas vous écrire d'ici là."));
