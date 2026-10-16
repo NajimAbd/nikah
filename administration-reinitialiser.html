@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nouveau mot de passe administrateur — Nikah</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="css/style.css?v=20261016a">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <span class="logo">Nikah — administration</span>
+  </div>
+</header>
+
+<main class="questionnaire-wrap">
+  <div class="carte-question">
+    <h2>Nouveau mot de passe administrateur</h2>
+    <p class="aide">Choisissez un nouveau mot de passe : au moins 10 caractères, dont un caractère spécial (par exemple ! ? # @ -).</p>
+    <form id="formReset" novalidate>
+      <div class="mdp-wrap"><input type="password" id="champMdp" class="champ-texte" placeholder="Nouveau mot de passe" autocomplete="new-password"><button type="button" class="mdp-oeil" data-cible="champMdp" aria-label="Afficher le mot de passe"></button></div>
+      <div class="mdp-wrap"><input type="password" id="champMdp2" class="champ-texte" placeholder="Confirmez le mot de passe" autocomplete="new-password"><button type="button" class="mdp-oeil" data-cible="champMdp2" aria-label="Afficher le mot de passe"></button></div>
+      <p id="messageErreur" style="color:#a33; font-family:Helvetica,Arial,sans-serif; font-size:0.9rem; margin-top:14px; display:none;"></p>
+      <div class="nav-questionnaire">
+        <span></span>
+        <button type="submit" class="btn btn-primary" id="btnValider">Enregistrer</button>
+      </div>
+    </form>
+    <div id="blocSucces" style="display:none; text-align:center;">
+      <p class="aide" style="color:#3d6b4f;">Votre mot de passe a bien été modifié.</p>
+      <div class="nav-questionnaire" style="justify-content:center;"><a href="administration.html" class="btn btn-primary">Aller à l'administration</a></div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <a href="confidentialite.html">Politique de confidentialité</a>
+    <a href="conditions.html">Conditions d'utilisation</a>
+    <a href="#" data-cookies>Gérer mes cookies</a>
+    <a href="mailto:info.najim1@gmail.com">Contact</a>
+    <p style="margin-top:14px;">&copy; 2026 Nikah — projet non lucratif</p>
+  </div>
+</footer>
+
+<script src="js/administration-reinitialiser.js?v=20261016a"></script>
+<script src="js/cookies.js?v=20261015h"></script>
+</body>
+</html>

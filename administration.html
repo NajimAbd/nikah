@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>Administration — Nikah</title>
-<link rel="stylesheet" href="css/style.css?v=20261015h">
+<link rel="stylesheet" href="css/style.css?v=20261016a">
 </head>
 <body>
 
@@ -21,10 +21,15 @@
     <div id="blocConnexion" class="carte-question" style="max-width:420px; margin:30px auto;">
       <h2>Accès administrateur</h2>
       <form id="formAdmin" novalidate>
-        <input type="password" id="champMdpAdmin" class="champ-texte" placeholder="Mot de passe administrateur" autocomplete="current-password">
+        <div class="mdp-wrap">
+          <input type="password" id="champMdpAdmin" class="champ-texte" placeholder="Mot de passe administrateur" autocomplete="current-password">
+          <button type="button" class="mdp-oeil" id="oeilAdmin" data-cible="champMdpAdmin" aria-label="Afficher le mot de passe"></button>
+        </div>
         <p id="erreurAdmin" style="color:#a33; font-family:Helvetica,Arial,sans-serif; font-size:0.9rem; margin-top:14px; display:none;"></p>
         <div class="nav-questionnaire"><span></span><button type="submit" class="btn btn-primary" id="btnAdmin">Entrer</button></div>
       </form>
+      <p class="aide" style="margin-top:1.4em;"><a href="#" id="lienOubliAdmin">Mot de passe oublié ?</a></p>
+      <p id="okOubliAdmin" style="color:#3d6b4f; font-family:Helvetica,Arial,sans-serif; font-size:0.95rem; margin-top:10px; display:none; background:#eef3ef; padding:12px; border-radius:8px;"></p>
     </div>
 
     <div id="blocOnglets" class="admin-onglets" style="display:none;">
@@ -48,6 +53,6 @@
   </div>
 </main>
 
-<script src="js/administration.js?v=20261015h"></script>
+<script src="js/administration.js?v=20261016a"></script>
 </body>
 </html>

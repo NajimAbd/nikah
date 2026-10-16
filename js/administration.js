@@ -179,4 +179,40 @@
 
   if (lire()) charger();
   setInterval(function () { if (lire() && !document.hidden && blocConnexion.style.display === "none") chargerMessages(); }, 4000);
+  // Œil : afficher / masquer le mot de passe
+  var OEIL = "<svg viewBox='0 0 24 24' width='22' height='22' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z'/><circle cx='12' cy='12' r='3'/></svg>";
+  var OEIL_BARRE = "<svg viewBox='0 0 24 24' width='22' height='22' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M17.94 17.94A10.9 10.9 0 0 1 12 19C5 19 1 12 1 12a18.5 18.5 0 0 1 5.06-5.94'/><path d='M9.9 4.24A10.9 10.9 0 0 1 12 5c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19'/><path d='M14.12 14.12A3 3 0 1 1 9.88 9.88'/><line x1='1' y1='1' x2='23' y2='23'/></svg>";
+  var oeilAdmin = document.getElementById("oeilAdmin");
+  if (oeilAdmin) {
+    oeilAdmin.innerHTML = OEIL;
+    oeilAdmin.addEventListener("click", function () {
+      var c = document.getElementById("champMdpAdmin");
+      var visible = c.type === "text";
+      c.type = visible ? "password" : "text";
+      oeilAdmin.innerHTML = visible ? OEIL : OEIL_BARRE;
+      oeilAdmin.setAttribute("aria-label", visible ? "Afficher le mot de passe" : "Masquer le mot de passe");
+    });
+  }
+
+  // Mot de passe oublié : lien envoyé à l'adresse de l'administrateur (valable 5 minutes)
+  var lienOubli = document.getElementById("lienOubliAdmin");
+  var okOubli = document.getElementById("okOubliAdmin");
+  if (lienOubli) {
+    lienOubli.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (lienOubli.getAttribute("data-envoi") === "1") return;
+      lienOubli.setAttribute("data-envoi", "1");
+      montrerErreur("");
+      okOubli.style.display = "none";
+      post("nikah-admin-forgot", {})
+        .then(function (r) {
+          if (r && r.success) {
+            okOubli.textContent = "Un lien vient d'être envoyé à l'adresse e-mail de l'administrateur. Il est valable 5 minutes. Pensez à vérifier les courriers indésirables.";
+            okOubli.style.display = "block";
+          } else montrerErreur("Envoi impossible pour le moment. Réessayez dans un instant.");
+        })
+        .catch(function () { montrerErreur("Connexion impossible pour le moment. Réessayez dans un instant."); })
+        .then(function () { setTimeout(function () { lienOubli.removeAttribute("data-envoi"); }, 30000); });
+    });
+  }
 })();
