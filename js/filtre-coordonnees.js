@@ -58,8 +58,14 @@ var NikahFiltre = (function () {
 
   // Signes plus faibles : le message n'est pas refusé, il attend l'approbation de l'administration
   var SOUPCON_CONTACT = /\b(numero|num|numeros|telephone|natel|portable|mobile|mail|email|contact|coordonnees|pseudo|dm|pv|inbox|phone|number|call|nummer|handy|anrufen|telefono|cellulare|chiamare|numri|telefon|broj|numara|celular|rejoins moi|trouve moi|cherche moi|retrouve moi)\b/;
-  var SOUPCON_ARGENT = /\b(argent|virement|western union|moneygram|transfert d argent|iban|twint|paypal|revolut|bitcoin|crypto|carte bancaire|carte de credit|envoie moi|envoyer de l argent|prete moi|preter de l argent|cadeau|money|geld|soldi)\b/;
-  var SOUPCON_ARABE = /(فلوس|حوالة|تحويل|اتصل|كلمني|خاص|رقم|هاتف|حساب)/;
+  var SOUPCON_ARGENT = /\b(argent|sous|cadeau|money|geld|soldi|francs?|chf|euros?|dollars?|payer|paye moi|aide financiere|besoin d argent)\b/;
+  var SOUPCON_ARABE = /(اتصل|كلمني|خاص|رقم|هاتف|حساب|مساعدة)/;
+  // Demandes d'argent : refusées comme les coordonnées (arnaques)
+  var ARGENT_FORT = new RegExp(
+    "\\b(twint|western union|westernunion|moneygram|iban|paypal|revolut|wise transfer|bitcoin|btc|crypto|usdt|virement|carte bancaire|carte de credit|code pin|transfert d argent|mandat cash|ria money)\\b" +
+    "|\\b(envoie|envoies|envoyer|envoyez|donne|donnes|donner|prete|preter|pretes|avance|send|give|lend|schick|schicken|leih|manda|mandami|prestami|dame|presta|ab3ath|b3ath|ba3ath|sift|sifet|jeb)\\s+(moi\\s+|me\\s+|mir\\s+|mi\\s+|li\\s+|lia\\s+)?(\\d+|de l argent|l argent|argent|des sous|sous|francs?|chf|euros?|dollars?|money|geld|soldi|dinero|flous|flouss|floos|lflous|el mal|lmal)\\b" +
+    "|\\b(el mal|al mal|elmal|almal|lmal|l mal|flous|flouss|floos|felous|fulus|flus|lflous|drahem|darahem|dirhams?|hawala|nrid flous|bghit flous|bghit lflous)\\b");
+  var ARGENT_FORT_ARABE = /(^|\s)(مال|المال|فلوس|الفلوس|فلوسك|دراهم|الدراهم|حوالة|حواله|تحويل|ابعث لي|ابعثلي|ارسل لي|ارسلي|سلفني|سلفيني|ويسترن|بايبال)(\s|$)/;
   var ECRITURES = /[\u0370-\u03FF\u0400-\u04FF\u0590-\u05FF\u0900-\u097F\u0E00-\u0E7F\u3040-\u30FF\u3400-\u9FFF\uAC00-\uD7AF]/;
   function soupconner(texte) {
     var s = normaliser(texte);
@@ -139,6 +145,9 @@ var NikahFiltre = (function () {
     if (RESEAUX_ARABE.test(s)) return "reseau";
     if (AUTRES_LANGUES.test(s)) return "demande";
 
+    // Demandes d'argent
+    if (ARGENT_FORT.test(espaces.replace(/\s+/g, " ")) || ARGENT_FORT_ARABE.test(" " + s.replace(/[^\u0600-\u06FFa-z0-9]+/g, " ") + " ")) return "argent";
+
     // Demandes de contact hors du site
     if (DEMANDES.test(espaces.replace(/\s+/g, " "))) return "demande";
     return null;
@@ -152,7 +161,9 @@ var NikahFiltre = (function () {
     return chiffres(normaliser(tout)) >= 8 ? "telephone" : null;
   }
 
-  var MESSAGE = "Pour la sécurité de tous, les numéros de téléphone, adresses e-mail, réseaux sociaux, liens et demandes de contact hors du site sont interdits. Tous les échanges se font ici, sur Nikah.";
-  return { detecter: detecter, detecterSuite: detecterSuite, soupconner: soupconner, MESSAGE: MESSAGE };
+  var MESSAGE = "Message bloqué et signalé à l'administration. Les numéros de téléphone, adresses e-mail, réseaux sociaux, liens, demandes de contact hors du site et demandes d'argent sont interdits par la charte. À la prochaine tentative, votre compte sera suspendu.";
+  var MESSAGE_RETENU = "Message retenu et transmis à l'administration pour vérification. Il ne sera envoyé qu'après son accord. S'il ne respecte pas la charte, votre compte pourra être suspendu.";
+  var MESSAGE_SUSPENDU = "Votre compte vient d'être suspendu : c'est la deuxième tentative d'envoyer des coordonnées ou une demande d'argent. L'administration va examiner votre dossier.";
+  return { detecter: detecter, detecterSuite: detecterSuite, soupconner: soupconner, MESSAGE: MESSAGE, MESSAGE_RETENU: MESSAGE_RETENU, MESSAGE_SUSPENDU: MESSAGE_SUSPENDU };
 })();
 if (typeof module !== "undefined") module.exports = NikahFiltre;

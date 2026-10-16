@@ -597,3 +597,5 @@ body.chat-ouvert { overflow: hidden; }
 .alerte-filtre.info { color: #6b5a2e; background: #f7f0de; border-color: #e6d6a8; }
 .admin-msg.retenu { border: 2px solid #c9a961; background: #fbf6e8; }
 .admin-msg.refuse { opacity: 0.6; text-decoration: line-through; }
+
+.alerte-filtre { font-weight: 600; }

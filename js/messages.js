@@ -150,17 +150,19 @@
         e.preventDefault();
         var t = champ.value.trim();
         if (!t) return;
-        alerte.style.display = "none"; alerte.className = "alerte-filtre";
+        alerte.style.display = "none";
         var miens = dernierFil && dernierFil.messages ? dernierFil.messages.filter(function (m) { return m.moi; }).map(function (m) { return m.texte; }) : [];
-        if (window.NikahFiltre && NikahFiltre.detecterSuite(t, miens)) { alerte.textContent = NikahFiltre.MESSAGE; alerte.style.display = "block"; champ.focus(); return; }
+        // Le serveur décide : il enregistre la tentative pour l'administration. On signale seulement un numéro coupé en plusieurs messages.
+        var suite = !!(window.NikahFiltre && !NikahFiltre.detecter(t) && NikahFiltre.detecterSuite(t, miens));
         envoyer.disabled = true;
-        appel({ action: "send", cid: courante, body: t }).then(function (res) {
+        appel({ action: "send", cid: courante, body: t, suite: suite }).then(function (res) {
           envoyer.disabled = false;
           if (res && res.success) {
             champ.value = ""; afficherFil(res); chargerListe(); document.getElementById("filMessages").scrollTop = 1e9;
-            if (res.retenu) { alerte.className = "alerte-filtre info"; alerte.textContent = "Votre message sera transmis après vérification par l'administration."; alerte.style.display = "block"; }
+            if (res.retenu) { alerte.textContent = window.NikahFiltre ? NikahFiltre.MESSAGE_RETENU : "Message retenu pour vérification."; alerte.style.display = "block"; }
           }
-          else if (res && res.error === "coordonnees_interdites") { alerte.textContent = window.NikahFiltre ? NikahFiltre.MESSAGE : "Les coordonnées personnelles sont interdites."; alerte.style.display = "block"; }
+          else if (res && res.error === "coordonnees_interdites") { champ.value = ""; alerte.textContent = window.NikahFiltre ? NikahFiltre.MESSAGE : "Message bloqué et signalé à l'administration."; alerte.style.display = "block"; }
+          else if (res && res.error === "compte_suspendu") { alerte.textContent = window.NikahFiltre ? NikahFiltre.MESSAGE_SUSPENDU : "Votre compte est suspendu."; alerte.style.display = "block"; champ.disabled = true; envoyer.disabled = true; setTimeout(function () { window.location.replace("connexion.html"); }, 8000); }
         }).catch(function () { envoyer.disabled = false; });
       });
       action.appendChild(form);
