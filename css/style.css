@@ -615,20 +615,3 @@ body.chat-ouvert { overflow: hidden; }
 .reassurance .carte { padding: 18px 14px; }
 .reassurance .emoji { font-size: 1.5rem; margin-bottom: 6px; }
 .reassurance p strong { color: #3A3A3A; }
-
-/* Accueil : photo nette, en entier, sans rien par-dessus */
-.hero, .hero { background: var(--creme) !important; }
-@media (min-width: 601px) { .hero { background: var(--creme) !important; } }
-.hero { padding: 48px 0 40px; }
-.hero .soustitre { margin-bottom: 1.2em; }
-.hero-photo { display: block; width: 100%; max-width: 860px; height: auto; margin: 0 auto 26px; }
-.hero h1, .hero .soustitre { text-shadow: none; }
-.reassurance { grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 40px 0 0; }
-.reassurance .carte { padding: 16px 10px; }
-.reassurance .ico { width: 30px; height: 30px; fill: none; stroke: #7C9885; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; display: block; margin: 0 auto 8px; }
-.reassurance h3 { font-size: 0.95rem; }
-.reassurance p { font-size: 0.85rem; }
-@media (max-width: 900px) and (min-width: 641px) { .reassurance { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 640px) { .reassurance { grid-template-columns: 1fr 1fr; } .hero-photo { margin-bottom: 18px; } }
-.hero-photo { -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 88%, transparent 100%); mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 88%, transparent 100%); }
-@media (max-width: 640px) { .reassurance .carte:last-child { grid-column: 1 / -1; } }
