@@ -133,7 +133,7 @@
     selecteur();
     if (langue === "fr") return;
     var s = document.createElement("script");
-    s.src = "js/langues/" + langue + ".js?v=20261017b";
+    s.src = "js/langues/" + langue + ".js?v=20261017c";
     s.onload = function () {
       var L = window.NikahLangues[langue] || {};
       dico = L.textes || {};

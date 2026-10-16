@@ -654,3 +654,7 @@ body.chat-ouvert { overflow: hidden; }
 .choix-langue-liste button:hover { background: #f4f0e8; }
 .choix-langue-liste button.actif { font-weight: 700; color: #5f7b69; }
 .site-header .container { display: flex; align-items: center; }
+
+/* Pages légales : note visible seulement dans les traductions */
+.note-langue { font-size: 0.9rem; color: var(--texte-doux, #777); font-style: italic; }
+html[lang="fr"] .note-langue { display: none; }
