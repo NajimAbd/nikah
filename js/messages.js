@@ -173,4 +173,20 @@
   }
   setInterval(actualiser, 3000);
   document.addEventListener("visibilitychange", function () { if (!document.hidden) actualiser(); });
+  // Ma photo (ou mon cercle à lettre) en haut à droite, comme dans « Mon espace »
+  (function () {
+    var t = jeton(); if (!t) return;
+    fetch("https://n8n.srv936251.hstgr.cloud/webhook/nikah-me", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: t }) })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        var ent = document.getElementById("avatarEntete");
+        if (!ent || !res || !res.success || !res.member) return;
+        var m = res.member;
+        if (m.photo) { var img = document.createElement("img"); img.alt = "Ma photo"; img.src = m.photo; ent.appendChild(img); return; }
+        var fond = m.identity_verified && /^#[0-9a-fA-F]{6}$/.test(m.avatar_color || "") ? m.avatar_color : "#9a9a9a";
+        var c = document.createElement("span"); c.className = "avatar-lettre"; c.style.background = fond;
+        c.textContent = String(m.display_name || "?").charAt(0).toUpperCase();
+        ent.appendChild(c);
+      }).catch(function () { /* ignoré */ });
+  })();
 })();
