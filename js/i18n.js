@@ -74,7 +74,12 @@
     if (racine.nodeType === 3) {
       if (racine.parentNode && !INTERDIT[racine.parentNode.tagName] && !protege(racine.parentNode)) {
         var t = traduire(racine.nodeValue);
-        if (t != null && t !== norm(racine.nodeValue)) racine.nodeValue = racine.nodeValue.replace(norm(racine.nodeValue), t);
+        if (t != null && t !== norm(racine.nodeValue)) {
+          // Une option de liste sans « value » garde sa valeur française (c'est elle qui est enregistrée)
+          var par = racine.parentNode;
+          if (par.tagName === "OPTION" && !par.hasAttribute("value")) par.setAttribute("value", norm(racine.nodeValue));
+          racine.nodeValue = racine.nodeValue.replace(norm(racine.nodeValue), t);
+        }
       }
       return;
     }
