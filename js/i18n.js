@@ -4,14 +4,16 @@
 (function () {
   "use strict";
   var LANGUES = [
-    { code: "fr", nom: "Français" },
-    { code: "de", nom: "Deutsch" },
-    { code: "it", nom: "Italiano" },
-    { code: "en", nom: "English" },
-    { code: "sq", nom: "Shqip" }
+    { code: "fr", nom: "Français", drapeau: "fr" },
+    { code: "de", nom: "Deutsch", drapeau: "de" },
+    { code: "it", nom: "Italiano", drapeau: "it" },
+    { code: "en", nom: "English", drapeau: "gb" },
+    { code: "sq", nom: "Shqip", drapeau: "al" }
   ];
   var CLE = "nikah_langue";
   var codes = LANGUES.map(function (l) { return l.code; });
+  // Drapeaux (img/drapeaux, icônes flag-icons, licence MIT)
+  function drapeau(l) { return "<img class='drapeau' src='img/drapeaux/" + l.drapeau + ".svg' alt='' width='20' height='15'>"; }
 
   function langueChoisie() {
     var l = null;
@@ -106,14 +108,15 @@
     bouton.className = "choix-langue-bouton";
     bouton.setAttribute("aria-haspopup", "true");
     bouton.setAttribute("aria-label", "Langue / Sprache / Lingua / Language / Gjuha");
-    bouton.innerHTML = "<svg viewBox='0 0 24 24' width='16' height='16' fill='none' stroke='currentColor' stroke-width='1.8' aria-hidden='true'><circle cx='12' cy='12' r='9'/><path d='M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z'/></svg><span>" + langue.toUpperCase() + "</span>";
+    var actuelle = LANGUES[codes.indexOf(langue)];
+    bouton.innerHTML = drapeau(actuelle) + "<span>" + langue.toUpperCase() + "</span><span class='choix-langue-fleche' aria-hidden='true'>▾</span>";
     var liste = document.createElement("div");
     liste.className = "choix-langue-liste";
     liste.hidden = true;
     LANGUES.forEach(function (l) {
       var b = document.createElement("button");
       b.type = "button";
-      b.textContent = l.nom;
+      b.innerHTML = drapeau(l) + "<span>" + l.nom + "</span>";
       if (l.code === langue) b.className = "actif";
       b.addEventListener("click", function () {
         try { localStorage.setItem(CLE, l.code); } catch (e) { /* ignoré */ }
@@ -133,7 +136,7 @@
     selecteur();
     if (langue === "fr") return;
     var s = document.createElement("script");
-    s.src = "js/langues/" + langue + ".js?v=20261017c";
+    s.src = "js/langues/" + langue + ".js?v=20261017d";
     s.onload = function () {
       var L = window.NikahLangues[langue] || {};
       dico = L.textes || {};

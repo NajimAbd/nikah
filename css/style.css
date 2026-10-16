@@ -650,7 +650,7 @@ body.chat-ouvert { overflow: hidden; }
 .choix-langue-bouton:hover { background: #f4f0e8; }
 .choix-langue-liste { position: absolute; right: 0; top: calc(100% + 6px); background: #fff; border: 1px solid #e3ddd2; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); padding: 6px; min-width: 150px; z-index: 200; }
 .choix-langue-liste[hidden] { display: none; }
-.choix-langue-liste button { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 8px 10px; border-radius: 8px; font: 0.92rem "Helvetica Neue", Arial, sans-serif; color: #333; cursor: pointer; }
+.choix-langue-liste button { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: none; border: 0; padding: 8px 10px; border-radius: 8px; font: 0.92rem "Helvetica Neue", Arial, sans-serif; color: #333; cursor: pointer; }
 .choix-langue-liste button:hover { background: #f4f0e8; }
 .choix-langue-liste button.actif { font-weight: 700; color: #5f7b69; }
 .site-header .container { display: flex; align-items: center; }
@@ -658,3 +658,7 @@ body.chat-ouvert { overflow: hidden; }
 /* Pages légales : note visible seulement dans les traductions */
 .note-langue { font-size: 0.9rem; color: var(--texte-doux, #777); font-style: italic; }
 html[lang="fr"] .note-langue { display: none; }
+/* Drapeaux du sélecteur de langue */
+.choix-langue .drapeau { width: 20px; height: 15px; border-radius: 3px; object-fit: cover; box-shadow: 0 0 0 1px rgba(0,0,0,0.12); flex-shrink: 0; display: block; }
+.choix-langue-fleche { font-size: 0.7rem; color: #8a8378; }
+.choix-langue-liste button.actif { background: #f1f5f2; }
