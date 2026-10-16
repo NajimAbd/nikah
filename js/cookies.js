@@ -30,7 +30,7 @@
     fond.innerHTML =
       "<div class='cmp-boite' role='dialog' aria-modal='true' aria-labelledby='cmpTitre'>" +
       "<h2 id='cmpTitre'>Votre vie privée compte pour nous</h2>" +
-      "<p>Avant de commencer votre inscription, voici ce que vous devez savoir. Nikah est une plateforme non lucrative. Nous n'affichons <strong>aucune publicité</strong> et ne vendons jamais vos données. " +
+      "<p>Avant de commencer votre inscription, voici ce que vous devez savoir. Nikah est une plateforme de mariage sérieuse. Nous n'affichons <strong>aucune publicité</strong> et ne vendons jamais vos données. " +
       "Nous utilisons uniquement ce qui est nécessaire au fonctionnement du site, et nous vous laissons choisir pour le reste.</p>" +
       "<div class='cmp-info'><strong>Vos informations sont protégées :</strong><ul>" +
       "<li>elles sont conservées de façon sécurisée et ne sont jamais vendues ni partagées à des fins publicitaires ;</li>" +

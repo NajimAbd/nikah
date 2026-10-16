@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Nikah</title>
+<link rel="stylesheet" href="css/style.css?v=20261016p">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="logo">Nikah</a>
+    <nav class="site-nav">
+      <a href="comment-ca-marche.html">Comment ça marche</a>
+      <a href="confidentialite.html">Confidentialité</a>
+      <a href="inscription.html" class="btn btn-primary">Commencer</a>
+    </nav>
+  </div>
+</header>
+
+<main class="questionnaire-wrap">
+  <div class="carte-question" style="text-align:center;">
+    <h2>Nous contacter</h2>
+    <p class="aide">Pour toute question, écrivez-nous à cette adresse. Nous vous répondons dès que possible, inchallah.</p>
+    <p id="adresseContact" style="font-size:1.15rem; font-weight:700; margin:22px 0;">info.najim1@gmail.com</p>
+    <button type="button" class="btn btn-primary" id="btnCopier">Copier l'adresse</button>
+    <p id="copieOk" class="aide" style="display:none; color:#3d6b4f; margin-top:14px;">Adresse copiée. Collez-la dans votre messagerie.</p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <a href="confidentialite.html">Politique de confidentialité</a>
+    <a href="conditions.html">Conditions d'utilisation</a>
+    <a href="#" data-cookies>Gérer mes cookies</a>
+    <a href="contact.html">Contact</a>
+    <p style="margin-top:14px;">&copy; 2026 Nikah — la plateforme du mariage sérieux</p>
+  </div>
+</footer>
+<script src="js/cookies.js?v=20261016p"></script>
+<script>
+document.getElementById("btnCopier").addEventListener("click", function () {
+  var t = document.getElementById("adresseContact").textContent;
+  function ok() { document.getElementById("copieOk").style.display = "block"; }
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function () {});
+  else { var r = document.createRange(); r.selectNodeContents(document.getElementById("adresseContact")); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); try { document.execCommand("copy"); ok(); } catch (e) {} }
+});
+</script>
+</body>
+</html>
