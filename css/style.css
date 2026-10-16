@@ -643,3 +643,14 @@ body.chat-ouvert { overflow: hidden; }
 /* Boutons et carrés remontés d'environ 1,5 cm */
 @media (min-width: 601px) { .hero .reassurance { margin-bottom: 55px !important; } }
 @media (min-width: 601px) { .hero .reassurance { margin-bottom: 93px !important; } }
+
+/* Sélecteur de langue */
+.choix-langue { position: relative; margin-left: auto; margin-right: 14px; }
+.choix-langue-bouton { display: inline-flex; align-items: center; gap: 6px; background: none; border: 1px solid #d9d2c5; border-radius: 999px; padding: 6px 12px; font: 600 0.85rem "Helvetica Neue", Arial, sans-serif; color: #3A3A3A; cursor: pointer; }
+.choix-langue-bouton:hover { background: #f4f0e8; }
+.choix-langue-liste { position: absolute; right: 0; top: calc(100% + 6px); background: #fff; border: 1px solid #e3ddd2; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); padding: 6px; min-width: 150px; z-index: 200; }
+.choix-langue-liste[hidden] { display: none; }
+.choix-langue-liste button { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 8px 10px; border-radius: 8px; font: 0.92rem "Helvetica Neue", Arial, sans-serif; color: #333; cursor: pointer; }
+.choix-langue-liste button:hover { background: #f4f0e8; }
+.choix-langue-liste button.actif { font-weight: 700; color: #5f7b69; }
+.site-header .container { display: flex; align-items: center; }
