@@ -642,3 +642,4 @@ body.chat-ouvert { overflow: hidden; }
 }
 /* Boutons et carrés remontés d'environ 1,5 cm */
 @media (min-width: 601px) { .hero .reassurance { margin-bottom: 55px !important; } }
+@media (min-width: 601px) { .hero .reassurance { margin-bottom: 93px !important; } }
